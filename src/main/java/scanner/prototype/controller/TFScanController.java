@@ -2,11 +2,14 @@
 package scanner.prototype.controller;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -23,6 +26,7 @@ import org.springframework.web.multipart.MultipartFile;
 import lombok.RequiredArgsConstructor;
 import scanner.prototype.dto.FileUploadResponseDto;
 import scanner.prototype.response.ApiResponse;
+import scanner.prototype.job.ScanJob;
 import scanner.prototype.service.StorageServiceImpl;
 
 @RestController
@@ -56,7 +60,7 @@ public class TFScanController {
     }  
 
     @PostMapping("/file")
-    public ApiResponse<FileUploadResponseDto> uploadFile(
+    public ApiResponse<?> uploadFile(
         HttpServletRequest request, 
         HttpServletResponse response,
         @RequestPart("file") MultipartFile file
@@ -65,14 +69,10 @@ public class TFScanController {
             if( !file.isEmpty() ) {
                 String result = storageService.store(file);
 
-                return ApiResponse.success("data", 
-                    new FileUploadResponseDto(
-                        file.getOriginalFilename(), 
-                        result, 
-                        file.getSize(), 
-                        file.getContentType()
-                    )
-                );
+                ScanJob startScanJob = new ScanJob();
+                String returnString = startScanJob.terrformScan(result);
+                //System.out.println(returnString);
+                return ApiResponse.success("data", returnString);
             }
 
             return ApiResponse.fail();
