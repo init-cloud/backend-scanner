@@ -10,6 +10,6 @@ public class FileLoader {
     public File loadTerraformFile(String args) 
     throws IOException
     {
-        return new File(Env.FILE_UPLOAD_PATH + File.separator + args);
+        return new File(Env.FILE_UPLOAD_PATH.getValue() + File.separator + args);
     }
 }
