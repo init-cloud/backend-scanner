@@ -70,7 +70,10 @@ public class ScanJob {
                 String[] failed = lines[1].split("checks:");
                 String[] skipped = lines[2].split("checks:");
 
-                return new CheckResponse(Integer.parseInt(passed[1].trim()), Integer.parseInt(failed[1].trim()), Integer.parseInt(skipped[1].trim()));
+                return new CheckResponse(
+                    Integer.parseInt(passed[1].trim()), 
+                    Integer.parseInt(failed[1].trim()), 
+                    Integer.parseInt(skipped[1].trim()));
             }
         }
 

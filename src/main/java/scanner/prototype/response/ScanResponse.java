@@ -14,6 +14,8 @@ public class ScanResponse<T> {
 
     public static <T> ScanResponse<T> toDto(String name, T body) {
         List<ResultResponse> result = new ArrayList<ResultResponse>();
+
+        /* 테스트 용 */
         ResultResponse a = new ResultResponse(name, name, name, name, name, name, name, name, name);
         result.add(a);
 

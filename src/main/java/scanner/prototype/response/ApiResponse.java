@@ -29,6 +29,8 @@ public class ApiResponse<T> {
 
     public static <T> ApiResponse<T> success(String name, T body) {
         List<ResultResponse> results = new ArrayList<ResultResponse>();
+
+        /* 테스트 용 */
         results.add(new ResultResponse(name, name, name, name, name, name, name, name, name));
         
         return new ApiResponse(
@@ -37,7 +39,7 @@ public class ApiResponse<T> {
 
     public static <T> ApiResponse<T> fail(int errorCode) {
         switch(errorCode){
-            case 1: /* 로그인 실패 */
+            case 1: /* 로그인 오류 */
                 return new ApiResponse(
                     new ApiResponseHeader(BAD_REQUEST, LoginFAILED_MESSAGE), null, null);
             case 2: /* 서버 오류 */
