@@ -30,6 +30,14 @@ import scanner.prototype.service.StorageServiceImpl;
 public class TFScanController {
     private final StorageServiceImpl storageService;
 
+    /**
+     * 미사용
+     * @param request
+     * @param response
+     * @param file
+     * @return
+     * @throws IOException
+     */
     @GetMapping("/file/{file}")
     public ResponseEntity<?> downloadFile(
         HttpServletRequest request, 
@@ -54,6 +62,16 @@ public class TFScanController {
                 .body(resource);
     }  
 
+    /**
+     * 
+     * @param request
+     * @param response
+     * @param file
+     * @return
+     * @throws ServletException
+     * @throws IllegalStateException
+     * @throws IOException
+     */
     @PostMapping("/file")
     public ApiResponse<?> uploadFile(
         HttpServletRequest request, 

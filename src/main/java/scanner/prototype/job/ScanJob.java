@@ -4,16 +4,16 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
-
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
+import java.util.ArrayList;
+import java.util.List;
 
 import lombok.RequiredArgsConstructor;
 import scanner.prototype.env.Env;
-import scanner.prototype.exception.ExceptionMessage;
 import scanner.prototype.middleware.FileLoader;
 import scanner.prototype.middleware.TerraformParser;
 import scanner.prototype.response.CheckResponse;
+import scanner.prototype.response.ResultResponse;
+import scanner.prototype.response.ScanResponse;
 
 
 @RequiredArgsConstructor
@@ -21,11 +21,17 @@ public class ScanJob {
 
     private final TerraformParser tfParser;
 
-    public CheckResponse terrformScan(String args) 
+    /**
+     * 구현 중
+     * @param args
+     * @return
+     * @throws Exception
+     */
+    public ScanResponse<?> terrformScan(String args) 
     throws Exception 
     {
         FileLoader fl = new FileLoader();
-        CheckResponse scanResult;
+        ScanResponse<?> scanResult;
         Process p;
 
         try {
@@ -36,12 +42,10 @@ public class ScanJob {
             scanResult = resultToJson(br);
 
             p.waitFor();
-            //System.out.println("exit: " + p.exitValue());
             p.destroy();
 
             File file = fl.loadTerraformFile(args); 
             tfParser.parseToJsonString(file);
-            // new File(FILE_UPLOAD_PATH + File.separator + args);
             boolean result = file.delete();
 
             return scanResult;
@@ -51,39 +55,113 @@ public class ScanJob {
         }
     }
 
-    public CheckResponse resultToJson(BufferedReader br) 
+    /**
+     * 
+     * @param scan
+     * @return
+     */
+    public CheckResponse parseScanCheck(String scan){
+        String[] lines = scan.strip().split(", ");
+        String[] passed = lines[0].split("checks:");
+        String[] failed = lines[1].split("checks:");
+        String[] skipped = lines[2].split("checks:");
+
+        return new CheckResponse(
+            Integer.parseInt(passed[1].strip()), 
+            Integer.parseInt(failed[1].strip()), 
+            Integer.parseInt(skipped[1].strip())
+        );
+    }
+
+    /**
+     * 구현 중
+     * @param scan
+     * @return
+     */
+    public ResultResponse parseScanResult(String scan){
+        ResultResponse result = new ResultResponse();
+
+        return result;
+    }
+
+    /**
+     * 구현 중
+     * @param br
+     * @return
+     * @throws IOException
+     */
+    public ScanResponse<?> resultToJson(BufferedReader br) 
     throws IOException
     {
-        //StringBuilder sb = new StringBuilder();
         String rawResult;
+        StringBuilder sb = new StringBuilder();
+        CheckResponse check = new CheckResponse();
+        ResultResponse result = new ResultResponse();
+        List<ResultResponse> resultLists = new ArrayList<>();
 
         while((rawResult = br.readLine()) != null){
             String[] lines;
-            
-            // sb.append(rawResult);
-            // sb.append("\n");
 
             if(rawResult.contains("Passed checks")){
-                lines = rawResult.split(", ");
-
-                String[] passed = lines[0].split("checks:");
-                String[] failed = lines[1].split("checks:");
-                String[] skipped = lines[2].split("checks:");
-
-                return new CheckResponse(
-                    Integer.parseInt(passed[1].trim()), 
-                    Integer.parseInt(failed[1].trim()), 
-                    Integer.parseInt(skipped[1].trim()));
+                check = parseScanCheck(rawResult);
+                continue;
             }
+
+            if(rawResult.contains("Check:")){
+                lines = rawResult.split(": ");
+
+                result.setRule_id(lines[1].strip());
+                result.setDescription(lines[2].strip());
+                result.setLevel("HIGH");
+            }
+            
+            if(rawResult.contains("PASSED")){
+                lines = rawResult.split(": ");
+
+                result.setStatus("passed");
+                result.setDetail("No");
+                result.setTarget_resource(lines[1].strip());
+            }
+            else if(rawResult.contains("FAILED")){
+                lines = rawResult.split(": ");
+
+                result.setStatus("failed");
+                result.setTarget_resource(lines[1].strip());
+            }
+
+            if(rawResult.contains("File")){
+                lines = rawResult.split(":");
+
+                result.setTarget_file(lines[1].strip());
+                result.setLines(lines[2].strip());
+            }
+
+            if(result.getTarget_file() != null){
+                if(result.getStatus() == "passed"){
+                    resultLists.add(result);
+                    result = new ResultResponse();
+                    sb = new StringBuilder();
+                }
+                else{
+                    sb.append(rawResult);
+                    sb.append("\n");
+
+                    if(rawResult.contains(result.getLines().split("-")[1] + " |")){
+                        result.setDetail(sb.toString());
+                        resultLists.add(result);
+                        result = new ResultResponse();
+                        sb = new StringBuilder();
+                    }
+                }
+            } 
         }
 
-        return null;
+        return new ScanResponse(check, resultLists);
     }
 
-    public JSONObject initScanFormatToJSON(){
-        return new JSONObject();
-    }
-
+    /**
+     * 생성자
+     */
     public ScanJob(){
         this.tfParser = new TerraformParser();
     }

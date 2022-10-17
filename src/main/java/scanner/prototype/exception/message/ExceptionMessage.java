@@ -1,4 +1,4 @@
-package scanner.prototype.exception;
+package scanner.prototype.exception.message;
 
 public enum ExceptionMessage {
     ERROR("Error.");

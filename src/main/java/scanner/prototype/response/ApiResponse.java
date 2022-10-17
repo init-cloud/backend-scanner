@@ -24,50 +24,44 @@ public class ApiResponse<T> {
     private final static String NOT_EXPIRED_TOKEN_YET = "Not expired token yet.";
 
     private final ApiResponseHeader header;
-    private final CheckResponse check;
-    private final List<ResultResponse> result;
+    private final ScanResponse scan;
 
     public static <T> ApiResponse<T> success(String name, T body) {
-        List<ResultResponse> results = new ArrayList<ResultResponse>();
-
-        /* 테스트 용 */
-        results.add(new ResultResponse(name, name, name, name, name, name, name, name, name));
-        
         return new ApiResponse(
-            new ApiResponseHeader(SUCCESS, SUCCESS_MESSAGE), (CheckResponse)body, results);
+            new ApiResponseHeader(SUCCESS, SUCCESS_MESSAGE), (ScanResponse)body);
     }
 
     public static <T> ApiResponse<T> fail(int errorCode) {
         switch(errorCode){
             case 1: /* 로그인 오류 */
                 return new ApiResponse(
-                    new ApiResponseHeader(BAD_REQUEST, LoginFAILED_MESSAGE), null, null);
+                    new ApiResponseHeader(BAD_REQUEST, LoginFAILED_MESSAGE), null);
             case 2: /* 서버 오류 */
                 return new ApiResponse(
-                    new ApiResponseHeader(BAD_REQUEST, ServerFAILED_MESSAGE), null, null);
+                    new ApiResponseHeader(BAD_REQUEST, ServerFAILED_MESSAGE), null);
             default: /* 요청 오류 */
                 return new ApiResponse(
-                    new ApiResponseHeader(BAD_REQUEST, BadRequest_MESSAGE), null, null);
+                    new ApiResponseHeader(BAD_REQUEST, BadRequest_MESSAGE), null);
         }
     }
 
     public static <T> ApiResponse<T> fail() {
         return new ApiResponse(
-            new ApiResponseHeader(BAD_REQUEST, BadRequest_MESSAGE), null, null);
+            new ApiResponseHeader(BAD_REQUEST, BadRequest_MESSAGE), null);
     }
 
     public static <T> ApiResponse<T> invalidAccessToken() {
         return new ApiResponse(
-            new ApiResponseHeader(BAD_REQUEST, INVALID_ACCESS_TOKEN), null, null);
+            new ApiResponseHeader(BAD_REQUEST, INVALID_ACCESS_TOKEN), null);
     }
 
     public static <T> ApiResponse<T> invalidRefreshToken() {
         return new ApiResponse(
-            new ApiResponseHeader(BAD_REQUEST, INVALID_REFRESH_TOKEN), null, null);
+            new ApiResponseHeader(BAD_REQUEST, INVALID_REFRESH_TOKEN), null);
     }
 
     public static <T> ApiResponse<T> notExpiredTokenYet() {
         return new ApiResponse(
-            new ApiResponseHeader(BAD_REQUEST, NOT_EXPIRED_TOKEN_YET), null, null);
+            new ApiResponseHeader(BAD_REQUEST, NOT_EXPIRED_TOKEN_YET), null);
     }
 }
