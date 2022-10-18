@@ -78,8 +78,40 @@ public class ScanJob {
      * @param scan
      * @return
      */
-    public ResultResponse parseScanResult(String scan){
-        ResultResponse result = new ResultResponse();
+    public ResultResponse parseScanResult(
+        String rawResult,
+        ResultResponse result
+    ){
+        String[] lines;
+
+        if(rawResult.contains("Check:")){
+            lines = rawResult.split(": ");
+
+            result.setRule_id(lines[1].strip());
+            result.setDescription(lines[2].strip());
+            result.setLevel("HIGH");
+        }
+        
+        if(rawResult.contains("PASSED")){
+            lines = rawResult.split(": ");
+
+            result.setStatus("passed");
+            result.setDetail("No");
+            result.setTarget_resource(lines[1].strip());
+        }
+        else if(rawResult.contains("FAILED")){
+            lines = rawResult.split(": ");
+
+            result.setStatus("failed");
+            result.setTarget_resource(lines[1].strip());
+        }
+
+        if(rawResult.contains("File")){
+            lines = rawResult.split(":");
+
+            result.setTarget_file(lines[1].strip());
+            result.setLines(lines[2].strip());
+        }
 
         return result;
     }
@@ -100,41 +132,13 @@ public class ScanJob {
         List<ResultResponse> resultLists = new ArrayList<>();
 
         while((rawResult = br.readLine()) != null){
-            String[] lines;
 
             if(rawResult.contains("Passed checks")){
                 check = parseScanCheck(rawResult);
                 continue;
             }
 
-            if(rawResult.contains("Check:")){
-                lines = rawResult.split(": ");
-
-                result.setRule_id(lines[1].strip());
-                result.setDescription(lines[2].strip());
-                result.setLevel("HIGH");
-            }
-            
-            if(rawResult.contains("PASSED")){
-                lines = rawResult.split(": ");
-
-                result.setStatus("passed");
-                result.setDetail("No");
-                result.setTarget_resource(lines[1].strip());
-            }
-            else if(rawResult.contains("FAILED")){
-                lines = rawResult.split(": ");
-
-                result.setStatus("failed");
-                result.setTarget_resource(lines[1].strip());
-            }
-
-            if(rawResult.contains("File")){
-                lines = rawResult.split(":");
-
-                result.setTarget_file(lines[1].strip());
-                result.setLines(lines[2].strip());
-            }
+            result = parseScanResult(rawResult, result);
 
             if(result.getTarget_file() != null){
                 if(result.getStatus() == "passed"){
