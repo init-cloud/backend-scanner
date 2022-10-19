@@ -74,8 +74,9 @@ public class ScanJob {
     }
 
     /**
-     * 구현 중
-     * @param scan
+     * 
+     * @param rawResult
+     * @param result
      * @return
      */
     public ResultResponse parseScanResult(
@@ -89,7 +90,7 @@ public class ScanJob {
 
             result.setRule_id(lines[1].strip());
             result.setDescription(lines[2].strip());
-            result.setLevel("HIGH");
+            result.setLevel("High");
         }
         
         if(rawResult.contains("PASSED")){
@@ -164,7 +165,7 @@ public class ScanJob {
     }
 
     /**
-     * 생성자
+     * Constructor
      */
     public ScanJob(){
         this.tfParser = new TerraformParser();
