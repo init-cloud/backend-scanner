@@ -7,9 +7,6 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class NetworkResponse {
-    String region;
-    String zones;
-    String server;
-    String subnet;
+public class ParseResponse {
+    String result;
 }

@@ -10,11 +10,13 @@ import lombok.RequiredArgsConstructor;
 public class ScanResponse<T> {
     private final CheckResponse check;
     private final List<ResultResponse> result;
+    private final ParseResponse parse;
 
     public static <T> ScanResponse<T> toDto(
         CheckResponse check, 
-        List<ResultResponse> results
+        List<ResultResponse> results,
+        ParseResponse parse
     ) {
-        return new ScanResponse(check, results);
+        return new ScanResponse(check, results, parse);
     }
 }

@@ -12,14 +12,17 @@ import scanner.prototype.env.Env;
 import scanner.prototype.middleware.FileLoader;
 import scanner.prototype.middleware.TerraformParser;
 import scanner.prototype.response.CheckResponse;
+import scanner.prototype.response.ParseResponse;
 import scanner.prototype.response.ResultResponse;
 import scanner.prototype.response.ScanResponse;
+import scanner.prototype.visualize.ParserRequest;
 
 
 @RequiredArgsConstructor
 public class ScanJob {
 
     private final TerraformParser tfParser;
+    private final ParserRequest parserReq;
 
     /**
      * 구현 중
@@ -45,7 +48,6 @@ public class ScanJob {
             p.destroy();
 
             File file = fl.loadTerraformFile(args); 
-            tfParser.parseToJsonString(file);
             boolean result = file.delete();
 
             return scanResult;
@@ -131,6 +133,7 @@ public class ScanJob {
         CheckResponse check = new CheckResponse();
         ResultResponse result = new ResultResponse();
         List<ResultResponse> resultLists = new ArrayList<>();
+        ParseResponse parse = new ParseResponse(parserReq.getTerraformParsingData()); 
 
         while((rawResult = br.readLine()) != null){
 
@@ -161,7 +164,7 @@ public class ScanJob {
             } 
         }
 
-        return new ScanResponse(check, resultLists);
+        return new ScanResponse(check, resultLists, parse);
     }
 
     /**
@@ -169,5 +172,6 @@ public class ScanJob {
      */
     public ScanJob(){
         this.tfParser = new TerraformParser();
+        this.parserReq = new ParserRequest();
     }
 }
