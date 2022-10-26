@@ -6,15 +6,18 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+import org.json.simple.parser.JSONParser;
+
 import scanner.prototype.env.Env;
 
 public class ParserRequest {
 
     private final String API = Env.PARSER_API.getValue();
     private final String parse = "/api/v1/";
+    private final JSONParser jsonParser = new JSONParser();
 
 
-    public String getTerraformParsingData()
+    public Object getTerraformParsingData()
     throws MalformedURLException
     {
         HttpURLConnection conn = null;
@@ -35,7 +38,7 @@ public class ParserRequest {
                 response.append(inputLine); 
             } 
             in.close();
-            return response.toString();
+            return jsonParser.parse(response.toString());
 
         } catch(Exception e){
             return "{ \"status\" : \"ERROR\"}";

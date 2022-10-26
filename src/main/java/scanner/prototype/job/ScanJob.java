@@ -52,7 +52,6 @@ public class ScanJob {
 
             return scanResult;
         } catch (Exception e) {
-            e.printStackTrace();
             return null;
         }
     }
