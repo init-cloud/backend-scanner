@@ -17,11 +17,11 @@ public class ParserRequest {
     private final JSONParser jsonParser = new JSONParser();
 
 
-    public Object getTerraformParsingData()
+    public Object getTerraformParsingData(String directory)
     throws MalformedURLException
     {
         HttpURLConnection conn = null;
-        URL url = new URL(API + parse);
+        URL url = new URL(API + parse + directory);
 
         try{
             conn = (HttpURLConnection) url.openConnection();
@@ -41,7 +41,8 @@ public class ParserRequest {
             return jsonParser.parse(response.toString());
 
         } catch(Exception e){
-            return "{ \"status\" : \"ERROR\"}";
+            e.printStackTrace();
+            return null;
         }
     }       
 }

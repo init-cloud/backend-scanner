@@ -104,7 +104,7 @@ public class TFScanController {
         ParserRequest parserReq = new ParserRequest();
 
         return new ParseResponse(
-            parserReq.getTerraformParsingData()
+            parserReq.getTerraformParsingData(null)
         );
     }
 }
