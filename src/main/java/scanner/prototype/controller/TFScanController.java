@@ -83,10 +83,9 @@ public class TFScanController {
     ) throws ServletException, IllegalStateException, IOException
     {
         try{
-            if( !file.isEmpty() ) {
+            if(!file.isEmpty()) {
                 String result = storageService.store(file);
                 ScanJob startScanJob = new ScanJob();
-                //String returnString = startScanJob.terrformScan(result);
                 
                 return ApiResponse.success("check", startScanJob.terrformScan(result));
             }
