@@ -1,6 +1,7 @@
 package scanner.prototype.service;
 
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
@@ -35,10 +36,19 @@ public class StorageServiceImpl implements StorageService{
     @Override
     public String store(MultipartFile file) {
         try {
+            UUID uniqName = UUID.randomUUID();
+            String saved = uniqName.toString();
+            Path root = Paths.get(uploadPath + saved);
+            File dir = new File(uploadPath + saved);
+
+            if(!dir.exists()){
+                dir.mkdirs();
+            }
+
             if (file.isEmpty()) {
                 throw new Exception("File is empty.");
             }
-            Path root = Paths.get(uploadPath);
+
             if (!Files.exists(root)) {
                 init();
             }
@@ -48,9 +58,10 @@ public class StorageServiceImpl implements StorageService{
                 if(isNotValidExt(file.getOriginalFilename()))
                     throw new RuntimeException("Could not store the file. Error: ");
 
-                UUID uniqName = UUID.randomUUID();
-                String saved = uniqName.toString() + "_" + file.getOriginalFilename();
-                Files.copy(inputStream, root.resolve(saved), StandardCopyOption.REPLACE_EXISTING);
+                Files.copy(
+                    inputStream, root.resolve(file.getOriginalFilename()), StandardCopyOption.REPLACE_EXISTING
+                );
+
                 return saved;
             }
         } catch (Exception e) {
@@ -98,6 +109,5 @@ public class StorageServiceImpl implements StorageService{
     @Override
     public void deleteAll() {
         // TODO Auto-generated method stub
-        
     }
 }

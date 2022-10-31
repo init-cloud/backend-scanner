@@ -2,6 +2,7 @@
 package scanner.prototype.controller;
 
 import java.io.IOException;
+import java.net.MalformedURLException;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -22,7 +23,9 @@ import org.springframework.web.multipart.MultipartFile;
 import lombok.RequiredArgsConstructor;
 import scanner.prototype.job.ScanJob;
 import scanner.prototype.response.ApiResponse;
+import scanner.prototype.response.ParseResponse;
 import scanner.prototype.service.StorageServiceImpl;
+import scanner.prototype.visualize.ParserRequest;
 
 @RestController
 @RequestMapping("/api/v1")
@@ -80,10 +83,9 @@ public class TFScanController {
     ) throws ServletException, IllegalStateException, IOException
     {
         try{
-            if( !file.isEmpty() ) {
+            if(!file.isEmpty()) {
                 String result = storageService.store(file);
                 ScanJob startScanJob = new ScanJob();
-                //String returnString = startScanJob.terrformScan(result);
                 
                 return ApiResponse.success("check", startScanJob.terrformScan(result));
             }
@@ -93,5 +95,16 @@ public class TFScanController {
         catch(Exception e){
             return ApiResponse.fail();
         }
+    }
+
+    @GetMapping("/parse")
+    public ParseResponse parseTest() 
+    throws MalformedURLException
+    {
+        ParserRequest parserReq = new ParserRequest();
+
+        return new ParseResponse(
+            parserReq.getTerraformParsingData()
+        );
     }
 }

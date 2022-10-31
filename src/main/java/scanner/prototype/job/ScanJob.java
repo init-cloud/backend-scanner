@@ -12,14 +12,17 @@ import scanner.prototype.env.Env;
 import scanner.prototype.middleware.FileLoader;
 import scanner.prototype.middleware.TerraformParser;
 import scanner.prototype.response.CheckResponse;
+import scanner.prototype.response.ParseResponse;
 import scanner.prototype.response.ResultResponse;
 import scanner.prototype.response.ScanResponse;
+import scanner.prototype.visualize.ParserRequest;
 
 
 @RequiredArgsConstructor
 public class ScanJob {
 
     private final TerraformParser tfParser;
+    private final ParserRequest parserReq;
 
     /**
      * 구현 중
@@ -45,12 +48,10 @@ public class ScanJob {
             p.destroy();
 
             File file = fl.loadTerraformFile(args); 
-            tfParser.parseToJsonString(file);
             boolean result = file.delete();
 
             return scanResult;
         } catch (Exception e) {
-            e.printStackTrace();
             return null;
         }
     }
@@ -74,12 +75,45 @@ public class ScanJob {
     }
 
     /**
-     * 구현 중
-     * @param scan
+     * 
+     * @param rawResult
+     * @param result
      * @return
      */
-    public ResultResponse parseScanResult(String scan){
-        ResultResponse result = new ResultResponse();
+    public ResultResponse parseScanResult(
+        String rawResult,
+        ResultResponse result
+    ){
+        String[] lines;
+
+        if(rawResult.contains("Check:")){
+            lines = rawResult.split(": ");
+
+            result.setRule_id(lines[1].strip());
+            result.setDescription(lines[2].strip());
+            result.setLevel("High");
+        }
+        
+        if(rawResult.contains("PASSED")){
+            lines = rawResult.split(": ");
+
+            result.setStatus("passed");
+            result.setDetail("No");
+            result.setTarget_resource(lines[1].strip());
+        }
+        else if(rawResult.contains("FAILED")){
+            lines = rawResult.split(": ");
+
+            result.setStatus("failed");
+            result.setTarget_resource(lines[1].strip());
+        }
+
+        if(rawResult.contains("File")){
+            lines = rawResult.split(":");
+
+            result.setTarget_file(lines[1].strip());
+            result.setLines(lines[2].strip());
+        }
 
         return result;
     }
@@ -98,43 +132,16 @@ public class ScanJob {
         CheckResponse check = new CheckResponse();
         ResultResponse result = new ResultResponse();
         List<ResultResponse> resultLists = new ArrayList<>();
+        ParseResponse parse = new ParseResponse(parserReq.getTerraformParsingData()); 
 
         while((rawResult = br.readLine()) != null){
-            String[] lines;
 
             if(rawResult.contains("Passed checks")){
                 check = parseScanCheck(rawResult);
                 continue;
             }
 
-            if(rawResult.contains("Check:")){
-                lines = rawResult.split(": ");
-
-                result.setRule_id(lines[1].strip());
-                result.setDescription(lines[2].strip());
-                result.setLevel("HIGH");
-            }
-            
-            if(rawResult.contains("PASSED")){
-                lines = rawResult.split(": ");
-
-                result.setStatus("passed");
-                result.setDetail("No");
-                result.setTarget_resource(lines[1].strip());
-            }
-            else if(rawResult.contains("FAILED")){
-                lines = rawResult.split(": ");
-
-                result.setStatus("failed");
-                result.setTarget_resource(lines[1].strip());
-            }
-
-            if(rawResult.contains("File")){
-                lines = rawResult.split(":");
-
-                result.setTarget_file(lines[1].strip());
-                result.setLines(lines[2].strip());
-            }
+            result = parseScanResult(rawResult, result);
 
             if(result.getTarget_file() != null){
                 if(result.getStatus() == "passed"){
@@ -156,13 +163,14 @@ public class ScanJob {
             } 
         }
 
-        return new ScanResponse(check, resultLists);
+        return new ScanResponse(check, resultLists, parse);
     }
 
     /**
-     * 생성자
+     * Constructor
      */
     public ScanJob(){
         this.tfParser = new TerraformParser();
+        this.parserReq = new ParserRequest();
     }
 }
