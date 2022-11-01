@@ -7,10 +7,10 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.tomcat.util.http.fileupload.FileUtils;
+
 import lombok.RequiredArgsConstructor;
 import scanner.prototype.env.Env;
-import scanner.prototype.middleware.FileLoader;
-import scanner.prototype.middleware.TerraformParser;
 import scanner.prototype.response.CheckResponse;
 import scanner.prototype.response.ParseResponse;
 import scanner.prototype.response.ResultResponse;
@@ -21,7 +21,6 @@ import scanner.prototype.visualize.ParserRequest;
 @RequiredArgsConstructor
 public class ScanJob {
 
-    private final TerraformParser tfParser;
     private final ParserRequest parserReq;
 
     /**
@@ -33,23 +32,22 @@ public class ScanJob {
     public ScanResponse<?> terrformScan(String args) 
     throws Exception 
     {
-        FileLoader fl = new FileLoader();
         ScanResponse<?> scanResult;
         Process p;
-
+         
         try {
-            String[] cmd = {"/bin/bash", "-c", Env.SHELL_COMMAND.getValue()};
+            File file = new File(Env.FILE_UPLOAD_PATH.getValue() + File.separator + args);
+            String[] cmd = {"bash", "-l", "-c", Env.SHELL_COMMAND_RAW.getValue() + File.separator + args};
             p = Runtime.getRuntime().exec(cmd);
-            BufferedReader br = new BufferedReader(new InputStreamReader(p.getInputStream()));
+            BufferedReader br = new BufferedReader(
+                new InputStreamReader(p.getInputStream())
+            );
 
-            scanResult = resultToJson(br);
-
+            scanResult = resultToJson(br, args);
+            FileUtils.deleteDirectory(file);
             p.waitFor();
             p.destroy();
-
-            File file = fl.loadTerraformFile(args); 
-            boolean result = file.delete();
-
+            
             return scanResult;
         } catch (Exception e) {
             return null;
@@ -124,7 +122,7 @@ public class ScanJob {
      * @return
      * @throws IOException
      */
-    public ScanResponse<?> resultToJson(BufferedReader br) 
+    public ScanResponse<?> resultToJson(BufferedReader br, String path) 
     throws IOException
     {
         String rawResult;
@@ -132,7 +130,7 @@ public class ScanJob {
         CheckResponse check = new CheckResponse();
         ResultResponse result = new ResultResponse();
         List<ResultResponse> resultLists = new ArrayList<>();
-        ParseResponse parse = new ParseResponse(parserReq.getTerraformParsingData()); 
+        ParseResponse parse = new ParseResponse(parserReq.getTerraformParsingData(path)); 
 
         while((rawResult = br.readLine()) != null){
 
@@ -170,7 +168,6 @@ public class ScanJob {
      * Constructor
      */
     public ScanJob(){
-        this.tfParser = new TerraformParser();
         this.parserReq = new ParserRequest();
     }
 }
