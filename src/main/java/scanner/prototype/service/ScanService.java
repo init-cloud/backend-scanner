@@ -1,4 +1,4 @@
-package scanner.prototype.job;
+package scanner.prototype.service;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -8,9 +8,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.tomcat.util.http.fileupload.FileUtils;
+import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
 import scanner.prototype.env.Env;
+import scanner.prototype.exception.ScanException;
 import scanner.prototype.response.CheckResponse;
 import scanner.prototype.response.ParseResponse;
 import scanner.prototype.response.ResultResponse;
@@ -18,13 +20,14 @@ import scanner.prototype.response.ScanResponse;
 import scanner.prototype.visualize.ParserRequest;
 
 
+@Service
 @RequiredArgsConstructor
-public class ScanJob {
+public class ScanService {
 
     private final ParserRequest parserReq;
 
     /**
-     * 구현 중
+     * 
      * @param args
      * @return
      * @throws Exception
@@ -40,8 +43,7 @@ public class ScanJob {
             String[] cmd = {"bash", "-l", "-c", Env.SHELL_COMMAND_RAW.getValue() + File.separator + args};
             p = Runtime.getRuntime().exec(cmd);
             BufferedReader br = new BufferedReader(
-                new InputStreamReader(p.getInputStream())
-            );
+                new InputStreamReader(p.getInputStream()));
 
             scanResult = resultToJson(br, args);
             FileUtils.deleteDirectory(file);
@@ -50,7 +52,7 @@ public class ScanJob {
             
             return scanResult;
         } catch (Exception e) {
-            return null;
+            throw new ScanException("Scan Error.");
         }
     }
 
@@ -133,6 +135,7 @@ public class ScanJob {
         ParseResponse parse = new ParseResponse(parserReq.getTerraformParsingData(path)); 
 
         while((rawResult = br.readLine()) != null){
+
             if(rawResult.contains("Passed checks")){
                 check = parseScanCheck(rawResult);
                 continue;
@@ -166,7 +169,7 @@ public class ScanJob {
     /**
      * Constructor
      */
-    public ScanJob(){
+    public ScanService(){
         this.parserReq = new ParserRequest();
     }
 }

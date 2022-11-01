@@ -24,12 +24,9 @@ import lombok.RequiredArgsConstructor;
 
 import scanner.prototype.response.ParseResponse;
 import scanner.prototype.response.ScanResponse;
-import scanner.prototype.service.ScanJob;
+import scanner.prototype.service.ScanService;
 import scanner.prototype.service.StorageServiceImpl;
 import scanner.prototype.response.ApiResponse;
-import scanner.prototype.response.ParseResponse;
-import scanner.prototype.response.ScanResponse;
-import scanner.prototype.service.StorageServiceImpl;
 import scanner.prototype.visualize.ParserRequest;
 
 
@@ -38,7 +35,7 @@ import scanner.prototype.visualize.ParserRequest;
 @RequiredArgsConstructor
 public class TFScanController {
     private final StorageServiceImpl storageService;
-    private final ScanJob scanJob;
+    private final ScanService scanJob;
 
     /**
      * 미사용
@@ -63,7 +60,6 @@ public class TFScanController {
             
         }
 
-        // Fallback to the default content type if type could not be determined
         if(contentType == null) {
             contentType = "application/octet-stream";
         }
