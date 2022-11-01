@@ -35,3 +35,12 @@ out/
 
 ### VS Code ###
 .vscode/
+
+
+### etc ###
+uploads/
+/server.sh
+*.txt
+*.out
+Env.java
+*.json
