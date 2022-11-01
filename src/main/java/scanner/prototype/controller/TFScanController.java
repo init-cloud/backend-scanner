@@ -2,6 +2,7 @@
 package scanner.prototype.controller;
 
 import java.io.IOException;
+import java.net.MalformedURLException;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -20,20 +21,24 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import lombok.RequiredArgsConstructor;
-import scanner.prototype.response.ApiResponse;
-<<<<<<< Updated upstream
-=======
+
 import scanner.prototype.response.ParseResponse;
 import scanner.prototype.response.ScanResponse;
 import scanner.prototype.service.ScanJob;
->>>>>>> Stashed changes
 import scanner.prototype.service.StorageServiceImpl;
+import scanner.prototype.response.ApiResponse;
+import scanner.prototype.response.ParseResponse;
+import scanner.prototype.response.ScanResponse;
+import scanner.prototype.service.StorageServiceImpl;
+import scanner.prototype.visualize.ParserRequest;
+
 
 @RestController
 @RequestMapping("/api/v1")
 @RequiredArgsConstructor
 public class TFScanController {
     private final StorageServiceImpl storageService;
+    private final ScanJob scanJob;
 
     /**
      * 미사용
@@ -51,6 +56,7 @@ public class TFScanController {
     ) throws IOException{
         Resource resource = storageService.loadAsResource(file);
         String contentType = null;
+
         try {
             contentType = request.getServletContext().getMimeType(resource.getFile().getAbsolutePath());
         } catch (IOException ex) {
@@ -85,12 +91,11 @@ public class TFScanController {
     ) throws ServletException, IllegalStateException, IOException
     {
         try{
-            if( !file.isEmpty() ) {
+            if(!file.isEmpty()) {
                 String result = storageService.store(file);
-                ScanJob startScanJob = new ScanJob();
-                //String returnString = startScanJob.terrformScan(result);
-                
-                return ApiResponse.success("check", startScanJob.terrformScan(result));
+                ScanResponse<?> scanResponse = scanJob.terrformScan(result);
+
+                return ApiResponse.success("check", scanResponse);
             }
 
             return ApiResponse.fail();
@@ -98,5 +103,16 @@ public class TFScanController {
         catch(Exception e){
             return ApiResponse.fail();
         }
+    }
+
+    @GetMapping("/parse")
+    public ParseResponse parseTest() 
+    throws MalformedURLException
+    {
+        ParserRequest parserReq = new ParserRequest();
+
+        return new ParseResponse(
+            parserReq.getTerraformParsingData(null)
+        );
     }
 }

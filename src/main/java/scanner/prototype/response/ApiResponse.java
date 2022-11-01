@@ -1,8 +1,5 @@
 package scanner.prototype.response;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
@@ -24,9 +21,12 @@ public class ApiResponse<T> {
     private final static String NOT_EXPIRED_TOKEN_YET = "Not expired token yet.";
 
     private final ApiResponseHeader header;
-    private final ScanResponse scan;
+    private final ScanResponse<?> scan;
 
-    public static <T> ApiResponse<T> success(String name, T body) {
+    public static <T> ApiResponse<T> success(
+        String name, 
+        T body
+    ) {
         return new ApiResponse(
             new ApiResponseHeader(SUCCESS, SUCCESS_MESSAGE), (ScanResponse)body);
     }
