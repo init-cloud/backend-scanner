@@ -38,9 +38,10 @@ public class ParserRequest {
                 response.append(inputLine); 
             } 
             in.close();
-            return jsonParser.parse(response.toString());
 
-        } catch(Exception e){
+            return jsonParser.parse(response.toString());
+        } 
+        catch(Exception e){
             e.printStackTrace();
             return null;
         }

@@ -24,6 +24,7 @@ import lombok.RequiredArgsConstructor;
 import scanner.prototype.job.ScanJob;
 import scanner.prototype.response.ApiResponse;
 import scanner.prototype.response.ParseResponse;
+import scanner.prototype.response.ScanResponse;
 import scanner.prototype.service.StorageServiceImpl;
 import scanner.prototype.visualize.ParserRequest;
 
@@ -32,6 +33,7 @@ import scanner.prototype.visualize.ParserRequest;
 @RequiredArgsConstructor
 public class TFScanController {
     private final StorageServiceImpl storageService;
+    private final ScanJob scanJob;
 
     /**
      * 미사용
@@ -49,6 +51,7 @@ public class TFScanController {
     ) throws IOException{
         Resource resource = storageService.loadAsResource(file);
         String contentType = null;
+
         try {
             contentType = request.getServletContext().getMimeType(resource.getFile().getAbsolutePath());
         } catch (IOException ex) {
@@ -85,9 +88,9 @@ public class TFScanController {
         try{
             if(!file.isEmpty()) {
                 String result = storageService.store(file);
-                ScanJob startScanJob = new ScanJob();
-                
-                return ApiResponse.success("check", startScanJob.terrformScan(result));
+                ScanResponse<?> scanResponse = scanJob.terrformScan(result);
+
+                return ApiResponse.success("check", scanResponse);
             }
 
             return ApiResponse.fail();

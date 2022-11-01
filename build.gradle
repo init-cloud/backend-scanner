@@ -23,9 +23,12 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-jdbc'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'org.springframework.amqp:spring-rabbit:2.4.7'
+	
 	implementation 'com.bertramlabs.plugins:hcl4j:0.4.4'
 	implementation 'com.googlecode.json-simple:json-simple:1.1.1'
 	implementation 'commons-io:commons-io:2.11.0'
+	implementation 'org.apache.commons:commons-compress:1.21'
+
 
 	compileOnly 'org.projectlombok:lombok'
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
