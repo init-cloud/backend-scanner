@@ -21,18 +21,35 @@ repositories {
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	implementation 'org.springframework.boot:spring-boot-starter-jdbc'
+	implementation 'org.springframework.boot:spring-boot-starter-data-rest'
+	//implementation 'org.springframework.boot:spring-boot-starter-security'
+	implementation 'org.springframework.boot:spring-boot-starter-validation'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'org.springframework.amqp:spring-rabbit:2.4.7'
+
+	implementation 'io.jsonwebtoken:jjwt-api:0.11.2'
+	implementation 'io.jsonwebtoken:jjwt-gson:0.11.2'
+	implementation 'io.jsonwebtoken:jjwt-impl:0.11.0'
+	
+  	implementation 'jakarta.xml.bind:jakarta.xml.bind-api:2.3.2'
 	
 	implementation 'com.bertramlabs.plugins:hcl4j:0.4.4'
 	implementation 'com.googlecode.json-simple:json-simple:1.1.1'
 	implementation 'commons-io:commons-io:2.11.0'
+	implementation 'commons-codec:commons-codec:1.14'
 	implementation 'org.apache.commons:commons-compress:1.21'
+	implementation 'org.mapstruct:mapstruct:1.4.2.Final'
+	implementation 'org.mariadb.jdbc:mariadb-java-client:3.0.8'
 
+	runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.2'
+	runtimeOnly 'mysql:mysql-connector-java'
 	compileOnly 'org.projectlombok:lombok'
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
-	runtimeOnly 'com.h2database:h2'
+
 	annotationProcessor 'org.projectlombok:lombok'
+	annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
+	
+	testImplementation 'org.springframework.security:spring-security-test'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }
 

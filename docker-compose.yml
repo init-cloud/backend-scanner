@@ -5,20 +5,33 @@ services:
     container_name: scanner_api
     volumes:
       - ./prototype/uploads:/app/uploads
+      - ./:/app
     ports:
       - "8080:8080"
     env_file:
-     - ./.env
+     - .env
   fastapi:
     build:
       context: ./terraform-parser
     container_name: parser_api
     volumes:
       - ./prototype/uploads:/app/uploads
+      - ./:/app
     ports:
       - "9001:8000"
     env_file:
-     - ./.env 
+     - .env 
+  db:
+    image: mariadb:10
+    container_name: initcloud_db
+    ports:
+      - 9002:3306
+    volumes:
+      - ./:/app
+    env_file: .env
+    environment:
+      TZ: Asia/Seoul
+    restart: always
 
 networks:
   default:
