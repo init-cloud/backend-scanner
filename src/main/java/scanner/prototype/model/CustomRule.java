@@ -18,54 +18,47 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import scanner.prototype.model.enums.UserState;
-import scanner.prototype.model.enums.RoleType;
+import scanner.prototype.model.enums.Provider;
+import scanner.prototype.model.enums.RuleType;
 
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "USER")
-public class User {
-
+@Table(name = "CUSTOM_RULE")
+public class CustomRule {
     @Id
-    @Column(name = "USER_SEQ")
+    @Column(name = "RULE_SEQ")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "USER_ID", unique = true)
+    @Column(name = "RULE_ID", unique = true)
     @NotNull
-    @Size(max = 64)
-    private String userId;
-
-    @Column(name = "USERNAME")
-    @NotNull
-    @Size(max = 32)
-    private String username;
-
-    @Column(name = "PASSWORD", length = 256)
-    @NotNull
-    @Size(max = 256)
-    private String password;
-
-    @Column(name = "EMAIL", unique = true)
-    @Size(max = 128)
-    private String email;
-
-    @Column(name = "CONTACT")
     @Size(max = 16)
-    private String contact;
+    private String ruleId;
 
-    @Column(name = "ROLE_TYPE", length = 8)
+    @Column(name = "DEFAULT_RULE_ID")
+    @NotNull
+    @Size(max = 16)
+    private String defaultRuleId;
+
+    @Column(name = "RULE_ONOFF")
+    @Size(max = 1)
+    private String ruleOnOff;
+
+    @Column(name = "PROVIDER", length = 8)
     @Enumerated(EnumType.STRING)
     @NotNull
-    private RoleType roleType;
+    private Provider provider;
 
-    @Column(name = "USER_STATE", length = 8)
+    @Column(name = "RULE_TYPE", length = 8)
     @Enumerated(EnumType.STRING)
     @NotNull
-    private UserState userState;
+    private RuleType ruleType;
+
+    @Column(name = "CUSTOM_DETAIL")
+    private String customDetail;
 
     @Column(name = "CREATED_AT")
     @NotNull
@@ -74,7 +67,4 @@ public class User {
     @Column(name = "MODIFIED_AT")
     @NotNull
     private LocalDateTime modifiedAt;
-
-    @Column(name = "LAST_LOGIN")
-    private LocalDateTime lastLogin;
 }

@@ -1,4 +1,4 @@
-package scanner.prototype.model;
+package scanner.prototype.model.enums;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
