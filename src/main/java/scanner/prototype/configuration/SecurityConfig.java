@@ -13,14 +13,20 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsUtils;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import lombok.RequiredArgsConstructor;
+import scanner.prototype.exception.AuthEntryPoint;
+import scanner.prototype.filter.TokenAuthenticationFilter;
+import scanner.prototype.middleware.token.TokenProvider;
 import scanner.prototype.model.enums.RoleType;
 import scanner.prototype.repository.UserRepository;
+import scanner.prototype.repository.UserTokenRepository;
+import scanner.prototype.service.user.UserDetailService;
 
 
 @RequiredArgsConstructor
@@ -28,21 +34,26 @@ import scanner.prototype.repository.UserRepository;
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
-    private final AppProperties appProperties;
-    private final AuthTokenProvider tokenProvider;
-    private final TokenAccessDeniedHandler tokenAccessDeniedHandler;
+    private final AppConfigProperties appConfigProperties;
+    private final TokenProvider tokenProvider;
+    private final AccessDeniedHandler accessDeniedHandler;
     private final UserTokenRepository userTokenRepository;
     private final UserRepository userRepository;
+    private final UserDetailService userDetailService;
 
 
     @Override
-    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(userDetailsService)
+    protected void configure(AuthenticationManagerBuilder auth) 
+    throws Exception
+    {
+        auth.userDetailsService(userDetailService)
                 .passwordEncoder(passwordEncoder());
     }
 
     @Override
-    protected void configure(HttpSecurity http) throws Exception {
+    protected void configure(HttpSecurity http) 
+    throws Exception 
+    {
         http.cors()
             .and()
                 .sessionManagement()
@@ -52,26 +63,23 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .formLogin().disable()
                 .httpBasic().disable()
                 .exceptionHandling()
-                .authenticationEntryPoint(new RestAuthenticationEntryPoint())
-                .accessDeniedHandler(tokenAccessDeniedHandler)
+                .authenticationEntryPoint(new AuthEntryPoint())
+                .accessDeniedHandler(accessDeniedHandler)
             .and()
                 .authorizeRequests()
                 .antMatchers("/api/v1/**").permitAll()
-                .antMatchers("/api/admin","/api/manage/**").hasRole("ADMIN")
-                .requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
-                .antMatchers("/api/**").hasAnyAuthority(RoleType.GUEST.getCode()) // 정회원 권한
-                .antMatchers("/api/**/admin/**").hasAnyAuthority(RoleType.ADMIN.getCode())// 관리자 권한
-                .anyRequest().authenticated()
-            .and()
-                .userInfoEndpoint();
+                .antMatchers("/api/v1/**").hasAnyAuthority(RoleType.GUEST.getCode())
+                .antMatchers("/api/v1/**/admin/**").hasAnyAuthority(RoleType.ADMIN.getCode())
+                .anyRequest().authenticated();
 
         http.addFilterBefore(tokenAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
     }
 
-    /*  AuthenticationManager를 외부에서 사용하기 위함. */
     @Override
     @Bean(BeanIds.AUTHENTICATION_MANAGER)
-    protected AuthenticationManager authenticationManager() throws Exception {
+    protected AuthenticationManager authenticationManager() 
+    throws Exception
+    {
         return super.authenticationManager();
     }
 

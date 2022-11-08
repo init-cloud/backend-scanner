@@ -9,6 +9,9 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 import lombok.RequiredArgsConstructor;
+import scanner.prototype.middleware.token.Token;
+import scanner.prototype.middleware.token.TokenHeader;
+import scanner.prototype.middleware.token.TokenProvider;
 
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -17,16 +20,18 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 @RequiredArgsConstructor
 public class TokenAuthenticationFilter extends OncePerRequestFilter {
-    private final AuthTokenProvider tokenProvider;
+
+    private final TokenProvider tokenProvider;
 
     @Override
     protected void doFilterInternal(
             HttpServletRequest request,
             HttpServletResponse response,
-            FilterChain filterChain)  throws ServletException, IOException {
-
-        String tokenStr = HeaderUtil.getAccessToken(request);
-        AuthToken token = tokenProvider.convertAuthToken(tokenStr);
+            FilterChain filterChain
+    ) throws ServletException, IOException 
+    {
+        String tokenStr = TokenHeader.getAccessToken(request);
+        Token token = tokenProvider.convertToken(tokenStr);
 
         if (token.validate()) {
             Authentication authentication = tokenProvider.getAuthentication(token);
