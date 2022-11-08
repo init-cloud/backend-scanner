@@ -9,5 +9,4 @@ public class CheckListDetailDto {
     
     private String ruleId;
     private String ruleOnOff;
-    private UserDto user;
 }

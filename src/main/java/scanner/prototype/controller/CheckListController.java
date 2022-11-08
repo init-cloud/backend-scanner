@@ -2,6 +2,9 @@ package scanner.prototype.controller;
 
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -10,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import lombok.RequiredArgsConstructor;
 import scanner.prototype.dto.CheckListSimpleDto;
+import scanner.prototype.model.CustomRule;
 import scanner.prototype.response.ApiResponse;
 import scanner.prototype.service.CheckListService;
 import scanner.prototype.service.user.UserService;
@@ -27,25 +31,30 @@ public class CheckListController {
 
     @GetMapping
     public ApiResponse<?> retrieveCheckList(
-
+        HttpServletRequest request, 
+        HttpServletResponse response
     ){
+        List<CheckListSimpleDto> dtos = checkListService.retrieve();
 
-        return ApiResponse.success("data", "sesult");
+        return ApiResponse.success("data", dtos);
     }
 
-    @PostMapping("/checklist/")
+    @PostMapping("/state")
     public ApiResponse<?> modifyCheckListState(
-        @RequestBody List<CheckListSimpleDto> request
+        HttpServletRequest request, 
+        HttpServletResponse response,
+        @RequestBody List<CheckListSimpleDto> data
     ){
 
-        return ApiResponse.success("data", "sesult");
+        return ApiResponse.success("data", "result");
     }
 
-    @PostMapping()
+    @PostMapping("/value")
     public ApiResponse<?> modifyCheckListValue(
-
+        HttpServletRequest request, 
+        HttpServletResponse response
     ){
 
-        return ApiResponse.success("data", "sesult");
+        return ApiResponse.success("data", "result");
     }
 }

@@ -1,13 +1,30 @@
 package scanner.prototype.dto;
 
+
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
-import lombok.RequiredArgsConstructor;
+import lombok.NoArgsConstructor;
+import scanner.prototype.model.CustomRule;
 
 @Data
-@RequiredArgsConstructor
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class CheckListSimpleDto {
     
     private String ruleId;
     private String ruleOnOff;
-    private UserDto user;
+
+    public CheckListSimpleDto(final CustomRule rule){
+        this.ruleId = rule.getRuleId();
+        this.ruleOnOff = rule.getRuleOnOff();
+    }
+
+    public CheckListSimpleDto toDto(CustomRule rule) {
+        return CheckListSimpleDto.builder()
+                                .ruleId(rule.getRuleId())
+                                .ruleOnOff(rule.getRuleOnOff())
+                                .build();
+    }
 }
