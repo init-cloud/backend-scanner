@@ -18,7 +18,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import scanner.prototype.dto.CheckListSimpleDto.CheckListSimpleDtoBuilder;
 import scanner.prototype.model.enums.Provider;
 import scanner.prototype.model.enums.RuleType;
 
