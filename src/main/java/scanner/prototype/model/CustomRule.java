@@ -15,13 +15,14 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
+import scanner.prototype.dto.CheckListSimpleDto.CheckListSimpleDtoBuilder;
 import scanner.prototype.model.enums.Provider;
 import scanner.prototype.model.enums.RuleType;
 
-
+@Builder
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -52,10 +53,9 @@ public class CustomRule {
     @NotNull
     private Provider provider;
 
-    @Column(name = "RULE_TYPE", length = 8)
-    @Enumerated(EnumType.STRING)
+    @Column(name = "RULE_TYPE", length = 16)
     @NotNull
-    private RuleType ruleType;
+    private String ruleType;
 
     @Column(name = "CUSTOM_DETAIL")
     private String customDetail;

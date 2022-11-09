@@ -28,9 +28,17 @@ public class CheckListService {
         return ruleDtos;
     }
 
-    public List<CheckListSimpleDto> modify(){
+    public List<CheckListSimpleDto> modify(
+        List<CheckListSimpleDto> data
+    ){
 
-        List<CustomRule> ruleList = checkListRepository.findAll();
+        List<CustomRule> ruleList = data.stream()
+                                        .map(CheckListSimpleDto::toEntity)
+                                        .collect(Collectors.toList());
+
+        for(int i = 0 ; i < ruleList.size() ; i++) 
+            checkListRepository.save(ruleList.get(i));
+
         List<CheckListSimpleDto> ruleDtos = ruleList.stream()
                                                     .map(CheckListSimpleDto::new)
                                                     .collect(Collectors.toList());

@@ -15,6 +15,7 @@ import lombok.RequiredArgsConstructor;
 import scanner.prototype.dto.CheckListSimpleDto;
 import scanner.prototype.model.CustomRule;
 import scanner.prototype.response.ApiResponse;
+import scanner.prototype.response.checklist.Response;
 import scanner.prototype.service.CheckListService;
 import scanner.prototype.service.user.UserService;
 
@@ -30,31 +31,32 @@ public class CheckListController {
     private final CheckListService checkListService;
 
     @GetMapping
-    public ApiResponse<?> retrieveCheckList(
+    public Response<?> retrieveCheckList(
         HttpServletRequest request, 
         HttpServletResponse response
     ){
         List<CheckListSimpleDto> dtos = checkListService.retrieve();
 
-        return ApiResponse.success("data", dtos);
+        return Response.success("data", dtos);
     }
 
     @PostMapping("/state")
-    public ApiResponse<?> modifyCheckListState(
+    public Response<?> modifyCheckListOnOff(
         HttpServletRequest request, 
         HttpServletResponse response,
         @RequestBody List<CheckListSimpleDto> data
     ){
+        List<CheckListSimpleDto> dtos = checkListService.modify(data);
 
-        return ApiResponse.success("data", "result");
+        return Response.success("data", dtos);
     }
 
     @PostMapping("/value")
-    public ApiResponse<?> modifyCheckListValue(
+    public Response<?> modifyCheckListValue(
         HttpServletRequest request, 
         HttpServletResponse response
     ){
 
-        return ApiResponse.success("data", "result");
+        return Response.success("data", "result");
     }
 }
