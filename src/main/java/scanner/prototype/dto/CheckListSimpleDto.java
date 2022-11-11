@@ -7,6 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
 import scanner.prototype.model.CustomRule;
 
 @Data
@@ -36,7 +37,6 @@ public class CheckListSimpleDto {
     public static CustomRule toEntity(final CheckListSimpleDto dto){
         return CustomRule.builder()
                 .id(dto.getId())
-                .ruleId(dto.getRuleId())
                 .ruleOnOff(dto.getRuleOnOff())
                 .modifiedAt(LocalDateTime.now())
                 .build();

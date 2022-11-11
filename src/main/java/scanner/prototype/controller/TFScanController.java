@@ -35,7 +35,7 @@ import scanner.prototype.visualize.ParserRequest;
 @RequiredArgsConstructor
 public class TFScanController {
     private final StorageServiceImpl storageService;
-    private final ScanService scanJob;
+    private final ScanService scanService;
 
     /**
      * 미사용
@@ -89,7 +89,7 @@ public class TFScanController {
         try{
             if(!file.isEmpty()) {
                 String result = storageService.store(file);
-                ScanResponse<?> scanResponse = scanJob.terrformScan(result);
+                ScanResponse<?> scanResponse = scanService.scanTerraform(result);
 
                 return ApiResponse.success("check", scanResponse);
             }

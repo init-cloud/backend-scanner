@@ -3,6 +3,8 @@ package scanner.prototype.service;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import javax.transaction.Transactional;
+
 import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
@@ -29,16 +31,16 @@ public class CheckListService {
         return new CheckListDetailResponse(ruleDtos);
     }
 
+    @Transactional
     public List<CheckListSimpleDto> modify(
         List<CheckListSimpleDto> data
     ){
-
         List<CustomRule> ruleList = data.stream()
                                         .map(CheckListSimpleDto::toEntity)
                                         .collect(Collectors.toList());
 
         for(int i = 0 ; i < ruleList.size() ; i++) 
-            checkListRepository.save(ruleList.get(i));
+            checkListRepository.updateRuleOnOff(ruleList.get(i).getId(), ruleList.get(i).getRuleOnOff());
 
         List<CheckListSimpleDto> ruleDtos = ruleList.stream()
                                                     .map(CheckListSimpleDto::new)

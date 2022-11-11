@@ -32,7 +32,7 @@ public class ScanService {
      * @return
      * @throws Exception
      */
-    public ScanResponse<?> terrformScan(String args) 
+    public ScanResponse<?> scanTerraform(String args) 
     throws Exception 
     {
         ScanResponse<?> scanResult;
