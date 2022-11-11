@@ -44,6 +44,16 @@ public class CheckListController {
         return Response.success("data", dtos);
     }
 
+
+    @PostMapping("/checklist")
+    public Response<?> modifyCheckListDetail(
+        HttpServletRequest request, 
+        HttpServletResponse response
+    ){
+
+        return Response.success("data", "result");
+    }
+
     @PostMapping("/checklist/state")
     public Response<?> modifyCheckListOnOff(
         HttpServletRequest request, 
@@ -53,15 +63,6 @@ public class CheckListController {
         List<CheckListSimpleDto> dtos = checkListService.modify(data);
 
         return Response.success("data", dtos);
-    }
-
-    @PostMapping("/checklist/detail")
-    public Response<?> modifyCheckListDetail(
-        HttpServletRequest request, 
-        HttpServletResponse response
-    ){
-
-        return Response.success("data", "result");
     }
 
     @GetMapping("/tag")

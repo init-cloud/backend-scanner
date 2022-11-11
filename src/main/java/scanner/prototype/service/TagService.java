@@ -24,7 +24,7 @@ public class TagService {
                                 .map(TagDto::new)
                                 .collect(Collectors.toList());
 
-        return null;
+        return dtos;
     }
 
     public List<TagDto> modify(

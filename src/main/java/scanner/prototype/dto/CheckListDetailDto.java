@@ -39,6 +39,7 @@ public class CheckListDetailDto {
         this.type = null;
         this.description = rule.getDescription();
         this.explanation = rule.getExplanation();
+        this.possibleImpact = rule.getPossibleImpact();
         this.insecureExample = rule.getInsecureExample();
         this.secureExample = rule.getSecureExample();
         this.solution = new SolutionDto(rule.getSol(), rule.getCode()); 
