@@ -19,7 +19,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import scanner.prototype.model.enums.Provider;
-import scanner.prototype.model.enums.RuleType;
+
 
 @Builder
 @Data
@@ -66,4 +66,25 @@ public class CustomRule {
     @Column(name = "MODIFIED_AT")
     @NotNull
     private LocalDateTime modifiedAt;
+
+    @Column(name = "DESCRIPTION")
+    private String description;
+
+    @Column(name = "EXPLANATION")
+    private String explanation;
+
+    @Column(name = "POSSIBLE_IMPACT")
+    private String possibleImpact;
+
+    @Column(name = "INSECURE_EXAMPLE")
+    private String insecureExample;
+
+    @Column(name = "SECURE_EXAMPLE")
+    private String secureExample;
+
+    @Column(name = "SOLUTION")
+    private String sol;
+
+    @Column(name = "CODE")
+    private String code;
 }

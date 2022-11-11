@@ -13,10 +13,12 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 
+@Builder
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -29,9 +31,9 @@ public class Tag {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "TAG_NAME")
+    @Column(name = "TAG")
     @NotNull
-    @Size(max = 32)
+    @Size(max = 64)
     private String tag;
 
     @Column(name = "CREATED_AT")
