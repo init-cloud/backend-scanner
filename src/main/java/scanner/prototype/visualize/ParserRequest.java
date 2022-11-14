@@ -7,9 +7,11 @@ import java.net.MalformedURLException;
 import java.net.URL;
 
 import org.json.simple.parser.JSONParser;
+import org.springframework.stereotype.Service;
 
 import scanner.prototype.env.Env;
 
+@Service
 public class ParserRequest {
 
     private final String API = Env.PARSER_API.getValue();

@@ -31,6 +31,20 @@ public class CheckListService {
         return new CheckListDetailResponse(ruleDtos);
     }
 
+    public CheckListDetailResponse retrieveOff(){
+
+        List<CustomRule> ruleList = checkListRepository.findByRuleOnOff("n");
+        List<CheckListDetailDto> ruleDtos = ruleList.stream()
+                                            .map(CheckListDetailDto::new)
+                                            .collect(Collectors.toList());
+
+        return new CheckListDetailResponse(ruleDtos);
+    }
+
+    public List<CustomRule> retrieveOffEntity(){
+        return checkListRepository.findByRuleOnOff("n");
+    }
+
     @Transactional
     public List<CheckListSimpleDto> modify(
         List<CheckListSimpleDto> data

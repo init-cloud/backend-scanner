@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import lombok.RequiredArgsConstructor;
 import scanner.prototype.env.Env;
 import scanner.prototype.exception.ScanException;
+import scanner.prototype.model.CustomRule;
 import scanner.prototype.response.CheckResponse;
 import scanner.prototype.response.ParseResponse;
 import scanner.prototype.response.ResultResponse;
@@ -25,6 +26,7 @@ import scanner.prototype.visualize.ParserRequest;
 public class ScanService {
 
     private final ParserRequest parserReq;
+    private final CheckListService checkListService;
 
     /**
      * 
@@ -39,8 +41,18 @@ public class ScanService {
         Process p;
          
         try {
+            List<CustomRule> offRules = checkListService.retrieveOffEntity();
+            String offStr = " --skip-check ";
+
+            if(offRules.size() > 0){
+                for(int i = 0 ; i < offRules.size() ; i++){
+                    offStr += offRules.get(i).getRuleId();
+                }
+            }
+
             File file = new File(Env.FILE_UPLOAD_PATH.getValue() + File.separator + args);
-            String[] cmd = {"bash", "-l", "-c", Env.SHELL_COMMAND_RAW.getValue() + File.separator + args};
+            String[] cmd = {"bash", "-l", "-c", Env.SHELL_COMMAND_RAW.getValue() + File.separator + args + offStr};
+
             p = Runtime.getRuntime().exec(cmd);
             BufferedReader br = new BufferedReader(
                 new InputStreamReader(p.getInputStream()));
@@ -164,12 +176,5 @@ public class ScanService {
         }
 
         return new ScanResponse(check, resultLists, parse);
-    }
-
-    /**
-     * Constructor
-     */
-    public ScanService(){
-        this.parserReq = new ParserRequest();
     }
 }
