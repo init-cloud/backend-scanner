@@ -22,6 +22,8 @@ import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import scanner.prototype.utils.FileDigest;
+
 
 @Service
 public class StorageServiceImpl implements StorageService{
@@ -39,8 +41,9 @@ public class StorageServiceImpl implements StorageService{
     }
 
     @Override
-    public String store(MultipartFile file){
+    public String[] store(MultipartFile file){
         try {
+            String[] result = {null, null};
             UUID uniqName = UUID.randomUUID();
             String saved = uniqName.toString();
             Path root = Paths.get(uploadPath + saved);
@@ -65,10 +68,15 @@ public class StorageServiceImpl implements StorageService{
                 Files.copy(
                     inputStream, root.resolve(file.getOriginalFilename()), StandardCopyOption.REPLACE_EXISTING);
 
+                String fileHash = FileDigest.getChecksum("./uploads/" + saved + "/" + file.getOriginalFilename());
+
                 if(isCompressed(file.getOriginalFilename()))
                     decompress("./uploads/" + saved + "/" + file.getOriginalFilename(), "./uploads/" + saved );
 
-                return saved;
+                result[0] = fileHash;
+                result[1] = saved;
+
+                return result;
             }
         }
         catch (Exception e) {

@@ -42,11 +42,14 @@ public class ScanService {
          
         try {
             List<CustomRule> offRules = checkListService.retrieveOffEntity();
-            String offStr = " --skip-check ";
+            String offStr = "";
 
             if(offRules.size() > 0){
+                offStr += " --skip-check ";
+
                 for(int i = 0 ; i < offRules.size() ; i++){
                     offStr += offRules.get(i).getRuleId();
+                    offStr += " ";
                 }
             }
 
@@ -131,7 +134,7 @@ public class ScanService {
     }
 
     /**
-     * 구현 중
+     * 
      * @param br
      * @return
      * @throws IOException

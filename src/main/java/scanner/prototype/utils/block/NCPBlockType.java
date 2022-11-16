@@ -1,4 +1,4 @@
-package scanner.prototype.middleware.block;
+package scanner.prototype.utils.block;
 
 public enum NCPBlockType {
     ncloud("ncloud"),

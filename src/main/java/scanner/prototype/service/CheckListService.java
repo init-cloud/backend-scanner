@@ -21,6 +21,10 @@ public class CheckListService {
     
     private final CheckListRepository checkListRepository;
 
+    /**
+     * 
+     * @return
+     */
     public CheckListDetailResponse retrieve(){
 
         List<CustomRule> ruleList = checkListRepository.findAll();
@@ -31,6 +35,10 @@ public class CheckListService {
         return new CheckListDetailResponse(ruleDtos);
     }
 
+    /**
+     * 
+     * @return
+     */
     public CheckListDetailResponse retrieveOff(){
 
         List<CustomRule> ruleList = checkListRepository.findByRuleOnOff("n");
@@ -41,10 +49,19 @@ public class CheckListService {
         return new CheckListDetailResponse(ruleDtos);
     }
 
+    /**
+     * 
+     * @return
+     */
     public List<CustomRule> retrieveOffEntity(){
         return checkListRepository.findByRuleOnOff("n");
     }
 
+    /**
+     * 
+     * @param data
+     * @return
+     */
     @Transactional
     public List<CheckListSimpleDto> modify(
         List<CheckListSimpleDto> data

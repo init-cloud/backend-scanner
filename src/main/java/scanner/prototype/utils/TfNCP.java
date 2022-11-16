@@ -1,4 +1,4 @@
-package scanner.prototype.middleware;
+package scanner.prototype.utils;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;

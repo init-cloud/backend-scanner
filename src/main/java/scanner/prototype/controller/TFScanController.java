@@ -8,6 +8,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -24,8 +25,11 @@ import lombok.RequiredArgsConstructor;
 
 import scanner.prototype.response.ParseResponse;
 import scanner.prototype.response.ScanResponse;
+import scanner.prototype.service.CacheService;
+import scanner.prototype.service.RedisService;
 import scanner.prototype.service.ScanService;
 import scanner.prototype.service.StorageServiceImpl;
+import scanner.prototype.model.ScanResult;
 import scanner.prototype.response.ApiResponse;
 import scanner.prototype.visualize.ParserRequest;
 
@@ -36,6 +40,10 @@ import scanner.prototype.visualize.ParserRequest;
 public class TFScanController {
     private final StorageServiceImpl storageService;
     private final ScanService scanService;
+    private final CacheService cacheService;
+
+    @Autowired
+    private final RedisService redisService;
 
     /**
      * 미사용
@@ -84,17 +92,30 @@ public class TFScanController {
         HttpServletRequest request, 
         HttpServletResponse response,
         @RequestPart("file") MultipartFile file
-    ) throws ServletException, IllegalStateException, IOException
+    ) throws ServletException, IllegalStateException, IOException, NullPointerException, Exception
     {
+        String[] result = {null, null};
+        
         try{
             if(!file.isEmpty()) {
-                String result = storageService.store(file);
-                ScanResponse<?> scanResponse = scanService.scanTerraform(result);
-
+                result = storageService.store(file);
+                ScanResponse<?> scanResponse = cacheService.getCached(result[0]);
+                scanResponse = scanService.scanTerraform(result[1]);
+                cacheService.saveCache(result[0], scanResponse);
+                
                 return ApiResponse.success("check", scanResponse);
             }
 
             return ApiResponse.fail();
+        }
+        catch(NullPointerException e){
+            ScanResponse<?> scanResponse = scanService.scanTerraform(result[1]);
+            ScanResult scan = cacheService.saveCache(result[0], scanResponse);
+
+            if(scan == null)
+                return ApiResponse.fail();
+
+            return ApiResponse.success("check", scanResponse);
         }
         catch(Exception e){
             return ApiResponse.fail();

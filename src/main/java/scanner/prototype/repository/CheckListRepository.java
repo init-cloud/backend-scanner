@@ -16,6 +16,5 @@ public interface CheckListRepository extends JpaRepository<CustomRule, String> {
     @Modifying
     @Query(value = "UPDATE custom_rule set rule_onoff = :state where rule_seq = :id", nativeQuery = true)
     List<CustomRule> updateRuleOnOff(@Param("id") Long id, @Param("state") String state);
-
     List<CustomRule> findByRuleOnOff(String string);
 }

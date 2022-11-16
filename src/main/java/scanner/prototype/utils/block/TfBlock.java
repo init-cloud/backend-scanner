@@ -1,4 +1,4 @@
-package scanner.prototype.middleware.block;
+package scanner.prototype.utils.block;
 
 import lombok.Data;
 import lombok.AllArgsConstructor;
