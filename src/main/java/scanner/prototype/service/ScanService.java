@@ -49,7 +49,7 @@ public class ScanService {
 
                 for(int i = 0 ; i < offRules.size() ; i++){
                     offStr += offRules.get(i).getRuleId();
-                    offStr += " ";
+                    offStr += ",";
                 }
             }
 
