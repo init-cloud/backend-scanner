@@ -5,12 +5,15 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.tomcat.util.http.fileupload.FileUtils;
 import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
+import scanner.prototype.dto.CheckListDetailDto;
 import scanner.prototype.env.Env;
 import scanner.prototype.exception.ScanException;
 import scanner.prototype.model.CustomRule;
@@ -97,7 +100,8 @@ public class ScanService {
      */
     public ResultResponse parseScanResult(
         String rawResult,
-        ResultResponse result
+        ResultResponse result,
+        Map<String, String> rulesMap
     ){
         String[] lines;
 
@@ -106,7 +110,7 @@ public class ScanService {
 
             result.setRule_id(lines[1].strip());
             result.setDescription(lines[2].strip());
-            result.setLevel("High");
+            result.setLevel(rulesMap.get(lines[1].strip()));
         }
         
         if(rawResult.contains("PASSED")){
@@ -148,6 +152,12 @@ public class ScanService {
         ResultResponse result = new ResultResponse();
         List<ResultResponse> resultLists = new ArrayList<>();
         ParseResponse parse = new ParseResponse(parserReq.getTerraformParsingData(path)); 
+        
+        List<CheckListDetailDto> rulesInfo = checkListService.retrieve().getDocs();
+        Map<String, String> rulesMap = new HashMap<String, String>(); 
+        
+        for(int i = 0 ; i < rulesInfo.size(); i++)
+            rulesMap.put(rulesInfo.get(i).getId(), rulesInfo.get(i).getLevel());
 
         while((rawResult = br.readLine()) != null){
 
@@ -156,7 +166,7 @@ public class ScanService {
                 continue;
             }
 
-            result = parseScanResult(rawResult, result);
+            result = parseScanResult(rawResult, result, rulesMap);
 
             if(result.getTarget_file() != null){
                 if(result.getStatus() == "passed"){

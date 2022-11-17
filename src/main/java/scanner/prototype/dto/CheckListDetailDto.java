@@ -22,6 +22,7 @@ public class CheckListDetailDto {
     private String id;
     private List<TagDto> tags;
     private List<SecurityType> type;
+    private String level;
     private String description;
     private String explanation;
     private String possibleImpact;
@@ -37,6 +38,7 @@ public class CheckListDetailDto {
         this.id = rule.getRuleId();
         this.tags = null;
         this.type = null;
+        this.level = rule.getLevel();
         this.description = rule.getDescription();
         this.explanation = rule.getExplanation();
         this.possibleImpact = rule.getPossibleImpact();
@@ -50,6 +52,7 @@ public class CheckListDetailDto {
         return CheckListDetailDto.builder()
                             .seq(rule.getId())
                             .id(rule.getRuleId())
+                            .level(rule.getLevel())
                             .description(rule.getDescription())
                             .explanation(rule.getExplanation())
                             .possibleImpact(rule.getPossibleImpact())

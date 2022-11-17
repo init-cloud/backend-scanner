@@ -56,6 +56,10 @@ public class CustomRule {
     @NotNull
     private String ruleType;
 
+    @Column(name = "SEVERITY")
+    @NotNull
+    private String level;
+
     @Column(name = "CUSTOM_DETAIL")
     private String customDetail;
 
