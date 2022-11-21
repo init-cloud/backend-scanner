@@ -2,6 +2,9 @@ package scanner.prototype.model;
 
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -10,6 +13,7 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -18,6 +22,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import scanner.prototype.dto.TagDto;
 import scanner.prototype.model.enums.Provider;
 
 
@@ -37,6 +42,9 @@ public class CustomRule {
     @NotNull
     @Size(max = 16)
     private String ruleId;
+
+    @OneToMany(mappedBy = "ruleSeq")
+    private List<Tag> tag = new ArrayList<Tag>();
 
     @Column(name = "DEFAULT_RULE_ID")
     @NotNull
@@ -91,4 +99,10 @@ public class CustomRule {
 
     @Column(name = "CODE")
     private String code;
+
+    public List<TagDto> getTagDto(){
+        return tag.stream()
+                .map(TagDto::new)
+                .collect(Collectors.toList());
+    }
 }

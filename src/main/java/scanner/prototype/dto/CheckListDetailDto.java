@@ -36,7 +36,7 @@ public class CheckListDetailDto {
     ){
         this.seq = rule.getId();
         this.id = rule.getRuleId();
-        this.tags = null;
+        this.tags = rule.getTagDto();
         this.type = null;
         this.level = rule.getLevel();
         this.description = rule.getDescription();
@@ -52,6 +52,7 @@ public class CheckListDetailDto {
         return CheckListDetailDto.builder()
                             .seq(rule.getId())
                             .id(rule.getRuleId())
+                            .tags(rule.getTagDto())
                             .level(rule.getLevel())
                             .description(rule.getDescription())
                             .explanation(rule.getExplanation())

@@ -39,6 +39,7 @@ public class CheckListService {
      * 
      * @return
      */
+    @Transactional
     public CheckListDetailResponse retrieveOff(){
 
         List<CustomRule> ruleList = checkListRepository.findByRuleOnOff("n");
