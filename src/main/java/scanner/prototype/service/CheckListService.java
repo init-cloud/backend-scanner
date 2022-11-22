@@ -58,6 +58,16 @@ public class CheckListService {
         return checkListRepository.findByRuleOnOff("n");
     }
 
+    @Transactional
+    public CheckListDetailResponse create(
+        CheckListDetailDto data
+    ){
+        CustomRule rule = CheckListDetailDto.toEntity(data);
+        rule = checkListRepository.save(rule);
+
+        return new CheckListDetailResponse(CheckListDetailDto.toDto(rule));
+    }
+
     /**
      * 
      * @param data
@@ -71,8 +81,14 @@ public class CheckListService {
                                         .map(CheckListSimpleDto::toEntity)
                                         .collect(Collectors.toList());
 
-        for(int i = 0 ; i < ruleList.size() ; i++) 
-            checkListRepository.updateRuleOnOff(ruleList.get(i).getId(), ruleList.get(i).getRuleOnOff());
+        for(int i = 0 ; i < ruleList.size() ; i++){
+            CustomRule target = ruleList.get(i);
+
+            if(target == null)
+                continue;
+
+            checkListRepository.updateRule(target.getId(), target.getRuleOnOff(), target.getCustomDetail());
+        }
 
         List<CheckListSimpleDto> ruleDtos = ruleList.stream()
                                                     .map(CheckListSimpleDto::new)

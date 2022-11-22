@@ -97,8 +97,17 @@ public class CustomRule {
     @Column(name = "SOLUTION")
     private String sol;
 
-    @Column(name = "CODE")
+    @Column(name = "CODE") 
     private String code;
+
+    @Column(name = "IS_MODIFIED")
+    private String isModified;
+
+    @Column(name = "IS_MODIFIABLE")
+    private String isModifiable;
+
+    @Column(name = "CUSTOM_DEFAULT", updatable=false)
+    private String customDefault;
 
     public List<TagDto> getTagDto(){
         return tag.stream()

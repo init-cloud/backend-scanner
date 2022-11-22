@@ -30,6 +30,10 @@ public class CheckListDetailDto {
     private String secureExample;
     private SolutionDto solution; 
     private String state;
+    private String customDetail;
+    private String isModifiable;
+    private String isModified;
+
 
     public CheckListDetailDto(
         CustomRule rule
@@ -46,6 +50,9 @@ public class CheckListDetailDto {
         this.secureExample = rule.getSecureExample();
         this.solution = new SolutionDto(rule.getSol(), rule.getCode()); 
         this.state = rule.getRuleOnOff();
+        this.isModifiable = rule.getIsModifiable();
+        this.isModified = rule.getIsModified();
+        this.customDetail = rule.getCustomDetail();
     }
 
     public static CheckListDetailDto toDto(CustomRule rule) {
@@ -61,6 +68,9 @@ public class CheckListDetailDto {
                             .secureExample(rule.getSecureExample())
                             .solution(new SolutionDto(rule.getSol(), rule.getCode()))
                             .state(rule.getRuleOnOff())
+                            .isModifiable(rule.getIsModifiable())
+                            .isModified(rule.getIsModified())
+                            .customDetail(rule.getCustomDetail())
                             .build();
     }
 
@@ -69,6 +79,8 @@ public class CheckListDetailDto {
                 .id(dto.getSeq())
                 .ruleId(dto.getId())
                 .ruleOnOff(dto.getState())
+                .isModified("y")
+                .customDetail(dto.getCustomDetail())
                 .modifiedAt(LocalDateTime.now())
                 .build();
     }

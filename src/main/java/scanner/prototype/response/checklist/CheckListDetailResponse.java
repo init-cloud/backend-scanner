@@ -13,4 +13,8 @@ import scanner.prototype.dto.CheckListDetailDto;
 @AllArgsConstructor
 public class CheckListDetailResponse {
     List<CheckListDetailDto> docs;
+
+    public CheckListDetailResponse(CheckListDetailDto dto){
+        this.docs.add(dto);
+    }
 }
