@@ -41,6 +41,11 @@ public class Response<T> {
         }
     }
 
+    public static <T> Response<T> fail(String errorMessage) {
+        return new Response(
+            new ApiResponseHeader(BAD_REQUEST, BadRequest_MESSAGE), errorMessage);
+    }
+
     public static <T> Response<T> fail() {
         return new Response(
             new ApiResponseHeader(BAD_REQUEST, BadRequest_MESSAGE), null);

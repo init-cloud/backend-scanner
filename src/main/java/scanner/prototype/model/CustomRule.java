@@ -34,7 +34,7 @@ import scanner.prototype.model.enums.Provider;
 @Table(name = "CUSTOM_RULE")
 public class CustomRule {
     @Id
-    @Column(name = "RULE_SEQ")
+    @Column(name = "RULE_SEQ", updatable=false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
@@ -46,7 +46,7 @@ public class CustomRule {
     @OneToMany(mappedBy = "ruleSeq")
     private List<Tag> tag = new ArrayList<Tag>();
 
-    @Column(name = "DEFAULT_RULE_ID")
+    @Column(name = "DEFAULT_RULE_ID", updatable=false)
     @NotNull
     @Size(max = 16)
     private String defaultRuleId;

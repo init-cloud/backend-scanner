@@ -12,11 +12,11 @@ import scanner.prototype.model.CustomRule;
 @NoArgsConstructor
 public class CheckListCustomDto {
     
-    private String custom;
+    private String customDetail;
 
     public static CheckListCustomDto toDto(CustomRule rule) {
         return CheckListCustomDto.builder()
-                                .custom(rule.getCustomDetail())
+                                .customDetail(rule.getCustomDetail())
                                 .build();
     }
 }

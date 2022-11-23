@@ -15,6 +15,7 @@ import lombok.RequiredArgsConstructor;
 import scanner.prototype.dto.CheckListDetailDto;
 import scanner.prototype.dto.CheckListSimpleDto;
 import scanner.prototype.dto.TagDto;
+import scanner.prototype.exception.CheckListException;
 import scanner.prototype.response.checklist.CheckListDetailResponse;
 import scanner.prototype.response.checklist.Response;
 import scanner.prototype.service.CheckListService;
@@ -24,7 +25,7 @@ import scanner.prototype.service.TagService;
  * "CheckList" is same as "Rule".
  */
 @RestController
-@RequestMapping("/api/v1")
+@RequestMapping("/api/v1/checklist")
 @RequiredArgsConstructor
 public class CheckListController {
     
@@ -37,7 +38,7 @@ public class CheckListController {
      * @param response
      * @return
      */
-    @GetMapping("/checklist")
+    @GetMapping
     public Response<?> retrieveCheckList(
         HttpServletRequest request, 
         HttpServletResponse response
@@ -55,7 +56,7 @@ public class CheckListController {
      * @param data
      * @return
      */
-    @PostMapping("/checklist")
+    @PostMapping
     public Response<?> createCheckList(
         HttpServletRequest request, 
         HttpServletResponse response,
@@ -73,34 +74,44 @@ public class CheckListController {
      * @param data
      * @return
      */
-    @PostMapping("/checklist/state")
+    @PostMapping("/reset")
+    public Response<?> resetCheckList(
+        HttpServletRequest request, 
+        HttpServletResponse response,
+        @RequestBody List<CheckListSimpleDto> data
+    ){
+        List<CheckListSimpleDto> dtos = checkListService.reset(data);
+
+        if(dtos == null)
+            return Response.fail();
+            
+        return Response.success("data", dtos);
+    }
+
+    /**
+     * 룰 수정
+     * @param request
+     * @param response
+     * @param data
+     * @return
+     */
+    @PostMapping("/state")
     public Response<?> modifyCheckList(
         HttpServletRequest request, 
         HttpServletResponse response,
         @RequestBody List<CheckListSimpleDto> data
     ){
-        List<CheckListSimpleDto> dtos = checkListService.modify(data);
+        try{
+            if(data == null)
+                return Response.fail("Error: input null data.");
 
-        return Response.success("data", dtos);
-    }
+            List<CheckListSimpleDto> dtos = checkListService.modify(data);
+                
+            return Response.success("data", dtos);
+        }
+        catch(CheckListException che){
+            return Response.fail("Error: output null data.");
+        }
 
-    @GetMapping("/tag")
-    public Response<?> retrieveTag(
-        HttpServletRequest request, 
-        HttpServletResponse response
-    ){
-        List<TagDto> dtos = tagService.retrieve();
-
-        return Response.success("data", dtos);
-    }
-
-    @PostMapping("/tag")
-    public Response<?> addTag(
-        HttpServletRequest request, 
-        HttpServletResponse response
-    ){
-        List<TagDto> dtos = tagService.retrieve();
-
-        return Response.success("data", dtos);
     }
 }

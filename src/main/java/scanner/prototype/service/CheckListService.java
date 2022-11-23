@@ -1,5 +1,6 @@
 package scanner.prototype.service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -10,6 +11,7 @@ import org.springframework.stereotype.Service;
 import lombok.RequiredArgsConstructor;
 import scanner.prototype.dto.CheckListDetailDto;
 import scanner.prototype.dto.CheckListSimpleDto;
+import scanner.prototype.exception.CheckListException;
 import scanner.prototype.model.CustomRule;
 import scanner.prototype.repository.CheckListRepository;
 import scanner.prototype.response.checklist.CheckListDetailResponse;
@@ -76,24 +78,67 @@ public class CheckListService {
     @Transactional
     public List<CheckListSimpleDto> modify(
         List<CheckListSimpleDto> data
-    ){
-        List<CustomRule> ruleList = data.stream()
-                                        .map(CheckListSimpleDto::toEntity)
-                                        .collect(Collectors.toList());
-
-        for(int i = 0 ; i < ruleList.size() ; i++){
-            CustomRule target = ruleList.get(i);
-
+    ){  
+        List<Long> ruleIds = new ArrayList<Long>();
+                                        
+        for(int i = 0 ; i < data.size() ; i++){
+            CheckListSimpleDto target = data.get(i);
+            
             if(target == null)
                 continue;
-
-            checkListRepository.updateRule(target.getId(), target.getRuleOnOff(), target.getCustomDetail());
+            else if(target.getCustom() == null){
+                checkListRepository.updateRuleOnOff(target.getId(), target.getRuleOnOff());
+                ruleIds.add(target.getId());  
+            } 
+            else{
+                checkListRepository.updateRule(target.getId(), target.getRuleOnOff(), target.getCustom().getCustomDetail());
+                ruleIds.add(target.getId());  
+            }
         }
 
+        List<CustomRule> ruleList = checkListRepository.findByIdIn(ruleIds);
+
         List<CheckListSimpleDto> ruleDtos = ruleList.stream()
-                                                    .map(CheckListSimpleDto::new)
-                                                    .collect(Collectors.toList());
+                                    .map(CheckListSimpleDto::new)
+                                    .collect(Collectors.toList());
+
+        if(ruleDtos == null || ruleDtos.size() == 0)
+            throw new CheckListException("No data modified.");
 
         return ruleDtos;
+    }
+
+    /**
+     * 
+     * @param data
+     * @return
+     */
+    public List<CheckListSimpleDto> reset(
+        List<CheckListSimpleDto> data
+    ){
+        try{
+            List<CustomRule> ruleList = data.stream()
+                                            .map(CheckListSimpleDto::toEntity)
+                                            .collect(Collectors.toList());
+
+            for(int i = 0 ; i < ruleList.size() ; i++){
+                CustomRule target = ruleList.get(i);
+
+                if(target == null)
+                    continue;
+
+                checkListRepository.resetRule(target.getId());
+            }
+
+            List<CheckListSimpleDto> ruleDtos = ruleList.stream()
+                                        .map(CheckListSimpleDto::new)
+                                        .collect(Collectors.toList());
+
+            return ruleDtos;
+        }
+        catch(CheckListException che){
+            return null;
+        }
+
     }
 }

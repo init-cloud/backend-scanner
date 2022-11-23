@@ -38,12 +38,19 @@ public class CheckListSimpleDto {
     }
 
     public static CustomRule toEntity(final CheckListSimpleDto dto){
+        if(dto.getCustom() == null)
+            return CustomRule.builder()
+                            .id(dto.getId())
+                            .ruleOnOff(dto.getRuleOnOff())
+                            .customDetail(null)
+                            .modifiedAt(LocalDateTime.now())
+                            .build();
+
         return CustomRule.builder()
-                .id(dto.getId())
-                .ruleOnOff(dto.getRuleOnOff())
-                .defaultRuleId(dto.getRuleId())
-                .customDetail(dto.getCustom().getCustom())
-                .modifiedAt(LocalDateTime.now())
-                .build();
+                        .id(dto.getId())
+                        .ruleOnOff(dto.getRuleOnOff())
+                        .customDetail(dto.getCustom().getCustomDetail())
+                        .modifiedAt(LocalDateTime.now())
+                        .build();
     }
 }

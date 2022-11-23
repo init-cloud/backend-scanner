@@ -13,8 +13,24 @@ import scanner.prototype.model.CustomRule;
 @Repository
 public interface CheckListRepository extends JpaRepository<CustomRule, String> {
 
+    // 룰 on/off, 커스텀 수정
     @Modifying
-    @Query(value = "UPDATE custom_rule set rule_onoff = :state, custom_detail = :detail where rule_seq = :id", nativeQuery = true)
-    List<CustomRule> updateRule(@Param("id") Long id, @Param("state") String state, @Param("detail") String detail);
+    @Query(value = "UPDATE custom_rule SET modified_at = now(), rule_onoff = :state, custom_detail = :detail WHERE rule_seq = :id", nativeQuery = true)
+    Integer updateRule(@Param("id") Long id, @Param("state") String state, @Param("detail") String detail);
+
+    // 룰 on/off
+    @Modifying
+    @Query(value = "UPDATE custom_rule SET modified_at = now(), rule_onoff = :state WHERE rule_seq = :id", nativeQuery = true)
+    Integer updateRuleOnOff(@Param("id") Long id, @Param("state") String state);
+
+    // 룰 초기화
+    @Modifying
+    @Query(value = "UPDATE custom_rule SET modified_at = now(), rule_onoff = (SELECT custom_default FROM custom_rule WHERE rule_seq = :id) WHERE rule_seq = :id", nativeQuery = true)
+    Integer resetRule(@Param("id") Long id);
+
+    // on 또는 off된 룰만 검색
     List<CustomRule> findByRuleOnOff(String string);
+
+    // 특정 id 룰만 검색
+    List<CustomRule> findByIdIn(List<Long> id);
 }
