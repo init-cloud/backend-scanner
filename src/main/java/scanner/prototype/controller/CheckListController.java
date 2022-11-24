@@ -78,9 +78,9 @@ public class CheckListController {
     public Response<?> resetCheckList(
         HttpServletRequest request, 
         HttpServletResponse response,
-        @RequestBody List<CheckListSimpleDto> data
+        @RequestBody CheckListSimpleDto data
     ){
-        List<CheckListSimpleDto> dtos = checkListService.reset(data);
+        CheckListSimpleDto dtos = checkListService.reset(data);
 
         if(dtos == null)
             return Response.fail();

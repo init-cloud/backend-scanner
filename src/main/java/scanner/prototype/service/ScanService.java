@@ -57,7 +57,7 @@ public class ScanService {
             }
 
             File file = new File(Env.FILE_UPLOAD_PATH.getValue() + File.separator + args);
-            String[] cmd = {"bash", "-l", "-c", Env.SHELL_COMMAND_RAW.getValue() + File.separator + args + offStr};
+            String[] cmd = {"bash", "-l", "-c", Env.SHELL_COMMAND_RAW.getValue() + File.separator + args, Env.EXTERNAL_CHECK.getValue(), offStr,};
 
             p = Runtime.getRuntime().exec(cmd);
             BufferedReader br = new BufferedReader(

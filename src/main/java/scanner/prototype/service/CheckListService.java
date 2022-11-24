@@ -86,7 +86,7 @@ public class CheckListService {
             
             if(target == null)
                 continue;
-            else if(target.getCustom() == null){
+            else if(target.getCustom() == null || target.getCustom().getCustomDetail() == null){
                 checkListRepository.updateRuleOnOff(target.getId(), target.getRuleOnOff());
                 ruleIds.add(target.getId());  
             } 
@@ -113,28 +113,19 @@ public class CheckListService {
      * @param data
      * @return
      */
-    public List<CheckListSimpleDto> reset(
-        List<CheckListSimpleDto> data
+    @Transactional
+    public CheckListSimpleDto reset(
+        CheckListSimpleDto data
     ){
         try{
-            List<CustomRule> ruleList = data.stream()
-                                            .map(CheckListSimpleDto::toEntity)
-                                            .collect(Collectors.toList());
+            CustomRule target = CheckListSimpleDto.toEntity(data);
 
-            for(int i = 0 ; i < ruleList.size() ; i++){
-                CustomRule target = ruleList.get(i);
-
-                if(target == null)
-                    continue;
-
-                checkListRepository.resetRule(target.getId());
-            }
-
-            List<CheckListSimpleDto> ruleDtos = ruleList.stream()
-                                        .map(CheckListSimpleDto::new)
-                                        .collect(Collectors.toList());
-
-            return ruleDtos;
+            if(target.getId() == null)
+                return null;
+            
+            checkListRepository.resetRule(target.getId());
+            
+            return new CheckListSimpleDto(checkListRepository.findById(target.getId()));
         }
         catch(CheckListException che){
             return null;
