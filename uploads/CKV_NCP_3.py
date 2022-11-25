@@ -12,7 +12,7 @@ class AccessControlGroupOutboundRule(BaseResourceCheck):
         param_list = params.get_param_env("CKV_NCP_3")
         self.ip_block = param_list[0]["value"]
         name = f"Ensure no security group rules allow outbound traffic to {self.ip_block}."
-        id = "CKV_NCP_3_CUSTOM"
+        id = "CKV_NCP_3"
         supported_resources = ("ncloud_access_control_group_rule",)
         categories = (CheckCategories.NETWORKING,)
         super().__init__(name=name, id=id, categories=categories, supported_resources=supported_resources)

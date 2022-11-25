@@ -6,3 +6,8 @@ spring:
       max-file-size: 15MB
       max-request-size: 45MB
       location: uploads/
+  datasource:
+    driver-class-name: org.mariadb.jdbc.Driver
+    url: jdbc:mariadb://localhost:9002/initcloud
+    username: ${user}
+    password: ${pw}

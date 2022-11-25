@@ -38,7 +38,8 @@ out/
 
 
 ### etc ###
-uploads/
+**.tf
+*.pyc
 /server.sh
 *.txt
 *.out

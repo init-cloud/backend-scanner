@@ -6,7 +6,7 @@ from checkov.terraform.checks.resource.base_resource_check import BaseResourceCh
 class LBListenerUsesSecureProtocols(BaseResourceCheck):
     def __init__(self):
         name = "Ensure LB Listener uses only secure protocols"
-        id = "CKV_NCP_13_CUSTOM"
+        id = "CKV_NCP_13"
         supported_resources = ('ncloud_lb_listener',)
         categories = (CheckCategories.NETWORKING,)
         super().__init__(name=name, id=id, categories=categories, supported_resources=supported_resources)
