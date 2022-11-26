@@ -54,7 +54,7 @@ class AccessControlGroupInboundRule(BaseResourceCheck):
                         conf_cidr_blocks = conf_cidr_blocks[0]
                     cidr_blocks = force_list(conf_cidr_blocks)
 
-                    if '0.0.0.0/0' in cidr_blocks:
+                    if self.ip_block in cidr_blocks:
                         return True
 
         return False

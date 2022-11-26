@@ -21,7 +21,7 @@ class AccessControlGroupOutboundRule(BaseResourceCheck):
     def scan_resource_conf(self, conf: dict[str, list[Any]]) -> CheckResult:
         for outbound in conf.get("outbound", []):
             ip = outbound.get("ip_block")
-            if ip == ["0.0.0.0/0"] or ip == ["::/0"]:
+            if ip == [self.ipblock]:
                 return CheckResult.FAILED
         return CheckResult.PASSED
 

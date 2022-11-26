@@ -4,8 +4,8 @@ class Parameters():
     def get_param_env(self, rule_id: str) -> list:
         rule = self.get_param_db(rule_id)
         obj = json.loads(rule)
-        custom = obj.get("custom")
-        return custom
+
+        return obj.get('custom')
 
     def get_param_db(self, rule_id: str) -> str:
         conn = pymysql.connect(host='localhost', port=9002, user='root', password='root', db='initcloud', charset='utf8')

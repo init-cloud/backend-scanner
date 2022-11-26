@@ -1,9 +1,13 @@
 
 from checkov.common.models.enums import CheckCategories, CheckResult
 from checkov.terraform.checks.resource.base_resource_check import BaseResourceCheck
-
+from param import Parameters
 
 class LBListenerUsesSecureProtocols(BaseResourceCheck):
+
+    params = Parameters()
+    param_list = params.get_param_env("CKV_NCP_13")
+
     def __init__(self):
         name = "Ensure LB Listener uses only secure protocols"
         id = "CKV_NCP_13"
@@ -16,7 +20,7 @@ class LBListenerUsesSecureProtocols(BaseResourceCheck):
             protocol = conf['protocol'][0]
             if protocol in ('HTTPS', 'TLS'):
                 if 'tls_min_version_type' in conf.keys():
-                    if conf['tls_min_version_type'] == ['TLSV12']:
+                    if conf['tls_min_version_type'] == [self.param_list[0]['value']]:
                         return CheckResult.PASSED
             return CheckResult.FAILED
 
