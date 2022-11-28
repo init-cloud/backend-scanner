@@ -37,7 +37,7 @@ public class ScanService {
      * @return
      * @throws Exception
      */
-    public ScanResponse<?> scanTerraform(String args) 
+    public ScanResponse<?> scanTerraform(String args, String provider) 
     throws Exception 
     {
         ScanResponse<?> scanResult;
@@ -63,7 +63,7 @@ public class ScanService {
             BufferedReader br = new BufferedReader(
                 new InputStreamReader(p.getInputStream()));
 
-            scanResult = resultToJson(br, args);
+            scanResult = resultToJson(br, args, provider);
             FileUtils.deleteDirectory(file);
             p.waitFor();
             p.destroy();
@@ -143,7 +143,7 @@ public class ScanService {
      * @return
      * @throws IOException
      */
-    public ScanResponse<?> resultToJson(BufferedReader br, String path) 
+    public ScanResponse<?> resultToJson(BufferedReader br, String path, String provider) 
     throws IOException
     {
         String rawResult;
@@ -151,7 +151,7 @@ public class ScanService {
         CheckResponse check = new CheckResponse();
         ResultResponse result = new ResultResponse();
         List<ResultResponse> resultLists = new ArrayList<>();
-        ParseResponse parse = new ParseResponse(parserReq.getTerraformParsingData(path)); 
+        ParseResponse parse = new ParseResponse(parserReq.getTerraformParsingData(path, provider)); 
         
         List<CheckListDetailDto> rulesInfo = checkListService.retrieve().getDocs();
         Map<String, String> rulesMap = new HashMap<String, String>(); 

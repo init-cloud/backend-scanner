@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import scanner.prototype.response.ScanException;
 import lombok.RequiredArgsConstructor;
 
 import scanner.prototype.response.ParseResponse;
@@ -81,24 +82,31 @@ public class TFScanController {
      * @throws IllegalStateException
      * @throws IOException
      */
-    @PostMapping("/file")
+    @PostMapping("/file/{provider}")
     public ApiResponse<?> uploadFile(
         HttpServletRequest request, 
         HttpServletResponse response,
+        @PathVariable("provider") String provider,
         @RequestPart("file") MultipartFile file
     ) throws ServletException, IllegalStateException, IOException, NullPointerException, NoSuchAlgorithmException, Exception
     {
         try{
             String[] result = {null, null};
             
+            if(provider == null)
+                return ApiResponse.fail(null, "Invalid Provider");
+
             if(!file.isEmpty()) {
                 result = storageService.store(file);
-                ScanResponse<?> scanResponse = scanService.scanTerraform(result[1]);
+                ScanResponse<?> scanResponse = scanService.scanTerraform(result[1], provider);
 
                 return ApiResponse.success("check", scanResponse);
             }
 
             return ApiResponse.fail();
+        }
+        catch(ScanException e){
+            return ApiResponse.fail(null, "Invalid Provider");
         }
         catch(Exception e){
             return ApiResponse.fail();
@@ -112,7 +120,7 @@ public class TFScanController {
         ParserRequest parserReq = new ParserRequest();
 
         return new ParseResponse(
-            parserReq.getTerraformParsingData(null)
+            parserReq.getTerraformParsingData(null, null)
         );
     }
 }

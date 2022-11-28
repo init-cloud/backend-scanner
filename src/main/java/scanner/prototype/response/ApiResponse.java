@@ -14,8 +14,8 @@ public class ApiResponse<T> {
     private final static int FAILED = 500;
     private final static String SUCCESS_MESSAGE = "SUCCESS";
     private final static String NOT_FOUND_MESSAGE = "NOT FOUND";
-    private final static String ServerFAILED_MESSAGE = "서버에서 오류가 발생하였습니다.";
-    private final static String BadRequest_MESSAGE = "잘못된 요청입니다.";
+    private final static String SERVER_FAILED_MESSAGE = "서버에서 오류가 발생하였습니다.";
+    private final static String BAD_REQUEST_MESSAGE = "잘못된 요청입니다.";
 
     private final ApiResponseHeader header;
     private final ScanResponse<?> scan;
@@ -29,19 +29,30 @@ public class ApiResponse<T> {
             new ApiResponseHeader(SUCCESS, SUCCESS_MESSAGE), (ScanResponse)body);
     }
 
-    public static <T> ApiResponse<T> fail(int errorCode) {
+    public static <T> ApiResponse<T> fail(Integer errorCode) {
         switch(errorCode){
             case 2: /* 서버 오류 */
                 return new ApiResponse(
-                    new ApiResponseHeader(BAD_REQUEST, ServerFAILED_MESSAGE), null);
+                    new ApiResponseHeader(BAD_REQUEST, SERVER_FAILED_MESSAGE), null);
             default: /* 요청 오류 */
                 return new ApiResponse(
-                    new ApiResponseHeader(BAD_REQUEST, BadRequest_MESSAGE), null);
+                    new ApiResponseHeader(BAD_REQUEST, BAD_REQUEST_MESSAGE), null);
+        }
+    }
+
+    public static <T> ApiResponse<T> fail(Integer errorCode, String message) {
+        switch(errorCode){
+            case 2: /* 서버 오류 */
+                return new ApiResponse(
+                    new ApiResponseHeader(BAD_REQUEST, message), null);
+            default: /* 요청 오류 */
+                return new ApiResponse(
+                    new ApiResponseHeader(BAD_REQUEST, message), null);
         }
     }
 
     public static <T> ApiResponse<T> fail() {
         return new ApiResponse(
-            new ApiResponseHeader(BAD_REQUEST, BadRequest_MESSAGE), null);
+            new ApiResponseHeader(BAD_REQUEST, BAD_REQUEST_MESSAGE), null);
     }
 }
