@@ -14,12 +14,11 @@ import org.springframework.web.bind.annotation.RestController;
 import lombok.RequiredArgsConstructor;
 import scanner.prototype.dto.CheckListDetailDto;
 import scanner.prototype.dto.CheckListSimpleDto;
-import scanner.prototype.dto.TagDto;
 import scanner.prototype.exception.CheckListException;
 import scanner.prototype.response.checklist.CheckListDetailResponse;
 import scanner.prototype.response.checklist.Response;
 import scanner.prototype.service.CheckListService;
-import scanner.prototype.service.TagService;
+
 
 /**
  * "CheckList" is same as "Rule".
@@ -30,7 +29,6 @@ import scanner.prototype.service.TagService;
 public class CheckListController {
     
     private final CheckListService checkListService;
-    private final TagService tagService;
 
     /**
      * 룰 조회

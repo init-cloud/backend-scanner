@@ -45,19 +45,9 @@ public class ScanService {
          
         try {
             List<CustomRule> offRules = checkListService.retrieveOffEntity();
-            String offStr = "";
-
-            if(offRules.size() > 0){
-                offStr += " --skip-check ";
-
-                for(int i = 0 ; i < offRules.size() ; i++){
-                    offStr += offRules.get(i).getRuleId();
-                    offStr += ",";
-                }
-            }
-
+            String offStr = getSkipCheckCmd(offRules);
             File file = new File(Env.FILE_UPLOAD_PATH.getValue() + File.separator + args);
-            String[] cmd = {"bash", "-l", "-c", Env.SHELL_COMMAND_RAW.getValue() + File.separator + args + offStr + Env.EXTERNAL_CHECK.getValue()};
+            String[] cmd = {"bash", "-l", "-c", Env.SHELL_COMMAND_RAW.getValue() + args + File.separator + Env.getCSPExternalPath(provider) + offStr};
 
             p = Runtime.getRuntime().exec(cmd);
             BufferedReader br = new BufferedReader(
@@ -70,8 +60,33 @@ public class ScanService {
             
             return scanResult;
         } catch (Exception e) {
+            e.printStackTrace();
             throw new ScanException("Scan Error.");
         }
+    }
+
+    /**
+     * get Skip rule List
+     * @param offRules
+     * @return offStr (String)
+     */
+    private String getSkipCheckCmd(List<CustomRule> offRules){
+        String offStr = "";
+
+        if(offRules.size() > 0){
+            offStr += " --skip-check ";
+
+            for(int i = 0 ; i < offRules.size() ; i++){
+                if(offRules.get(i) == null || offRules.get(i).getRuleId() == null)
+                    continue;
+
+                offStr += offRules.get(i).getRuleId();
+
+                if(i + 1 < offRules.size())
+                    offStr += ",";
+            }
+        }
+        return offStr;
     }
 
     /**
@@ -142,9 +157,10 @@ public class ScanService {
      * @param br
      * @return
      * @throws IOException
+     * @throws ParseException
      */
     public ScanResponse<?> resultToJson(BufferedReader br, String path, String provider) 
-    throws IOException
+    throws IOException, ParseException
     {
         String rawResult;
         StringBuilder sb = new StringBuilder();
