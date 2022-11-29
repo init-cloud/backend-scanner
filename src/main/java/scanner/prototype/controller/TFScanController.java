@@ -1,4 +1,3 @@
-
 package scanner.prototype.controller;
 
 import java.io.IOException;
@@ -16,19 +15,20 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import scanner.prototype.response.ScanException;
 import lombok.RequiredArgsConstructor;
 
+import scanner.prototype.exception.ScanException;
 import scanner.prototype.response.ParseResponse;
 import scanner.prototype.response.ScanResponse;
+import scanner.prototype.response.ApiResponse;
 import scanner.prototype.service.ScanService;
 import scanner.prototype.service.StorageServiceImpl;
-import scanner.prototype.response.ApiResponse;
 import scanner.prototype.visualize.ParserRequest;
 
 
@@ -92,9 +92,6 @@ public class TFScanController {
     {
         try{
             String[] result = {null, null};
-            
-            if(provider == null)
-                return ApiResponse.fail(null, "Invalid Provider");
 
             if(!file.isEmpty()) {
                 result = storageService.store(file);
@@ -106,21 +103,10 @@ public class TFScanController {
             return ApiResponse.fail();
         }
         catch(ScanException e){
-            return ApiResponse.fail(null, "Invalid Provider");
+            return ApiResponse.fail(0, "Invalid Provider");
         }
         catch(Exception e){
             return ApiResponse.fail();
         }
-    }
-
-    @GetMapping("/parse")
-    public ParseResponse parseTest() 
-    throws MalformedURLException
-    {
-        ParserRequest parserReq = new ParserRequest();
-
-        return new ParseResponse(
-            parserReq.getTerraformParsingData(null, null)
-        );
     }
 }

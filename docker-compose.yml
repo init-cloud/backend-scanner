@@ -2,7 +2,7 @@ services:
   springboot:
     build:
       context: ./prototype
-    container_name: scanner_api
+    container_name: initcloud_api
     volumes:
       - ./prototype/uploads:/app/uploads
       - ./:/app

@@ -29,7 +29,7 @@ public class ApiResponse<T> {
             new ApiResponseHeader(SUCCESS, SUCCESS_MESSAGE), (ScanResponse)body);
     }
 
-    public static <T> ApiResponse<T> fail(Integer errorCode) {
+    public static <T> ApiResponse<T> fail(int errorCode) {
         switch(errorCode){
             case 2: /* 서버 오류 */
                 return new ApiResponse(
@@ -40,7 +40,7 @@ public class ApiResponse<T> {
         }
     }
 
-    public static <T> ApiResponse<T> fail(Integer errorCode, String message) {
+    public static <T> ApiResponse<T> fail(int errorCode, String message) {
         switch(errorCode){
             case 2: /* 서버 오류 */
                 return new ApiResponse(
