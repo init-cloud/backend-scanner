@@ -1,42 +1,41 @@
 services:
-  springboot:
-    build:
-      context: ./prototype
-    container_name: initcloud_api
-    volumes:
-      - ./prototype/uploads:/app/uploads
-      - ./:/app
-    ports:
-      - "8080:8080"
-    env_file:
-     - .env
-  fastapi:
-    build:
-      context: ./terraform-parser
-    container_name: parser_api
-    volumes:
-      - ./prototype/uploads:/app/uploads
-      - ./:/app
-    ports:
-      - "9001:8000"
-    env_file:
-     - .env 
   db:
     image: mariadb:10
-    container_name: initcloud_db
-    ports:
-      - 9002:3306
+    container_name: INITCLOUD_DB
     volumes:
-      - ./:/app
-    env_file: .env
+      - ./db/data:/var/lib/mariadb:rw
+      - ./backend_scanner/uploads:/app/uploads
+    env_file:
+     - .env
     environment:
-      TZ: Asia/Seoul
+        TZ: Asia/Seoul
+        MARIADB_DATABASE: ${MARIADB_DATABASE}
+        MARIADB_USER: ${MARIADB_USER}
+        MARIADB_PASSWORD: ${MARIADB_PASSWORD}
+        MARIADB_ROOT_PASSWORD: ${MARIADB_ROOT_PASSWORD}
+    command: ['--character-set-server=utf8mb4', '--collation-server=utf8mb4_unicode_ci']
+    ports:
+      - ${DB_PORT}:3306
     restart: always
+  fastapi:
+    container_name: INITCLOUD_PARSER
+    image: floodnut/parser_api 
+    volumes:
+      - ./backend_scanner/uploads:/app/uploads
+    ports:
+      - ${PARSER_PORT}:8000
+    env_file:
+     - .env
+  springboot:
+    container_name: INITCLOUD_SCANNER
+    image: floodnut/initcloud_api 
+    volumes:
+      - ./backend_scanner/uploads:/app/uploads
+    ports:
+      - ${SCANNER_PORT}:8080
+    env_file:
+     - .env
+    depends_on:     
+     - db
+     - fastapi
 
-networks:
-  default:
-    ipam:
-      driver: default
-      config:
-        - subnet: 172.72.23.0/16
-        - gateway: 172.72.23.1/16
