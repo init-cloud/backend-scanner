@@ -23,3 +23,22 @@ jobs:
 
       - name: Build with Gradle
         run: ./gradlew build
+
+      - name: Build with Gradle Wrapper
+        run: ./gradlew wrapper
+        
+      - name: Image Build
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.API_SERVER_HOST }}
+          username: ${{ secrets.API_SERVER_SSH_ID }}
+          key: ${{ secrets.API_SERVER_SSH }}
+          port: ${{ secrets.API_SERVER_PORT }}
+          script: |
+            DATE=$(date "+%y.%m.%d")
+            docker login -u ${{ secrets.REGISTRY_USER }} -p ${{ secrets.REGISTRY_PW }}
+            docker build -t ${{ secrets.REGISTRY_001 }}/scanner_api:$DATE ./backend-scanner/
+            docker push ${{ secrets.REGISTRY_001 }}/scanner_api:$DATE 
+            docker build -t ${{ secrets.REGISTRY_002 }}/scanner_api ./backend-scanner/
+            docker build -t ${{ secrets.REGISTRY_002 }}/scanner_api:$DATE ./backend-scanner/  
+            docker push ${{ secrets.REGISTRY_002 }}/scanner_api

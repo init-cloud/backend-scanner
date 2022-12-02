@@ -38,7 +38,7 @@ out/
 
 
 ### etc ###
-**.tf
+.env
 *.pyc
 /server.sh
 *.txt

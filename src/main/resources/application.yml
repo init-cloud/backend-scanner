@@ -7,7 +7,8 @@ spring:
       max-request-size: 1GB
       location: uploads/
   datasource:
-    driver-class-name: 
-    url: 
-    username: 
-    password: 
+    driver-class-name: org.mariadb.jdbc.Driver
+    url: ${MARIADB_URL}
+    username: ${MARIADB_ROOT}
+    password: ${MARIADB_PASSWORD}
+
