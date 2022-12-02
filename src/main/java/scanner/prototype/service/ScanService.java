@@ -10,6 +10,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.tomcat.util.http.fileupload.FileUtils;
+import org.json.simple.parser.ParseException;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
@@ -24,9 +26,13 @@ import scanner.prototype.response.ScanResponse;
 import scanner.prototype.visualize.ParserRequest;
 
 
+
 @Service
 @RequiredArgsConstructor
 public class ScanService {
+
+    @Value("${scanner.upload.path}")
+    private String fileUploadPath;
 
     private final ParserRequest parserReq;
     private final CheckListService checkListService;
@@ -42,13 +48,13 @@ public class ScanService {
     {
         ScanResponse<?> scanResult;
         Process p;
-         
+        
         try {
             List<CustomRule> offRules = checkListService.retrieveOffEntity();
             String offStr = getSkipCheckCmd(offRules);
-            File file = new File(Env.FILE_UPLOAD_PATH.getValue() + File.separator + args);
+            File file = new File(fileUploadPath + File.separator + args);
             String[] cmd = {"bash", "-l", "-c", Env.SHELL_COMMAND_RAW.getValue() + args + File.separator + Env.getCSPExternalPath(provider) + offStr};
-
+            
             p = Runtime.getRuntime().exec(cmd);
             BufferedReader br = new BufferedReader(
                 new InputStreamReader(p.getInputStream()));
@@ -60,7 +66,6 @@ public class ScanService {
             
             return scanResult;
         } catch (Exception e) {
-            e.printStackTrace();
             throw new ScanException("Scan Error.");
         }
     }
@@ -168,7 +173,6 @@ public class ScanService {
         ResultResponse result = new ResultResponse();
         List<ResultResponse> resultLists = new ArrayList<>();
         ParseResponse parse = new ParseResponse(parserReq.getTerraformParsingData(path, provider)); 
-        
         List<CheckListDetailDto> rulesInfo = checkListService.retrieve().getDocs();
         Map<String, String> rulesMap = new HashMap<String, String>(); 
         

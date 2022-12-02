@@ -43,5 +43,8 @@ out/
 /server.sh
 *.txt
 *.out
-Env.java
 *.json
+!uploads/aws/
+!uploads/ncp/
+!uploads/test/
+uploads/

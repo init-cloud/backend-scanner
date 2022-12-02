@@ -6,19 +6,18 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.Arrays;
 
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import scanner.prototype.exception.ScanException;
-import scanner.prototype.env.Env;
 
 @Service
 public class ParserRequest {
 
-    private final String API = Env.PARSER_API.getValue();
+    @Value("${parser.url}")
+    private String API;
     private final String parse = "/api/v1/";
     private final JSONParser jsonParser = new JSONParser();
 

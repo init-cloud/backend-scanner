@@ -1,7 +1,6 @@
 package scanner.prototype.controller;
 
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.security.NoSuchAlgorithmException;
 
 import javax.servlet.ServletException;
@@ -15,21 +14,17 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import lombok.RequiredArgsConstructor;
-
 import scanner.prototype.exception.ScanException;
-import scanner.prototype.response.ParseResponse;
-import scanner.prototype.response.ScanResponse;
 import scanner.prototype.response.ApiResponse;
+import scanner.prototype.response.ScanResponse;
 import scanner.prototype.service.ScanService;
 import scanner.prototype.service.StorageServiceImpl;
-import scanner.prototype.visualize.ParserRequest;
 
 
 @RestController
@@ -96,7 +91,6 @@ public class TFScanController {
             if(!file.isEmpty()) {
                 result = storageService.store(file);
                 ScanResponse<?> scanResponse = scanService.scanTerraform(result[1], provider);
-
                 return ApiResponse.success("check", scanResponse);
             }
 

@@ -1,0 +1,13 @@
+spring:
+  servlet:
+    multipart:
+      enabled: true
+      file-size-threshold: 2KB
+      max-file-size: 1GB
+      max-request-size: 1GB
+      location: uploads/
+  datasource:
+    driver-class-name: 
+    url: 
+    username: 
+    password: 
