@@ -8,7 +8,6 @@ spring:
       location: uploads/
   datasource:
     driver-class-name: org.mariadb.jdbc.Driver
-    url: ${MARIADB_URL}
+    url: ${SPRING_DATASOURCE_URL}
     username: ${MARIADB_ROOT}
     password: ${MARIADB_PASSWORD}
-
