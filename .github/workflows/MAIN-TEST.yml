@@ -17,15 +17,6 @@ jobs:
         uses: actions/setup-java@v1
         with:
           java-version: 11
-
-      - name: Grant execute permission for gradlew
-        run: chmod +x gradlew
-
-      - name: Build with Gradle
-        run: ./gradlew build
-
-      - name: Build with Gradle Wrapper
-        run: ./gradlew wrapper
         
       - name: Image Build
         uses: appleboy/ssh-action@master
@@ -35,6 +26,8 @@ jobs:
           key: ${{ secrets.API_SERVER_SSH }}
           port: ${{ secrets.API_SERVER_PORT }}
           script: |
+            ./backend-scanner/gradlew build
+            ./backend-scanner/gradlew wrapper
             DATE=$(date "+%y.%m.%d")
             docker login -u ${{ secrets.REGISTRY_USER }} -p ${{ secrets.REGISTRY_PW }}
             docker build -t ${{ secrets.REGISTRY_001 }}/scanner_api:$DATE ./backend-scanner/
