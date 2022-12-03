@@ -1,4 +1,14 @@
 services:
+  dashboard:
+    image: floodnut/initcloud_board
+    container_name: INITCLOUD_BOARD
+    env_file:
+     - .env
+    ports:
+      - ${BOARD_PORT}:80
+    depends_on:
+      - springboot
+    restart: always
   db:
     image: floodnut/initcloud_db
     container_name: INITCLOUD_DB
