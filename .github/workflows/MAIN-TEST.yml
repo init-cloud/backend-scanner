@@ -26,8 +26,7 @@ jobs:
           key: ${{ secrets.API_SERVER_SSH }}
           port: ${{ secrets.API_SERVER_PORT }}
           script: |
-            ./backend-scanner/gradlew build
-            ./backend-scanner/gradlew wrapper
+            ./backend-scanner/gradlew bootJar
             DATE=$(date "+%y.%m.%d")
             docker login -u ${{ secrets.REGISTRY_USER }} -p ${{ secrets.REGISTRY_PW }}
             docker build -t ${{ secrets.REGISTRY_001 }}/scanner_api:$DATE ./backend-scanner/

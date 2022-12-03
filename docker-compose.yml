@@ -39,9 +39,7 @@ services:
      - .env
   springboot:
     container_name: initcloud_scanner
-    build:							
-      context: ./
-      dockerfile: Dockerfile
+    image: floodnut/scanner_api
     volumes:
       - ./backend_scanner/uploads:/app/uploads
     ports:

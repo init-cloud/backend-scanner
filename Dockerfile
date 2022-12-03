@@ -7,7 +7,7 @@ RUN pip3 install checkov
 
 WORKDIR /app/
 
-COPY ./build/libs/prototype-1.0.0.jar ./app.jar
+COPY ./build/libs/prototype-1.0.1.jar ./app.jar
 
 EXPOSE 8080 
 
