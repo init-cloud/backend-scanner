@@ -15,7 +15,7 @@ Initcloud Scanner is Terraform Scanner & Visualizer for AWS, NCP.
     [install docker-compose](https://docs.docker.com/compose/install/linux/)
 2. Cloning Initcloud Scanner
 ```bash
-git clone https://github.com/init-cloud/initcloud-scanner.git
+git clone https://github.com/init-cloud/backend-scanner.git
 cd ./initcloud-scanner
 ```  
 3. Set your Environment Variables. 
@@ -26,24 +26,22 @@ touch .env
 # .env
 
 # Dashboard
-BOARD_PORT=__YOUR_BOARD_PORT__
-REACT_APP_BASE_URL=http://INITCLOUD_SCANNER/api/v1
+BOARD_PORT=5555 # YOUR BOARD PORT
+REACT_APP_BASE_URL=http://initcloud_scanner:9090/api/v1
 
 # Scanner
-SCANNER_PORT=__YOUR__SCANNER_PORT__
+SCANNER_PORT=9090 # YOUR SCANNER PORT
 
 # Parser
-PARSER_PORT=__YOUR__PARSER_PORT__
+PARSER_PORT=9001 # YOUR PARSER PORT
 
 # DB
-SPRING_DATASOURCE_URL=jdbc:mariadb://INITCLOUD_DB:3306/__YOUR_DATABASE__
-MARIADB_DATABASE=__YOUR_DATABASE__
+MARIADB_DATABASE=initcloud
 MARIADB_USER=__YOUR_DATABASE_USER__
 MARIADB_PASSWORD=__YOUR_DATABASE_PASSWORD__
 MARIADB_ROOT=__YOUR_DATABASE_ROOT__
 MARIADB_ROOT_PASSWORD=__YOUR_DATABASE_ROOT_PASSWORD__
-DB_PORT=__YOUR_DATABASE_PORT__
-DB_INNER_PORT=3306
+DB_PORT=9002 #__YOUR_DATABASE_PORT__ 
 
 ```   
 4. Run with Docker-compose
