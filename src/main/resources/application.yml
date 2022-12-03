@@ -11,3 +11,6 @@ spring:
     url: ${SPRING_DATASOURCE_URL}
     username: ${MARIADB_ROOT}
     password: ${MARIADB_ROOT_PASSWORD}
+
+server:
+  port: ${SCANNER_PORT}
