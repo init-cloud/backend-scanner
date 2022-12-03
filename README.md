@@ -15,7 +15,7 @@ Initcloud Scanner is Terraform Scanner & Visualizer for AWS, NCP.
     [install docker-compose](https://docs.docker.com/compose/install/linux/)
 2. Cloning Initcloud Scanner
 ```bash
-git clone https://github.com/init-cloud/initcloud-scanner.git
+git clone https://github.com/init-cloud/backend-scanner.git
 cd ./initcloud-scanner
 ```  
 3. Set your Environment Variables. 
