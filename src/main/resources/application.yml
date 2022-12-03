@@ -10,4 +10,4 @@ spring:
     driver-class-name: org.mariadb.jdbc.Driver
     url: ${SPRING_DATASOURCE_URL}
     username: ${MARIADB_ROOT}
-    password: ${MARIADB_PASSWORD}
+    password: ${MARIADB_ROOT_PASSWORD}

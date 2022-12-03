@@ -66,6 +66,7 @@ public class ScanService {
             
             return scanResult;
         } catch (Exception e) {
+            e.printStackTrace();
             throw new ScanException("Scan Error.");
         }
     }
