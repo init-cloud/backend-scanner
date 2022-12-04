@@ -18,14 +18,14 @@ public class ParserRequest {
 
     @Value("${parser.url}")
     private String API;
-    private final String parse = "/api/v1/";
+
     private final JSONParser jsonParser = new JSONParser();
 
     public Object getTerraformParsingData(String directory, String provider)
     throws MalformedURLException, IOException, ParseException
     {
         HttpURLConnection conn = null;
-        URL url = new URL(API + parse + provider + "/" + directory);
+        URL url = new URL(API + "/" + provider + "/" + directory);
         conn = (HttpURLConnection) url.openConnection();
         conn.setRequestMethod("GET"); 
         conn.setUseCaches(false);
