@@ -31,6 +31,7 @@ import scanner.prototype.service.StorageServiceImpl;
 @RequestMapping("/api/v1")
 @RequiredArgsConstructor
 public class TFScanController {
+    
     private final StorageServiceImpl storageService;
     private final ScanService scanService;
 
@@ -90,14 +91,11 @@ public class TFScanController {
 
             if(!file.isEmpty()) {
                 result = storageService.store(file);
-                ScanResponse<?> scanResponse = scanService.scanTerraform(result[1], provider);
+                ScanResponse<?> scanResponse = scanService.scanTerraform(result, provider);
                 return ApiResponse.success("check", scanResponse);
             }
 
             return ApiResponse.fail();
-        }
-        catch(ScanException e){
-            return ApiResponse.fail(0, "Invalid Provider");
         }
         catch(Exception e){
             return ApiResponse.fail();

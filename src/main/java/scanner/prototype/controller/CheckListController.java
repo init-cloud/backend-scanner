@@ -37,10 +37,7 @@ public class CheckListController {
      * @return
      */
     @GetMapping
-    public Response<?> retrieveCheckList(
-        HttpServletRequest request, 
-        HttpServletResponse response
-    ){
+    public Response<?> retrieveCheckList(){
         CheckListDetailResponse dtos = checkListService.retrieve();
 
         return Response.success("data", dtos);
@@ -56,8 +53,6 @@ public class CheckListController {
      */
     @PostMapping
     public Response<?> createCheckList(
-        HttpServletRequest request, 
-        HttpServletResponse response,
         CheckListDetailDto data
     ){
         CheckListDetailResponse dtos = checkListService.create(data);
@@ -74,8 +69,6 @@ public class CheckListController {
      */
     @PostMapping("/reset")
     public Response<?> resetCheckList(
-        HttpServletRequest request, 
-        HttpServletResponse response,
         @RequestBody CheckListSimpleDto data
     ){
         CheckListSimpleDto dtos = checkListService.reset(data);
@@ -95,8 +88,6 @@ public class CheckListController {
      */
     @PostMapping("/state")
     public Response<?> modifyCheckList(
-        HttpServletRequest request, 
-        HttpServletResponse response,
         @RequestBody List<CheckListSimpleDto> data
     ){
         try{

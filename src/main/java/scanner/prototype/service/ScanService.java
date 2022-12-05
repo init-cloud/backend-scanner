@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -16,15 +17,18 @@ import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
 import scanner.prototype.dto.CheckListDetailDto;
+import scanner.prototype.dto.ScanHistoryDto;
+import scanner.prototype.dto.ScanReportDto;
 import scanner.prototype.env.Env;
 import scanner.prototype.exception.ScanException;
 import scanner.prototype.model.CustomRule;
+import scanner.prototype.model.ScanHistory;
+import scanner.prototype.repository.ScanHistoryRepository;
 import scanner.prototype.response.CheckResponse;
 import scanner.prototype.response.ParseResponse;
 import scanner.prototype.response.ResultResponse;
 import scanner.prototype.response.ScanResponse;
 import scanner.prototype.visualize.ParserRequest;
-
 
 
 @Service
@@ -36,6 +40,7 @@ public class ScanService {
 
     private final ParserRequest parserReq;
     private final CheckListService checkListService;
+    private final ScanHistoryRepository scanHistoryRepository;
 
     /**
      * 
@@ -43,7 +48,7 @@ public class ScanService {
      * @return
      * @throws Exception
      */
-    public ScanResponse<?> scanTerraform(String args, String provider) 
+    public ScanResponse<?> scanTerraform(String[] args, String provider) 
     throws Exception 
     {
         ScanResponse<?> scanResult;
@@ -52,47 +57,28 @@ public class ScanService {
         try {
             List<CustomRule> offRules = checkListService.retrieveOffEntity();
             String offStr = getSkipCheckCmd(offRules);
-            File file = new File(fileUploadPath + File.separator + args);
-            String[] cmd = {"bash", "-l", "-c", Env.SHELL_COMMAND_RAW.getValue() + args + File.separator + Env.getCSPExternalPath(provider) + offStr};
+            File file = new File(fileUploadPath + File.separator + args[1]);
+            String[] cmd = {"bash", "-l", "-c", Env.SHELL_COMMAND_RAW.getValue() + args[1] + File.separator + Env.getCSPExternalPath(provider) + offStr};
             
             p = Runtime.getRuntime().exec(cmd);
             BufferedReader br = new BufferedReader(
                 new InputStreamReader(p.getInputStream()));
 
-            scanResult = resultToJson(br, args, provider);
+            scanResult = resultToJson(br, args[1], provider);
             FileUtils.deleteDirectory(file);
             p.waitFor();
             p.destroy();
-            
+
+            ScanHistory scan = new ScanHistory(null, LocalDateTime.now(), LocalDateTime.now(), args[1], args[0], "aws", 
+                scanResult.getCheck().getPassed(), scanResult.getCheck().getSkipped(), scanResult.getCheck().getFailed(), 0.0);
+
+            scanHistoryRepository.save(scan);
+
             return scanResult;
         } catch (Exception e) {
             e.printStackTrace();
             throw new ScanException("Scan Error.");
         }
-    }
-
-    /**
-     * get Skip rule List
-     * @param offRules
-     * @return offStr (String)
-     */
-    private String getSkipCheckCmd(List<CustomRule> offRules){
-        String offStr = "";
-
-        if(offRules.size() > 0){
-            offStr += " --skip-check ";
-
-            for(int i = 0 ; i < offRules.size() ; i++){
-                if(offRules.get(i) == null || offRules.get(i).getRuleId() == null)
-                    continue;
-
-                offStr += offRules.get(i).getRuleId();
-
-                if(i + 1 < offRules.size())
-                    offStr += ",";
-            }
-        }
-        return offStr;
     }
 
     /**
@@ -181,7 +167,6 @@ public class ScanService {
             rulesMap.put(rulesInfo.get(i).getId(), rulesInfo.get(i).getLevel());
 
         while((rawResult = br.readLine()) != null){
-
             if(rawResult.contains("Passed checks")){
                 check = parseScanCheck(rawResult);
                 continue;
@@ -210,5 +195,29 @@ public class ScanService {
         }
 
         return new ScanResponse(check, resultLists, parse);
+    }
+
+    /**
+     * get Skip rule List
+     * @param offRules
+     * @return offStr (String)
+     */
+    private String getSkipCheckCmd(List<CustomRule> offRules){
+        String offStr = "";
+
+        if(offRules.size() > 0){
+            offStr += " --skip-check ";
+
+            for(int i = 0 ; i < offRules.size() ; i++){
+                if(offRules.get(i) == null || offRules.get(i).getRuleId() == null)
+                    continue;
+
+                offStr += offRules.get(i).getRuleId();
+
+                if(i + 1 < offRules.size())
+                    offStr += ",";
+            }
+        }
+        return offStr;
     }
 }
