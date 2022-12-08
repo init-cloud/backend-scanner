@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import lombok.RequiredArgsConstructor;
-import scanner.prototype.exception.ScanException;
+
 import scanner.prototype.response.ApiResponse;
 import scanner.prototype.response.ScanResponse;
 import scanner.prototype.service.ScanService;

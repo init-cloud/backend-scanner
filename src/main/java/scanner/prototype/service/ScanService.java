@@ -2,6 +2,7 @@ package scanner.prototype.service;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.time.LocalDateTime;
@@ -12,7 +13,6 @@ import java.util.Map;
 
 import org.apache.tomcat.util.http.fileupload.FileUtils;
 import org.json.simple.parser.ParseException;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
@@ -35,8 +35,7 @@ import scanner.prototype.visualize.ParserRequest;
 @RequiredArgsConstructor
 public class ScanService {
 
-    @Value("${scanner.upload.path}")
-    private String fileUploadPath;
+    private String fileUploadPath=Env.UPLOAD_PATH.getValue();
 
     private final ParserRequest parserReq;
     private final CheckListService checkListService;
@@ -76,7 +75,6 @@ public class ScanService {
 
             return scanResult;
         } catch (Exception e) {
-            e.printStackTrace();
             throw new ScanException("Scan Error.");
         }
     }
@@ -152,7 +150,7 @@ public class ScanService {
      * @throws ParseException
      */
     public ScanResponse<?> resultToJson(BufferedReader br, String path, String provider) 
-    throws IOException, ParseException
+    throws IOException, ParseException, FileNotFoundException
     {
         String rawResult;
         StringBuilder sb = new StringBuilder();
