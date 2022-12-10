@@ -38,9 +38,22 @@ out/
 
 
 ### etc ###
+<<<<<<< HEAD
 uploads/
 *.txt
 *.out
 .env
 *.json
 /*.sh
+=======
+.env
+*.pyc
+/server.sh
+*.txt
+*.out
+*.json
+!uploads/aws/
+!uploads/ncp/
+!uploads/test/
+uploads/
+>>>>>>> 713623fa961b4fa8f1a69033f948e5815bbc7754

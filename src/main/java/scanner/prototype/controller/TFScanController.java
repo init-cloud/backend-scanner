@@ -1,8 +1,7 @@
-
 package scanner.prototype.controller;
 
 import java.io.IOException;
-import java.net.MalformedURLException;
+import java.security.NoSuchAlgorithmException;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -22,23 +21,19 @@ import org.springframework.web.multipart.MultipartFile;
 
 import lombok.RequiredArgsConstructor;
 
-import scanner.prototype.response.ParseResponse;
-import scanner.prototype.response.ScanResponse;
-import scanner.prototype.service.ScanJob;
-import scanner.prototype.service.StorageServiceImpl;
 import scanner.prototype.response.ApiResponse;
-import scanner.prototype.response.ParseResponse;
 import scanner.prototype.response.ScanResponse;
+import scanner.prototype.service.ScanService;
 import scanner.prototype.service.StorageServiceImpl;
-import scanner.prototype.visualize.ParserRequest;
 
 
 @RestController
 @RequestMapping("/api/v1")
 @RequiredArgsConstructor
 public class TFScanController {
+    
     private final StorageServiceImpl storageService;
-    private final ScanJob scanJob;
+    private final ScanService scanService;
 
     /**
      * 미사용
@@ -58,12 +53,12 @@ public class TFScanController {
         String contentType = null;
 
         try {
-            contentType = request.getServletContext().getMimeType(resource.getFile().getAbsolutePath());
+            contentType = request.getServletContext()
+                                .getMimeType(resource.getFile().getAbsolutePath());
         } catch (IOException ex) {
             
         }
 
-        // Fallback to the default content type if type could not be determined
         if(contentType == null) {
             contentType = "application/octet-stream";
         }
@@ -83,18 +78,20 @@ public class TFScanController {
      * @throws IllegalStateException
      * @throws IOException
      */
-    @PostMapping("/file")
+    @PostMapping("/file/{provider}")
     public ApiResponse<?> uploadFile(
         HttpServletRequest request, 
         HttpServletResponse response,
+        @PathVariable("provider") String provider,
         @RequestPart("file") MultipartFile file
-    ) throws ServletException, IllegalStateException, IOException
+    ) throws ServletException, IllegalStateException, IOException, NullPointerException, NoSuchAlgorithmException, Exception
     {
         try{
-            if(!file.isEmpty()) {
-                String result = storageService.store(file);
-                ScanResponse<?> scanResponse = scanJob.terrformScan(result);
+            String[] result = {null, null};
 
+            if(!file.isEmpty()) {
+                result = storageService.store(file);
+                ScanResponse<?> scanResponse = scanService.scanTerraform(result, provider);
                 return ApiResponse.success("check", scanResponse);
             }
 
@@ -103,16 +100,5 @@ public class TFScanController {
         catch(Exception e){
             return ApiResponse.fail();
         }
-    }
-
-    @GetMapping("/parse")
-    public ParseResponse parseTest() 
-    throws MalformedURLException
-    {
-        ParserRequest parserReq = new ParserRequest();
-
-        return new ParseResponse(
-            parserReq.getTerraformParsingData(null)
-        );
     }
 }

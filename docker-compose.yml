@@ -1,29 +1,55 @@
 services:
-  springboot:
-    build:
-      context: ./prototype
-    container_name: scanner_api
-    volumes:
-      - ./prototype/uploads:/app/uploads
+  initcloud_nginx:
+    image: nginx:1.21.5-alpine
     ports:
-      - "8080:8080"
-    env_file:
-     - ./.env
-  fastapi:
-    build:
-      context: ./terraform-parser
-    container_name: parser_api
+      - 80:80
     volumes:
-      - ./prototype/uploads:/app/uploads
-    ports:
-      - "9001:8000"
+      - ./volume/nginx.conf:/etc/nginx/nginx.conf
+    container_name: initcloud_nginx
+    depends_on:
+      - initcloud_scaner
+    restart: always
+  initcloud_db:
+    image: floodnut/initcloud_db
+    container_name: initcloud_db
+    volumes:
+      - ./volume/db/data:/var/lib/mariadb:rw
     env_file:
-     - ./.env 
-
-networks:
-  default:
-    ipam:
-      driver: default
-      config:
-        - subnet: 172.72.23.0/16
-        - gateway: 172.72.23.1/16
+     - .env
+    environment:
+      TZ: Asia/Seoul
+      MARIADB_DATABASE: ${MARIADB_DATABASE}
+      MARIADB_USER: ${MARIADB_USER}
+      MARIADB_PASSWORD: ${MARIADB_PASSWORD}
+      MARIADB_ROOT_PASSWORD: ${MARIADB_ROOT_PASSWORD}
+    command: ['--character-set-server=utf8mb4', '--collation-server=utf8mb4_unicode_ci']
+    ports:
+      - ${DB_PORT}:3306
+    restart: always
+  initcloud_parser:
+    container_name: initcloud_parser
+    image: floodnut/parser_api 
+    volumes:
+      - ./volume/uploads:/app/uploads
+    ports:
+      - ${PARSER_PORT}:8000
+    env_file:
+     - .env
+  initcloud_scanner:
+    container_name: initcloud_scanner
+    image: floodnut/scanner_api
+    volumes:
+      - ./volume/uploads:/app/uploads
+    ports:
+      - ${SCANNER_PORT}:8080
+    env_file:
+     - .env
+    environment:
+      TZ: Asia/Seoul
+      SPRING_DATASOURCE_URL: jdbc:mariadb://initcloud_db:3306/initcloud
+      SPRING_DATASOURCE_USERNAME: ${MARIADB_USER}
+      SPRING_DATASOURCE_PASSWORD: ${MARIADB_PASSWORD}
+    restart: always
+    depends_on:     
+     - initcloud_db
+     - initcloud_parser

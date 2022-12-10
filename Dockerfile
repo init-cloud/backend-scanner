@@ -6,7 +6,9 @@ RUN apt-get update \
 RUN pip3 install checkov
 
 WORKDIR /app/
-COPY ./build/libs/prototype-0.0.1-SNAPSHOT.jar ./app.jar
+
+COPY ./build/libs/prototype-1.0.2.jar ./app.jar
+
 EXPOSE 8080 
 
-ENTRYPOINT ["java","-jar","app.jar"]
+ENTRYPOINT ["java","-jar","./app.jar"]

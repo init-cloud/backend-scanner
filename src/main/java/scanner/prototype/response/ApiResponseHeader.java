@@ -2,11 +2,10 @@ package scanner.prototype.response;
 
 
 import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
-@Setter
-@Getter
+
+@Data
 @AllArgsConstructor
 public class ApiResponseHeader {
     private int code;

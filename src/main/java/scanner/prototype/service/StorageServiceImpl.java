@@ -2,6 +2,8 @@ package scanner.prototype.service;
 
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
@@ -11,12 +13,17 @@ import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.UUID;
 import java.util.stream.Stream;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+
+import scanner.prototype.utils.FileDigest;
+
 
 @Service
 public class StorageServiceImpl implements StorageService{
@@ -34,8 +41,9 @@ public class StorageServiceImpl implements StorageService{
     }
 
     @Override
-    public String store(MultipartFile file) {
+    public String[] store(MultipartFile file){
         try {
+            String[] result = {null, null};
             UUID uniqName = UUID.randomUUID();
             String saved = uniqName.toString();
             Path root = Paths.get(uploadPath + saved);
@@ -54,18 +62,74 @@ public class StorageServiceImpl implements StorageService{
             }
 
             try (InputStream inputStream = file.getInputStream()) {
-
                 if(isNotValidExt(file.getOriginalFilename()))
                     throw new RuntimeException("Could not store the file. Error: ");
 
                 Files.copy(
-                    inputStream, root.resolve(file.getOriginalFilename()), StandardCopyOption.REPLACE_EXISTING
-                );
+                    inputStream, root.resolve(file.getOriginalFilename()), StandardCopyOption.REPLACE_EXISTING);
 
-                return saved;
+                String fileHash = FileDigest.getChecksum("./uploads/" + saved + "/" + file.getOriginalFilename());
+
+                if(isCompressed(file.getOriginalFilename()))
+                    decompress("./uploads/" + saved + "/" + file.getOriginalFilename(), "./uploads/" + saved );
+
+                result[0] = fileHash;
+                result[1] = saved;
+
+                return result;
             }
-        } catch (Exception e) {
-            throw new RuntimeException("Could not store the file. Error: ");// + e.getMessage());
+        }
+        catch (Exception e) {
+            throw new RuntimeException("Could not store the file. Error: ");
+        }
+        catch (Throwable e) {
+            throw new RuntimeException("Could not decompress the file. Error: ");
+        }
+    }
+
+    public static void decompress(String zipFileName, String directory)
+    throws Throwable {
+        File zipFile = new File(zipFileName); 
+        FileInputStream fis = null; 
+        ZipInputStream zis = null; 
+        ZipEntry zipentry = null;
+
+        try {
+            fis = new FileInputStream(zipFile); 
+            zis = new ZipInputStream(fis);
+ 
+            while ((zipentry = zis.getNextEntry()) != null) {
+                String filename = zipentry.getName();
+                File file = new File(directory, filename);
+            
+                if (zipentry.isDirectory()) { 
+                    file.mkdirs(); 
+                } 
+                else {
+                    createFile(file, zis); 
+                }
+            }
+        } catch (Throwable e) { 
+            throw e; 
+        } finally {
+            if (zis != null) zis.close();
+            if (fis != null) fis.close();
+        }
+    }
+        
+    private static void createFile(File file, ZipInputStream zis) 
+    throws Throwable {
+        File parentDir = new File(file.getParent());
+        if (!parentDir.exists()) {
+            parentDir.mkdirs(); 
+        }
+        
+        try (FileOutputStream fos = new FileOutputStream(file)) {
+            byte[] buffer = new byte[256]; int size = 0;
+            while ((size = zis.read(buffer)) > 0) {
+                fos.write(buffer, 0, size); }
+        } catch (Throwable e) { 
+            throw e; 
         }
     }
 
@@ -75,8 +139,11 @@ public class StorageServiceImpl implements StorageService{
         return fullname.matches(pt);
     }
 
-    public boolean getExtension(String fullname){
-        return false;
+    public boolean isCompressed(String fileName){
+        String ext = fileName.substring(fileName.lastIndexOf(".") + 1);
+        String pt = "zip";
+
+        return ext.matches(pt);
     }
 
     @Override
