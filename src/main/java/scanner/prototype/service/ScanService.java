@@ -28,15 +28,12 @@ import scanner.prototype.response.CheckResponse;
 import scanner.prototype.response.ParseResponse;
 import scanner.prototype.response.ResultResponse;
 import scanner.prototype.response.ScanResponse;
-import scanner.prototype.visualize.ParserRequest;
+import scanner.prototype.utils.ParserRequest;
 
 
 @Service
 @RequiredArgsConstructor
 public class ScanService {
-
-    private String fileUploadPath=Env.UPLOAD_PATH.getValue();
-
     private final ParserRequest parserReq;
     private final CheckListService checkListService;
     private final ScanHistoryRepository scanHistoryRepository;
@@ -50,6 +47,7 @@ public class ScanService {
     public ScanResponse<?> scanTerraform(String[] args, String provider) 
     throws Exception 
     {
+        String fileUploadPath = Env.UPLOAD_PATH.getValue();
         ScanResponse<?> scanResult;
         Process p;
         
