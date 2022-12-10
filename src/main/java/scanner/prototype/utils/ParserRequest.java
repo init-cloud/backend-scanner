@@ -1,4 +1,4 @@
-package scanner.prototype.visualize;
+package scanner.prototype.utils;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
@@ -13,10 +13,12 @@ import org.json.simple.parser.ParseException;
 
 import org.springframework.stereotype.Service;
 
+import lombok.RequiredArgsConstructor;
 import scanner.prototype.env.Env;
 
 
 @Service
+@RequiredArgsConstructor
 public class ParserRequest {
 
     private String API=Env.PARSE_API.getValue();

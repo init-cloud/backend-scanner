@@ -8,6 +8,12 @@ spring:
       location: uploads/
   datasource:
     driver-class-name: org.mariadb.jdbc.Driver
-    # url: ${SPRING_DATASOURCE_URL}
-    # username: ${MARIADB_ROOT}
-    # password: ${MARIADB_ROOT_PASSWORD}
+    url: ${SPRING_DATASOURCE_URL}
+    username: ${MARIADB_USER}
+    password: ${MARIADB_PASSWORD}
+
+  jpa:
+    database-platform: org.hibernate.dialect.MariaDB103Dialect
+    show-sql: false
+    hibernate:
+      ddl-auto: none
