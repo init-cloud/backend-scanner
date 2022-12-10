@@ -46,6 +46,9 @@ public class CustomRule {
     @OneToMany(mappedBy = "ruleSeq")
     private List<Tag> tag = new ArrayList<Tag>();
 
+    @OneToMany(mappedBy = "ruleSeq")
+    private List<Compliance> compliance = new ArrayList<Compliance>();
+
     @Column(name = "DEFAULT_RULE_ID", updatable=false)
     @NotNull
     @Size(max = 16)
