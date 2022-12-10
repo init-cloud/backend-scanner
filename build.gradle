@@ -6,11 +6,7 @@ plugins {
 }
 
 group = 'scanner'
-<<<<<<< HEAD
 version = '1.0.3'
-=======
-version = '1.0.2'
->>>>>>> 713623fa961b4fa8f1a69033f948e5815bbc7754
 sourceCompatibility = '11'
 
 configurations {
