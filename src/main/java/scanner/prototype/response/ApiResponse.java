@@ -9,26 +9,19 @@ public class ApiResponse<T> {
 
     private final static int SUCCESS = 200;
     private final static int BAD_REQUEST = 400;
-    private final static int NOT_FOUND = 404;
-    private final static int FAILED = 500;
     private final static String SUCCESS_MESSAGE = "SUCCESS";
-    private final static String NOT_FOUND_MESSAGE = "NOT FOUND";
-    private final static String ServerFAILED_MESSAGE = "서버에서 오류가 발생하였습니다.";
-    private final static String BadRequest_MESSAGE = "잘못된 요청입니다.";
-    private final static String LoginFAILED_MESSAGE = "계정 또는 패스워드가 잘못 입력되었습니다.";
-    private final static String INVALID_ACCESS_TOKEN = "Invalid access token.";
-    private final static String INVALID_REFRESH_TOKEN = "Invalid refresh token.";
-    private final static String NOT_EXPIRED_TOKEN_YET = "Not expired token yet.";
+    private final static String SERVER_FAILED_MESSAGE = "서버에서 오류가 발생하였습니다.";
+    private final static String BAD_REQUEST_MESSAGE = "잘못된 요청입니다.";
 
     private final ApiResponseHeader header;
-    private final ScanResponse<?> scan;
-
+    private final T scan;
+    
     public static <T> ApiResponse<T> success(
         String name, 
         T body
     ) {
         return new ApiResponse(
-            new ApiResponseHeader(SUCCESS, SUCCESS_MESSAGE), (ScanResponse)body);
+            new ApiResponseHeader(SUCCESS, SUCCESS_MESSAGE), body);
     }
 
     public static <T> ApiResponse<T> fail(int errorCode) {

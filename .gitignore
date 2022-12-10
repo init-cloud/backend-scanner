@@ -39,8 +39,8 @@ out/
 
 ### etc ###
 uploads/
-/server.sh
 *.txt
 *.out
-Env.java
+.env
 *.json
+/*.sh
