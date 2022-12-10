@@ -17,8 +17,29 @@ jobs:
         uses: actions/setup-java@v1
         with:
           java-version: 11
-        
-      - name: Image Build
+
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+
+      - name: Build Project
+        run: ./gradlew build
+
+      - name: Docker login
+        run: docker login -u ${{ secrets.REGISTRY_USER }} -p ${{ secrets.REGISTRY_PW }}
+
+      - name: Docker build
+        run: |
+            DATE=$(date "+%y.%m.%d")
+            docker build -t ${{ secrets.REGISTRY_002 }}/scanner_api:v2 .
+            docker build -t ${{ secrets.REGISTRY_002 }}/scanner_api:v2-$DATE .
+
+      - name: Docker push
+        run: |
+            DATE=$(date "+%y.%m.%d")
+            docker push ${{ secrets.REGISTRY_002 }}/scanner_api:v2
+            docker push ${{ secrets.REGISTRY_002 }}/scanner_api:v2-$DATE 
+
+      - name: Deploy
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.API_SERVER_HOST }}
@@ -26,11 +47,9 @@ jobs:
           key: ${{ secrets.API_SERVER_SSH }}
           port: ${{ secrets.API_SERVER_PORT }}
           script: |
-            ./backend-scanner/gradlew bootJar
             DATE=$(date "+%y.%m.%d")
-            docker login -u ${{ secrets.REGISTRY_USER }} -p ${{ secrets.REGISTRY_PW }}
-            docker build -t ${{ secrets.REGISTRY_001 }}/scanner_api:$DATE ./backend-scanner/
-            docker push ${{ secrets.REGISTRY_001 }}/scanner_api:$DATE 
-            docker build -t ${{ secrets.REGISTRY_002 }}/scanner_api ./backend-scanner/
-            docker build -t ${{ secrets.REGISTRY_002 }}/scanner_api:$DATE ./backend-scanner/  
-            docker push ${{ secrets.REGISTRY_002 }}/scanner_api
+            docker build -t ${{ secrets.REGISTRY_001 }}/scanner_api:v2-$DATE ./backend-scanner/
+            docker build -t ${{ secrets.REGISTRY_001 }}/scanner_api:v2 ./backend-scanner/
+            docker push ${{ secrets.REGISTRY_001 }}/scanner_api:v2-$DATE
+            docker push ${{ secrets.REGISTRY_001 }}/scanner_api:v2
+            docker compose up -d 
