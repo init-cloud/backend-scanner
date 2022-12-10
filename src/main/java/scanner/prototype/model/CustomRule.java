@@ -43,17 +43,11 @@ public class CustomRule {
     @Size(max = 16)
     private String ruleId;
 
-<<<<<<< HEAD
     @Builder.Default
     @OneToMany(mappedBy = "ruleSeq")
     private List<Tag> tag = new ArrayList<Tag>();
 
     @Builder.Default
-=======
-    @OneToMany(mappedBy = "ruleSeq")
-    private List<Tag> tag = new ArrayList<Tag>();
-
->>>>>>> 713623fa961b4fa8f1a69033f948e5815bbc7754
     @OneToMany(mappedBy = "ruleSeq")
     private List<Compliance> compliance = new ArrayList<Compliance>();
 

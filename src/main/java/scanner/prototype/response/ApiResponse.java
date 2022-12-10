@@ -11,22 +11,12 @@ public class ApiResponse<T> {
     private final static int SUCCESS = 200;
     private final static int BAD_REQUEST = 400;
     private final static String SUCCESS_MESSAGE = "SUCCESS";
-<<<<<<< HEAD
-=======
-    private final static String NOT_FOUND_MESSAGE = "NOT FOUND";
->>>>>>> 713623fa961b4fa8f1a69033f948e5815bbc7754
     private final static String SERVER_FAILED_MESSAGE = "서버에서 오류가 발생하였습니다.";
     private final static String BAD_REQUEST_MESSAGE = "잘못된 요청입니다.";
 
     private final ApiResponseHeader header;
-<<<<<<< HEAD
     private final T scan;
     
-=======
-    private final ScanResponse<?> scan;
-    
-
->>>>>>> 713623fa961b4fa8f1a69033f948e5815bbc7754
     public static <T> ApiResponse<T> success(
         String name, 
         T body
