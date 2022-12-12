@@ -23,6 +23,7 @@ public class ScanSummaryDto {
     private String scanTargetHash;
     private Integer totalScanned;
     private Integer passed;
+    private Integer skipped;
     private Integer failed;
     private Double score;
     private Map<String, Integer> failedResource;
@@ -46,6 +47,7 @@ public class ScanSummaryDto {
                         .scanTargetHash(entity.getFileHash())
                         .totalScanned(entity.getPassed() + entity.getFailed())
                         .passed(entity.getPassed())
+                        .skipped(entity.getSkipped())
                         .failed(entity.getFailed())
                         .score(entity.getScore())
                         .failedResource(resource)
