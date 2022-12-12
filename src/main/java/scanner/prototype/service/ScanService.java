@@ -257,7 +257,12 @@ public class ScanService {
      */
     private double[] calc(List<ResultResponse> results){
         /* score, high, medium, low, unknown */
-        double[] count = {0.0, 0.0, 0.0, 0.0, 0.0};
+        double[] count = new double[5];
+        count[0] = 0.0;
+        count[1] = 0.0;
+        count[2] = 0.0;
+        count[3] = 0.0;
+        count[4] = 0.0;
         int success = 0;
         int total = 0;
         int severity = 0;
@@ -304,8 +309,13 @@ public class ScanService {
                 continue;
             }
         }
+        
+        double down = (total * totalSeverity);
 
-        count[0] = ((double) ((success * severity) / (total * totalSeverity)) * 100);
+        if(down == 0.0)
+            count[0] = 0.0;
+        else
+            count[0] = Math.round((double)(total * totalSeverity)/ down) * 10 / 10.0;
 
         return count;
     }

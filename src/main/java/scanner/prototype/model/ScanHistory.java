@@ -13,12 +13,11 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
-import org.hibernate.annotations.ColumnDefault;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
 import scanner.prototype.env.Env;
 
 @Builder
@@ -70,19 +69,19 @@ public class ScanHistory {
     @NotNull
     private Integer failed;
 
-    @Column(name = "High")
+    @Column(name = "HIGH")
     @NotNull
     private Integer high;
 
-    @Column(name = "Medium")
+    @Column(name = "MEDIUM")
     @NotNull
     private Integer medium;
 
-    @Column(name = "Low")
+    @Column(name = "LOW")
     @NotNull
     private Integer low;
 
-    @Column(name = "Unknown")
+    @Column(name = "UNKNOWN")
     @NotNull
     private Integer unknown;
 
