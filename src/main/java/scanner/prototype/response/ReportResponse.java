@@ -6,7 +6,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import scanner.prototype.dto.history.report.ScanDetailDto;
 import scanner.prototype.dto.history.report.ScanHistoryDetailDto;
 import scanner.prototype.dto.history.report.ScanSummaryDto;
 

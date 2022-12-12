@@ -13,10 +13,13 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
+import org.hibernate.annotations.ColumnDefault;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import scanner.prototype.env.Env;
 
 @Builder
 @Data
@@ -71,7 +74,6 @@ public class ScanHistory {
     @NotNull
     private Double score;
 
-
     public static ScanHistory toEntity(
         String[] args,
         String csp,
@@ -81,13 +83,19 @@ public class ScanHistory {
         Double score,
         String provider
     ){
+
+
+
         return ScanHistory.builder()
                         .createdAt(LocalDateTime.now())
                         .modifiedAt(LocalDateTime.now())
+                        .passed(passed)
+                        .skipped(skipped)
+                        .failed(failed)
                         .fileName(args[1])
                         .fileHash(args[0])
                         .score(score)
-                        .csp(provider)
+                        .csp(Env.getCSPExternalPath(provider))
                         .build();
     }
 }
