@@ -45,7 +45,7 @@ public class ScanSummaryDto {
                         .date(entity.getCreatedAt().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")))
                         .scanTarget(entity.getFileName())
                         .scanTargetHash(entity.getFileHash())
-                        .totalScanned(entity.getPassed() + entity.getFailed())
+                        .totalScanned(entity.getPassed() + entity.getFailed() + entity.getSkipped())
                         .passed(entity.getPassed())
                         .skipped(entity.getSkipped())
                         .failed(entity.getFailed())
