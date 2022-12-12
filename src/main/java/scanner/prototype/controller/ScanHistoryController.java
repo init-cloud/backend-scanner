@@ -1,5 +1,6 @@
 package scanner.prototype.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -28,13 +29,23 @@ public class ScanHistoryController {
      */
     @GetMapping("/history")
     public ApiResponse<?> retrieveHistory() {
-        List<ScanHistory> history = scanHistoryService.retrieveHistoryList();
+        try{
+            List<ScanHistory> history = scanHistoryService.retrieveHistoryList();
 
-        List<HistoryDto> scan = history.stream()
-                                        .map(HistoryDto::new)
-                                        .collect(Collectors.toList());
+            List<HistoryDto> scan = history.stream()
+                                            .map(HistoryDto::new)
+                                            .collect(Collectors.toList());
 
-        return ApiResponse.success("data", scan);
+            if(scan == null || scan.size() == 0)
+                return ApiResponse.success("data", new ArrayList<>());
+
+            return ApiResponse.success("data", scan);
+        }
+        catch(Exception e){
+            return ApiResponse.fail();
+        }
+
+        
     }
 
     /**

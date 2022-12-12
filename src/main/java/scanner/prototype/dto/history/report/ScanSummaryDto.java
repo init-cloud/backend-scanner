@@ -25,6 +25,10 @@ public class ScanSummaryDto {
     private Integer passed;
     private Integer skipped;
     private Integer failed;
+    private Integer high;
+    private Integer medium;
+    private Integer low;
+    private Integer unknown;
     private Double score;
     private Map<String, Integer> failedResource;
     private Map<String, Integer> failedCompliance;
@@ -45,10 +49,14 @@ public class ScanSummaryDto {
                         .date(entity.getCreatedAt().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")))
                         .scanTarget(entity.getFileName())
                         .scanTargetHash(entity.getFileHash())
-                        .totalScanned(entity.getPassed() + entity.getFailed())
+                        .totalScanned(entity.getPassed() + entity.getFailed() + entity.getSkipped())
                         .passed(entity.getPassed())
                         .skipped(entity.getSkipped())
                         .failed(entity.getFailed())
+                        .high(entity.getHigh())
+                        .medium(entity.getMedium())
+                        .low(entity.getLow())
+                        .unknown(entity.getUnknown())
                         .score(entity.getScore())
                         .failedResource(resource)
                         .failedCompliance(compliance)

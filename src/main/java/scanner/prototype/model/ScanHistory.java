@@ -70,6 +70,22 @@ public class ScanHistory {
     @NotNull
     private Integer failed;
 
+    @Column(name = "High")
+    @NotNull
+    private Integer high;
+
+    @Column(name = "Medium")
+    @NotNull
+    private Integer medium;
+
+    @Column(name = "Low")
+    @NotNull
+    private Integer low;
+
+    @Column(name = "Unknown")
+    @NotNull
+    private Integer unknown;
+
     @Column(name = "SCORE")
     @NotNull
     private Double score;
@@ -80,12 +96,9 @@ public class ScanHistory {
         Integer passed,
         Integer skipped,
         Integer failed,
-        Double score,
+        double[] total,
         String provider
     ){
-
-
-
         return ScanHistory.builder()
                         .createdAt(LocalDateTime.now())
                         .modifiedAt(LocalDateTime.now())
@@ -94,7 +107,11 @@ public class ScanHistory {
                         .failed(failed)
                         .fileName(args[1])
                         .fileHash(args[0])
-                        .score(score)
+                        .score(total[0])
+                        .high((int)total[1])
+                        .medium((int)total[2])
+                        .low((int)total[3])
+                        .unknown((int)total[4])
                         .csp(Env.getCSPExternalPath(provider))
                         .build();
     }
