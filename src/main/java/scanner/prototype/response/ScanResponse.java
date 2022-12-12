@@ -17,6 +17,6 @@ public class ScanResponse<T> {
         List<ResultResponse> results,
         ParseResponse parse
     ) {
-        return new ScanResponse(check, results, parse);
+        return new ScanResponse<T>(check, results, parse);
     }
 }

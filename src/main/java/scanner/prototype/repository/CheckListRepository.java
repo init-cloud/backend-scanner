@@ -35,4 +35,6 @@ public interface CheckListRepository extends JpaRepository<CustomRule, String> {
     List<CustomRule> findByIdIn(List<Long> id);
 
     CustomRule findById(Long id);
+
+    CustomRule findByRuleId(String ruleId);
 }

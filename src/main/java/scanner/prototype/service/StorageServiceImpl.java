@@ -148,7 +148,6 @@ public class StorageServiceImpl implements StorageService{
 
     @Override
     public Stream<Path> loadAll() {
-        // TODO Auto-generated method stub
         return null;
     }
 
@@ -175,6 +174,6 @@ public class StorageServiceImpl implements StorageService{
 
     @Override
     public void deleteAll() {
-        // TODO Auto-generated method stub
+
     }
 }

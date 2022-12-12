@@ -17,13 +17,13 @@ public class ScanHistoryDto {
 
     public static ScanHistoryDto toDto(final ScanHistory entity) {
         return ScanHistoryDto.builder()
-                .id(entity.getId())
+                .id(entity.getHistorySeq())
                 .build();
     }
 
     public static ScanHistory toEntity(final ScanHistoryDto dto){
         return ScanHistory.builder()
-                .id(dto.getId())
+                .historySeq(dto.getId())
                 .build();
     }
 }

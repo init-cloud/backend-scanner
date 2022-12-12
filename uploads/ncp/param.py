@@ -1,4 +1,4 @@
-import json, pymysql
+import json, pymysql, os
 
 class Parameters():
     def get_param_env(self, rule_id: str) -> list:
@@ -8,7 +8,7 @@ class Parameters():
         return obj.get('custom')
 
     def get_param_db(self, rule_id: str) -> str:
-        conn = pymysql.connect(host='localhost', port=9002, user='root', password='root', db='initcloud', charset='utf8')
+        conn = pymysql.connect(host='localhost', port=int(os.environ['DB_PORT']), user='root', password='root', db='initcloud', charset='utf8')
         cur = conn.cursor()
 
         sql = f'SELECT custom_detail FROM custom_rule WHERE rule_id = %s'

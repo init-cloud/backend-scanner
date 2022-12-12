@@ -6,7 +6,7 @@ plugins {
 }
 
 group = 'scanner'
-version = '1.0.4'
+version = '1.0.5'
 sourceCompatibility = '11'
 
 configurations {
@@ -38,6 +38,7 @@ dependencies {
 	implementation 'commons-codec:commons-codec:1.14'
 	implementation 'org.apache.commons:commons-compress:1.21'
 	implementation 'org.mapstruct:mapstruct-processor:1.5.3.Final'
+	//implementation 'org.apache.tomcat:tomcat-util:10.1.4'
 
 	implementation 'org.mariadb.jdbc:mariadb-java-client:3.0.8'
 

@@ -33,4 +33,11 @@ public class TagDto {
                 .tag(dto.getTag())
                 .build();
     }
+
+    public static TagDto toString(final Tag entity) {
+        return TagDto.builder()
+                .tagId(entity.getId())
+                .tag(entity.getTag())
+                .build();
+    }
 }
