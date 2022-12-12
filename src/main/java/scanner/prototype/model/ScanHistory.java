@@ -112,7 +112,7 @@ public class ScanHistory {
                         .medium((int)total[2])
                         .low((int)total[3])
                         .unknown((int)total[4])
-                        .csp(Env.getCSPExternalPath(provider))
+                        .csp(Env.getCSP(provider))
                         .build();
     }
 }

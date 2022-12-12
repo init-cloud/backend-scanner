@@ -264,41 +264,48 @@ public class ScanService {
         int totalSeverity = 0;
 
         for(int i = 0 ; i < results.size(); i++){
-            ResultResponse result = results.get(i);
-            total += 1;
-            totalSeverity += 1;
-            switch(result.getLevel()){
-                case "High":
-                    if(result.getStatus() == "passed"){
-                        success += 1;
-                        severity += 3;
-                        count[1] += 1;
-                    }
+            try{
+                ResultResponse result = results.get(i);
 
-                case "Medium":
-                    if(result.getStatus() == "passed"){
-                        success += 1;
-                        severity += 2;
-                        count[2] += 1;
-                    }
-                        
-                case "Low":
-                    if(result.getStatus() == "passed"){
-                        success += 1;
-                        severity += 1;
-                        count[3] += 1;
-                    }
-                        
-                default:
-                    if(result.getStatus() == "passed"){
-                        success += 1;
-                        severity += 1;
-                        count[4] += 1;
-                    }
+                total += 1;
+
+                switch(result.getLevel()){
+                    case "High":
+                        if(result.getStatus() == "passed"){
+                            success += 1;
+                            severity += 3;
+                            count[1] += 1;
+                        }
+                        totalSeverity += 3;
+                    case "Medium":
+                        if(result.getStatus() == "passed"){
+                            success += 1;
+                            severity += 2;
+                            count[2] += 1;
+                        }
+                        totalSeverity += 2;
+                    case "Low":
+                        if(result.getStatus() == "passed"){
+                            success += 1;
+                            severity += 1;
+                            count[3] += 1;
+                        }
+                        totalSeverity += 1;
+                    default:
+                        if(result.getStatus() == "passed"){
+                            success += 1;
+                            severity += 1;
+                            count[4] += 1;
+                        }
+                        totalSeverity += 1;
+                }
+            }
+            catch(NullPointerException e){
+                continue;
             }
         }
 
-        count[0] = (double) ((success * severity) / (total * totalSeverity)) * 100;
+        count[0] = ((double) ((success * severity) / (total * totalSeverity)) * 100);
 
         return count;
     }
