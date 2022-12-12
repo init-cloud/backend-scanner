@@ -10,23 +10,19 @@ public class ApiResponse<T> {
 
     private final static int SUCCESS = 200;
     private final static int BAD_REQUEST = 400;
-    private final static int NOT_FOUND = 404;
-    private final static int FAILED = 500;
     private final static String SUCCESS_MESSAGE = "SUCCESS";
-    private final static String NOT_FOUND_MESSAGE = "NOT FOUND";
     private final static String SERVER_FAILED_MESSAGE = "서버에서 오류가 발생하였습니다.";
     private final static String BAD_REQUEST_MESSAGE = "잘못된 요청입니다.";
 
     private final ApiResponseHeader header;
-    private final ScanResponse<?> scan;
+    private final T scan;
     
-
     public static <T> ApiResponse<T> success(
         String name, 
         T body
     ) {
         return new ApiResponse(
-            new ApiResponseHeader(SUCCESS, SUCCESS_MESSAGE), (ScanResponse)body);
+            new ApiResponseHeader(SUCCESS, SUCCESS_MESSAGE), body);
     }
 
     public static <T> ApiResponse<T> fail(int errorCode) {

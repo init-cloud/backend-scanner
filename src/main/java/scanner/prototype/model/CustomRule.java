@@ -14,6 +14,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -22,12 +23,14 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 import scanner.prototype.dto.TagDto;
 import scanner.prototype.model.enums.Provider;
 
 
 @Builder
 @Data
+@ToString(exclude = "compliance")
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
@@ -43,11 +46,17 @@ public class CustomRule {
     @Size(max = 16)
     private String ruleId;
 
+    @Builder.Default
     @OneToMany(mappedBy = "ruleSeq")
     private List<Tag> tag = new ArrayList<Tag>();
 
+    @Builder.Default
     @OneToMany(mappedBy = "ruleSeq")
     private List<Compliance> compliance = new ArrayList<Compliance>();
+
+    @Builder.Default
+    @OneToMany(mappedBy = "ruleSeq")
+    private List<ScanHistoryDetail> historyDetails = new ArrayList<ScanHistoryDetail>();
 
     @Column(name = "DEFAULT_RULE_ID", updatable=false)
     @NotNull

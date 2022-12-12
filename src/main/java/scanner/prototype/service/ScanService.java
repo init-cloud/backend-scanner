@@ -5,11 +5,11 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import javax.transaction.Transactional;
 
 import org.apache.tomcat.util.http.fileupload.FileUtils;
 import org.json.simple.parser.ParseException;
@@ -17,12 +17,13 @@ import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
 import scanner.prototype.dto.CheckListDetailDto;
-import scanner.prototype.dto.ScanHistoryDto;
-import scanner.prototype.dto.ScanReportDto;
 import scanner.prototype.env.Env;
 import scanner.prototype.exception.ScanException;
 import scanner.prototype.model.CustomRule;
 import scanner.prototype.model.ScanHistory;
+import scanner.prototype.model.ScanHistoryDetail;
+import scanner.prototype.repository.CheckListRepository;
+import scanner.prototype.repository.ScanHistoryDetailsRepository;
 import scanner.prototype.repository.ScanHistoryRepository;
 import scanner.prototype.response.CheckResponse;
 import scanner.prototype.response.ParseResponse;
@@ -37,6 +38,8 @@ public class ScanService {
     private final ParserRequest parserReq;
     private final CheckListService checkListService;
     private final ScanHistoryRepository scanHistoryRepository;
+    private final ScanHistoryDetailsRepository scanHistoryDetailsRepository;
+    private final CheckListRepository checkListRepository;
 
     /**
      * 
@@ -47,35 +50,64 @@ public class ScanService {
     public ScanResponse<?> scanTerraform(String[] args, String provider) 
     throws Exception 
     {
-        String fileUploadPath = Env.UPLOAD_PATH.getValue();
-        ScanResponse<?> scanResult;
-        Process p;
-        
         try {
             List<CustomRule> offRules = checkListService.retrieveOffEntity();
             String offStr = getSkipCheckCmd(offRules);
+            String fileUploadPath = Env.UPLOAD_PATH.getValue();
             File file = new File(fileUploadPath + File.separator + args[1]);
-            String[] cmd = {"bash", "-l", "-c", Env.SHELL_COMMAND_RAW.getValue() + args[1] + File.separator + Env.getCSPExternalPath(provider) + offStr};
             
-            p = Runtime.getRuntime().exec(cmd);
-            BufferedReader br = new BufferedReader(
-                new InputStreamReader(p.getInputStream()));
+            String[] cmd = {"bash", "-l", "-c", Env.SHELL_COMMAND_RAW.getValue() + args[1] + File.separator + Env.getCSPExternalPath(provider) + offStr};
+            Process p = Runtime.getRuntime().exec(cmd);
+            BufferedReader br = new BufferedReader(new InputStreamReader(p.getInputStream()));
+            ScanResponse<?> scanResult = resultToJson(br, args[1], provider);
 
-            scanResult = resultToJson(br, args[1], provider);
-            FileUtils.deleteDirectory(file);
             p.waitFor();
             p.destroy();
 
-            ScanHistory scan = new ScanHistory(null, LocalDateTime.now(), LocalDateTime.now(), args[1], args[0], "aws", 
-                scanResult.getCheck().getPassed(), scanResult.getCheck().getSkipped(), scanResult.getCheck().getFailed(), 0.0);
-
-            scanHistoryRepository.save(scan);
-
+            save(scanResult.getCheck(), scanResult.getResult(), args, provider);
+            FileUtils.deleteDirectory(file);
             return scanResult;
         } catch (Exception e) {
+            e.printStackTrace();
             throw new ScanException("Scan Error.");
         }
     }
+
+    /**
+     * 
+     * @param scanResult
+     * @param scanDetail
+     * @param args
+     * @param provider
+     * @return
+     */
+    @Transactional
+    public boolean save(CheckResponse scanResult, List<ResultResponse> scanDetail, String[] args, String provider) 
+    {
+        try {
+            ScanHistory scan = ScanHistory.toEntity(args, provider, scanResult.getPassed(), scanResult.getSkipped(), scanResult.getFailed(), 0.0, provider);
+
+            scan = scanHistoryRepository.save(scan);
+
+            List<ScanHistoryDetail> details = new ArrayList<>();
+
+            for(int i = 0 ; i < scanDetail.size() ; i++){
+                CustomRule saveRule = checkListRepository.findByRuleId(scanDetail.get(i).getRule_id());
+
+                if(saveRule == null || saveRule.getId() == null)
+                    continue;
+                    
+                details.add(ScanHistoryDetail.toEntity(scanDetail.get(i), saveRule, scan));
+            }
+
+            scanHistoryDetailsRepository.saveAll(details);
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
 
     /**
      * 

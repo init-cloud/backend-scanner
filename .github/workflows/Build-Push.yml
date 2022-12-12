@@ -30,11 +30,11 @@ jobs:
       - name: Docker build
         run: |
             DATE=$(date "+%y.%m.%d")
-            docker build -t ${{ secrets.REGISTRY_002 }}/scanner_api:v2 .
-            docker build -t ${{ secrets.REGISTRY_002 }}/scanner_api:v2-$DATE .
+            docker build -t ${{ secrets.REGISTRY_002 }}/scanner_api_v2:latest .
+            docker build -t ${{ secrets.REGISTRY_002 }}/scanner_api_v2:$DATE .
 
       - name: Docker push
         run: |
             DATE=$(date "+%y.%m.%d")
-            docker push ${{ secrets.REGISTRY_002 }}/scanner_api:v2
-            docker push ${{ secrets.REGISTRY_002 }}/scanner_api:v2-$DATE 
+            docker push ${{ secrets.REGISTRY_002 }}/scanner_api_v2:latest
+            docker push ${{ secrets.REGISTRY_002 }}/scanner_api_v2:$DATE 

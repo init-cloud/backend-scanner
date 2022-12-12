@@ -1,12 +1,15 @@
 package scanner.prototype.model;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
@@ -24,9 +27,9 @@ import lombok.NoArgsConstructor;
 public class ScanHistory {
     
     @Id
-    @Column(name = "HISTORY_SEQ", updatable=false)
+    @Column(name = "HISTORY_SEQ")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long historySeq;
 
     @Column(name = "CREATED_AT", updatable=false)
     @NotNull
@@ -35,6 +38,10 @@ public class ScanHistory {
     @Column(name = "MODIFIED_AT")
     @NotNull
     private LocalDateTime modifiedAt;
+
+    @Builder.Default
+    @OneToMany(mappedBy = "historySeq")
+    private List<ScanHistoryDetail> details = new ArrayList<ScanHistoryDetail>();
 
     @Column(name = "FILE_NAME")
     @NotNull
@@ -63,4 +70,24 @@ public class ScanHistory {
     @Column(name = "SCORE")
     @NotNull
     private Double score;
+
+
+    public static ScanHistory toEntity(
+        String[] args,
+        String csp,
+        Integer passed,
+        Integer skipped,
+        Integer failed,
+        Double score,
+        String provider
+    ){
+        return ScanHistory.builder()
+                        .createdAt(LocalDateTime.now())
+                        .modifiedAt(LocalDateTime.now())
+                        .fileName(args[1])
+                        .fileHash(args[0])
+                        .score(score)
+                        .csp(provider)
+                        .build();
+    }
 }

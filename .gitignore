@@ -38,13 +38,14 @@ out/
 
 
 ### etc ###
-.env
+/.env
 *.pyc
-/server.sh
-*.txt
-*.out
-*.json
+/*.sh
+/*.txt
+/*.out
+/*.json
 !uploads/aws/
 !uploads/ncp/
 !uploads/test/
 uploads/
+*.java.tmp

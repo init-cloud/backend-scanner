@@ -45,6 +45,10 @@ public class Compliance {
     @NotNull
     private LocalDateTime modifiedAt;
 
+    @Column(name = "COMPLIANCE_NAME")
+    @NotNull
+    private String complianceName;
+
     @Column(name = "COMPLIANCE_NUMBER")
     @NotNull
     @Size(max = 8)
@@ -60,7 +64,7 @@ public class Compliance {
     @Size(max = 128)
     private String article;
 
-    @Column(name = "DECRIPTION")
+    @Column(name = "DESCRIPTION")
     private String description;
 
     @Column(name = "DETAIL")
