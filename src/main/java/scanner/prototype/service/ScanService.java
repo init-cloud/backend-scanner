@@ -63,8 +63,9 @@ public class ScanService {
 
             p.waitFor();
             p.destroy();
+            double[] totalCount = calc(scanResult.getResult());
 
-            save(scanResult.getCheck(), scanResult.getResult(), args, provider);
+            save(scanResult.getCheck(), scanResult.getResult(), args, provider, totalCount);
             FileUtils.deleteDirectory(file);
             return scanResult;
         } catch (Exception e) {
@@ -82,10 +83,10 @@ public class ScanService {
      * @return
      */
     @Transactional
-    public boolean save(CheckResponse scanResult, List<ResultResponse> scanDetail, String[] args, String provider) 
+    public boolean save(CheckResponse scanResult, List<ResultResponse> scanDetail, String[] args, String provider, double[] total) 
     {
         try {
-            ScanHistory scan = ScanHistory.toEntity(args, provider, scanResult.getPassed(), scanResult.getSkipped(), scanResult.getFailed(), 0.0, provider);
+            ScanHistory scan = ScanHistory.toEntity(args, provider, scanResult.getPassed(), scanResult.getSkipped(), scanResult.getFailed(), total, provider);
 
             scan = scanHistoryRepository.save(scan);
 
@@ -99,8 +100,8 @@ public class ScanService {
                     
                 details.add(ScanHistoryDetail.toEntity(scanDetail.get(i), saveRule, scan));
             }
-
             scanHistoryDetailsRepository.saveAll(details);
+
             return true;
         } catch (Exception e) {
             e.printStackTrace();
@@ -247,5 +248,58 @@ public class ScanService {
             }
         }
         return offStr;
+    }
+
+    /**
+     * 
+     * @param results
+     * @return
+     */
+    private double[] calc(List<ResultResponse> results){
+        /* score, high, medium, low, unknown */
+        double[] count = {0.0, 0.0, 0.0, 0.0, 0.0};
+        int success = 0;
+        int total = 0;
+        int severity = 0;
+        int totalSeverity = 0;
+
+        for(int i = 0 ; i < results.size(); i++){
+            ResultResponse result = results.get(i);
+            total += 1;
+            totalSeverity += 1;
+            switch(result.getLevel()){
+                case "High":
+                    if(result.getStatus() == "passed"){
+                        success += 1;
+                        severity += 3;
+                        count[1] += 1;
+                    }
+
+                case "Medium":
+                    if(result.getStatus() == "passed"){
+                        success += 1;
+                        severity += 2;
+                        count[2] += 1;
+                    }
+                        
+                case "Low":
+                    if(result.getStatus() == "passed"){
+                        success += 1;
+                        severity += 1;
+                        count[3] += 1;
+                    }
+                        
+                default:
+                    if(result.getStatus() == "passed"){
+                        success += 1;
+                        severity += 1;
+                        count[4] += 1;
+                    }
+            }
+        }
+
+        count[0] = (double) ((success * severity) / (total * totalSeverity)) * 100;
+
+        return count;
     }
 }
