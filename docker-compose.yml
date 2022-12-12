@@ -28,7 +28,7 @@ services:
     restart: always
   initcloud_parser:
     container_name: initcloud_parser
-    image: floodnut/parser_api 
+    image: floodnut/parser_api
     volumes:
       - ./volume/uploads:/app/uploads
     ports:
@@ -37,7 +37,7 @@ services:
      - .env
   initcloud_scanner:
     container_name: initcloud_scanner
-    image: floodnut/scanner_api
+    image: floodnut/scanner_api_v2
     volumes:
       - ./volume/uploads:/app/uploads
     ports:
