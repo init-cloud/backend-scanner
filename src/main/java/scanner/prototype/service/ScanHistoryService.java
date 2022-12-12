@@ -42,8 +42,6 @@ public class ScanHistoryService {
 
         ScanHistory history = scanHistoryRepository.findByHistorySeq(reportId);
 
-        System.out.println(history.getHistorySeq());
-
         List<ScanHistoryDetail> details = scanHistoryDetailsRepository.findByHistorySeq(reportId);
 
         ScanSummaryDto summaryDto = ScanSummaryDto.toDto(history);

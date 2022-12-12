@@ -22,7 +22,7 @@ public class ApiLandingController {
         api.put("checklist", "/api/v1/checklist");
         api.put("scan", "/api/v1/file/{provider}");
         api.put("history", "/api/v1/history");
-        api.put("report", "/api/v1/report");
+        api.put("report", "/api/v1/report/{reportId}");
         return ResponseEntity.ok().body(api);
     }
 
@@ -32,7 +32,7 @@ public class ApiLandingController {
         api.put("checklist", "/api/v1/checklist");
         api.put("scan", "/api/v1/file/{provider}");
         api.put("history", "/api/v1/history");
-        api.put("report", "/api/v1/report");
+        api.put("report", "/api/v1/report/{reportId}");
         return ResponseEntity.ok().body(api);
     }
 }
