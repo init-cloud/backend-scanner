@@ -31,4 +31,19 @@ public enum Env {
         else
             return NONE_EXTERNAL_CHECK.getValue();
     }
+
+    public static String getCSP(String provider){
+
+        if(provider.hashCode() == "aws".hashCode())
+            return "aws";
+
+        else if (provider.hashCode() == "ncloud".hashCode() || provider.hashCode() == "ncp".hashCode())
+            return "ncloud";
+
+        else if(provider.hashCode() == "openstack".hashCode())
+            return "openstack";
+
+        else
+            return "none";
+    }
 }
