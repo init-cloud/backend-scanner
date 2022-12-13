@@ -46,6 +46,7 @@ public class ScanHistoryDetailDto {
 
         return ScanHistoryDetailDto.builder()
                                     .ruleID(rule.getRuleId())
+                                    .description(rule.getDescription())
                                     .result(entity.getScanResult())
                                     .severity(rule.getLevel())
                                     .type(tag)
