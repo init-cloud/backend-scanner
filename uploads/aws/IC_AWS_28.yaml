@@ -1,0 +1,40 @@
+metadata:
+  name: "Do not declare aws_route.route and aws_route_table together."
+  id: "IC_AWS_28"
+  category: "GENERAL_SECURITY"
+definition:
+  and:
+    - cond_type: filter
+      attribute: resource_type
+      value:
+        - aws_route_table
+      operator: within
+    - or:
+        - and:
+            - cond_type: connection
+              resource_types:
+                - aws_route
+              connected_resource_types:
+                - aws_route_table
+              operator: exists
+            - cond_type: attribute
+              resource_types:
+                - aws_route_table
+              attribute: route
+              operator: not_exists
+        - and:
+            - cond_type: connection
+              resource_types:
+                - aws_route
+              connected_resource_types:
+                - aws_route_table
+              operator: not_exists
+            - cond_type: attribute
+              resource_types:
+                - aws_route_table
+              attribute: route
+              operator: exists
+
+
+
+

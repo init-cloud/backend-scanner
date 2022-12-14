@@ -44,8 +44,11 @@ out/
 /*.txt
 /*.out
 /*.json
-!uploads/aws/
-!uploads/ncp/
-!uploads/test/
-uploads/
+!/uploads/aws/
+!/uploads/ncp/
+!/uploads/openstack/
+!/uploads/none/
+/uploads/test/
+*.tf
+*.txt
 *.java.tmp
