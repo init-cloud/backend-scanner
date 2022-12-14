@@ -8,12 +8,12 @@ import lombok.Getter;
 public enum Env {
     UPLOAD_PATH("/app/uploads"),
     PARSE_API("http://initcloud_parser:8000/api/v2"),
-    SHELL_COMMAND_RAW("checkov --directory ./uploads/"),
+    SHELL_COMMAND_RAW("checkov --directory /app/uploads/"),
 
-    AWS_EXTERNAL_CHECK(" --external-checks-dir ./uploads/aws"),
-    NCP_EXTERNAL_CHECK(" --external-checks-dir ./uploads/ncp"),
-    OPEN_EXTERNAL_CHECK(" --external-checks-dir ./uploads/openstack"),
-    NONE_EXTERNAL_CHECK(" --external-checks-dir ./uploads/none");
+    AWS_EXTERNAL_CHECK(" --external-checks-dir /app/external/aws"),
+    NCP_EXTERNAL_CHECK(" --external-checks-dir /app/external/ncp"),
+    OPEN_EXTERNAL_CHECK(" --external-checks-dir /app/external/openstack"),
+    NONE_EXTERNAL_CHECK(" --external-checks-dir /app/external/none");
 
     private final String value;
 

@@ -56,7 +56,8 @@ public class ScanService {
             String fileUploadPath = Env.UPLOAD_PATH.getValue();
             File file = new File(fileUploadPath + File.separator + args[1]);
             
-            String[] cmd = {"bash", "-l", "-c", Env.SHELL_COMMAND_RAW.getValue() + args[1] + File.separator + Env.getCSPExternalPath(provider) + offStr};
+            String[] cmd = {"bash", "-l", "-c", Env.SHELL_COMMAND_RAW.getValue() + args[1] + Env.getCSPExternalPath(provider) + offStr};
+
             Process p = Runtime.getRuntime().exec(cmd);
             BufferedReader br = new BufferedReader(new InputStreamReader(p.getInputStream()));
             ScanResponse<?> scanResult = resultToJson(br, args[1], provider);
