@@ -47,6 +47,7 @@ public class ScanSummaryDto {
         return ScanSummaryDto.builder()
                         .historySeq(entity.getHistorySeq())
                         .date(entity.getCreatedAt().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")))
+                        .CSP(entity.getCsp())
                         .scanTarget(entity.getFileName())
                         .scanTargetHash(entity.getFileHash())
                         .totalScanned(entity.getPassed() + entity.getFailed() + entity.getSkipped())
