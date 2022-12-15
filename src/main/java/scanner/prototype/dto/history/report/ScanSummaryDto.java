@@ -1,8 +1,10 @@
 package scanner.prototype.dto.history.report;
 
 import java.time.format.DateTimeFormatter;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -30,23 +32,22 @@ public class ScanSummaryDto {
     private Integer low;
     private Integer unknown;
     private Double score;
-    private Map<String, Integer> failedResource;
-    private Map<String, Integer> failedCompliance;
-    private Map<String, Integer> failedSecurityThreat;
+    private List<FailedDto> failedResource;
+    private List<FailedDto> failedCompliance;
+    private List<FailedDto> failedSecurityThreat;
 
     public static ScanSummaryDto toDto(ScanHistory entity){
         
         List<ScanHistoryDetail> details = entity.getDetails();
 
-        Map<String, Integer> resource = FailedResourceDto.toDto(details);
-
-        Map<String, Integer> compliance = null;
-        
-        Map<String, Integer> threat = null;
+        LinkedHashMap<String, Integer> resource = FailedResourceDto.toMapDto(details);
+        LinkedHashMap<String, Integer> compliance = FailedComplianceDto.toMapDto(details);
+        LinkedHashMap<String, Integer> threat = FailedThreatDto.toMapDto(details);
 
         return ScanSummaryDto.builder()
                         .historySeq(entity.getHistorySeq())
                         .date(entity.getCreatedAt().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")))
+                        .CSP(entity.getCsp())
                         .scanTarget(entity.getFileName())
                         .scanTargetHash(entity.getFileHash())
                         .totalScanned(entity.getPassed() + entity.getFailed() + entity.getSkipped())
@@ -58,9 +59,9 @@ public class ScanSummaryDto {
                         .low(entity.getLow())
                         .unknown(entity.getUnknown())
                         .score(entity.getScore())
-                        .failedResource(resource)
-                        .failedCompliance(compliance)
-                        .failedSecurityThreat(threat)
+                        .failedResource(FailedDto.mapToDtp(resource))
+                        .failedCompliance(FailedDto.mapToDtp(compliance))
+                        .failedSecurityThreat(FailedDto.mapToDtp(threat))
                         .build();
     }
 }
