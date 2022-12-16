@@ -7,8 +7,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import scanner.prototype.dto.TagDto;
-import scanner.prototype.model.Compliance;
 import scanner.prototype.model.CustomRule;
 import scanner.prototype.model.ScanHistoryDetail;
 import scanner.prototype.model.Tag;
@@ -37,7 +35,7 @@ public class ScanHistoryDetailDto {
 
     public static ScanHistoryDetailDto toDto(final ScanHistoryDetail entity){
         CustomRule rule = entity.getRuleSeq();
-        List<ComplianceDto> compliance = null;
+        List<ComplianceDto> compliance = rule.getCompliance().stream().map(ComplianceDto::toDto).collect(Collectors.toList());
 
         List<String> tag = rule.getTag()
                                 .stream()

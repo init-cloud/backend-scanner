@@ -104,7 +104,7 @@ public class ScanHistory {
                         .passed(passed)
                         .skipped(skipped)
                         .failed(failed)
-                        .fileName(args[1])
+                        .fileName(args[2])
                         .fileHash(args[0])
                         .score(total[0])
                         .high((int)total[1])

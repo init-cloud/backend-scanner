@@ -44,8 +44,6 @@ public class ScanHistoryController {
         catch(Exception e){
             return ApiResponse.fail();
         }
-
-        
     }
 
     /**

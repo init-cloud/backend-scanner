@@ -1,5 +1,5 @@
 from NACLInboundCheck import NACLInboundCheck
-from param import Parameters
+from DB import Parameters
 
 
 class NACLInbound21(NACLInboundCheck):
