@@ -316,7 +316,7 @@ public class ScanService {
         if(down == 0.0)
             count[0] = 0.0;
         else
-            count[0] = Math.round((double)(total * totalSeverity)/ down) * 10 / 10.0;
+            count[0] = Math.round((double)(success * severity * 100.0)/(double)down) * 10.0 / 10.0;
 
         return count;
     }
