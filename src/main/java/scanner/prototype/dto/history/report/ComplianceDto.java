@@ -5,21 +5,24 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import scanner.prototype.model.Compliance;
 
-import scanner.prototype.model.CustomRule;
 
 @Builder
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class ComplianceDto {
-    private String name;
+    private String compliance;
+    private String complianceNumber;
+    private String description;
 
-    public static ComplianceDto toDto(final CustomRule entity) {
-
-        //List<Compliance> compl = entity.getCompliance();
+    public static ComplianceDto toDto(final Compliance entity) {
 
         return ComplianceDto.builder()
+                            .compliance(entity.getComplianceName())
+                            .complianceNumber(entity.getComplianceNumber())
+                            .description(entity.getDescription())
                             .build();
     }
 }

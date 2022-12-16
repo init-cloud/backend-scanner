@@ -1,6 +1,7 @@
 package scanner.prototype.dto.history.report;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -40,6 +41,6 @@ public class ScanDetailDto {
         this.resource = entity.getResource();
         this.resourceName = entity.getResourceName();
         this.problematicCode = entity.getCode();
-        this.unfulfilledCompliance = null;
+        this.unfulfilledCompliance = rule.getCompliance().stream().map(ComplianceDto::toDto).collect(Collectors.toList());
     }
 }

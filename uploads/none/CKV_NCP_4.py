@@ -1,5 +1,5 @@
 from AccessControlGroupInboundRule import AccessControlGroupInboundRule
-from param import Parameters
+from DB import Parameters
 
 
 class AccessControlGroupRuleInboundPort22(AccessControlGroupInboundRule):

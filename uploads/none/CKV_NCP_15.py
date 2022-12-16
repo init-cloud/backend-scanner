@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from checkov.common.models.enums import CheckResult, CheckCategories
 from checkov.terraform.checks.resource.base_resource_check import BaseResourceCheck
-from param import Parameters
+from DB import Parameters
 
 
 class LBTargetGroupUsingHTTPS(BaseResourceCheck):

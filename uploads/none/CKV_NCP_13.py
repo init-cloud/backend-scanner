@@ -1,7 +1,7 @@
-
 from checkov.common.models.enums import CheckCategories, CheckResult
 from checkov.terraform.checks.resource.base_resource_check import BaseResourceCheck
-from param import Parameters
+from DB import Parameters
+
 
 class LBListenerUsesSecureProtocols(BaseResourceCheck):
 

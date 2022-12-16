@@ -43,7 +43,7 @@ public class StorageServiceImpl implements StorageService{
     @Override
     public String[] store(MultipartFile file){
         try {
-            String[] result = {null, null};
+            String[] result = {null, null, null};
             UUID uniqName = UUID.randomUUID();
             String saved = uniqName.toString();
             Path root = Paths.get(uploadPath + saved);
@@ -75,6 +75,7 @@ public class StorageServiceImpl implements StorageService{
 
                 result[0] = fileHash;
                 result[1] = saved;
+                result[2] = file.getOriginalFilename();
 
                 return result;
             }
