@@ -14,9 +14,9 @@ assignees: ''
 작업 브랜치 명 작성
 
 **Adjust Source**
-- [ ] git
-- [ ] workflows
-- [ ] template
+- [ ] Git
+- [ ] Workflows
+- [ ] Template
 - [ ] Production
 - [ ] Others
 
