@@ -1,4 +1,4 @@
-package scanner.env;
+package scanner.common;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

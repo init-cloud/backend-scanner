@@ -1,35 +1,26 @@
 package scanner.response.enums;
 
+import org.springframework.http.HttpStatus;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
-@Getter
 @AllArgsConstructor
+@Getter
 public enum ResponseCode {
 
-    /* Status */
-    STATUS_1001(1001, "Request Running."),
-
-    /* Success */
-    STATUS_2001(2000, "Request done."),
-    STATUS_2002(2001, "Access."),
-    STATUS_2003(2002, "Authenticated."),
-
-    /* Redirection. */
-    STATUS_3001(3001, "Redirected."),
-
     /* Invalid Request */
-    STATUS_4001(4001, "Expired."),
-    STATUS_4002(4002, "Invalid Image format."),
-    STATUS_4003(4003, "Invalid Token."),
-    STATUS_4004(4004, "Request invalid data."),
-    STATUS_4005(4005, "Data missing."),
-    STATUS_4007(4007, "Invalid Data recevied."),
-
+    STATUS_4001(4001, HttpStatus.UNAUTHORIZED,"Expired."),
+    STATUS_4002(4002, HttpStatus.UNAUTHORIZED,"Invalid Token."),
+    STATUS_4003(4003, HttpStatus.BAD_REQUEST,"Invalid Scan Provider."),
+    STATUS_4004(4004, HttpStatus.BAD_REQUEST,"Invalid File Format."),
+    STATUS_4005(4005, HttpStatus.BAD_REQUEST,"Data missing."),
+    STATUS_4007(4007, HttpStatus.BAD_REQUEST,"Invalid Request."),
     /* Server Error. */
-    STATUS_5001(5001, "Server busy."),
-    STATUS_5100(5100, "Unknown error.");
+    STATUS_5001(5001, HttpStatus.INTERNAL_SERVER_ERROR,"Server busy."),
+    STATUS_5100(5100, HttpStatus.INTERNAL_SERVER_ERROR,"Unknown error.");
 
     private final int code;
+    private final HttpStatus httpStatus;
     private final String message;
 }

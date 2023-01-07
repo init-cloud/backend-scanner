@@ -14,7 +14,7 @@ import org.json.simple.parser.ParseException;
 import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
-import scanner.env.Env;
+import scanner.common.Env;
 
 
 @Service
