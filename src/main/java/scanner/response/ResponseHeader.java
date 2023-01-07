@@ -9,8 +9,9 @@ import lombok.Getter;
 @AllArgsConstructor
 @Builder
 @Getter
-public class ResponseHeader {
-    private Boolean isSuccess;
-    private int code;
-    private String message;
+public class ResponseHeader<T> {
+    private final Boolean success;
+    private final T data;
+
+    private final Object error;
 }
