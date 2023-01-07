@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import lombok.RequiredArgsConstructor;
+import scanner.response.CommonResponse;
 
 
 @RestController
@@ -24,7 +25,8 @@ public class ApiLandingController {
         api.put("history", "/api/v1/history");
         api.put("report", "/api/v1/report/{reportId}");
 
-        return ResponseEntity.ok().body(api);
+        return ResponseEntity.ok()
+                .body(new CommonResponse(api));
     }
 
     @GetMapping("/api/v1")
@@ -35,6 +37,7 @@ public class ApiLandingController {
         api.put("history", "/api/v1/history");
         api.put("report", "/api/v1/report/{reportId}");
 
-        return ResponseEntity.ok().body(api);
+        return ResponseEntity.ok()
+                .body(new CommonResponse(api));
     }
 }

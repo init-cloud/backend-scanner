@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import lombok.RequiredArgsConstructor;
 import scanner.dto.history.HistoryDto;
+import scanner.response.CommonResponse;
 import scanner.response.ReportResponse;
 import scanner.service.ScanHistoryService;
 import scanner.model.ScanHistory;
@@ -33,14 +34,12 @@ public class ScanHistoryController {
         try{
             List<ScanHistory> history = scanHistoryService.retrieveHistoryList();
 
-            List<HistoryDto> scan = history.stream()
+            List<HistoryDto> dtos = history.stream()
                                             .map(HistoryDto::new)
                                             .collect(Collectors.toList());
 
-            if(scan == null || scan.size() == 0)
-                return ResponseEntity.ok().body(new ArrayList<>());
-
-            return ResponseEntity.ok().body(scan);
+            return ResponseEntity.ok()
+                    .body(new CommonResponse(dtos));
         }
         catch(Exception e){
             return ResponseEntity.badRequest().body(null);
@@ -56,8 +55,9 @@ public class ScanHistoryController {
     public ResponseEntity<?> retrieveReport(
         @PathVariable Long reportId
     ){
-        ReportResponse report = scanHistoryService.retrieveReport(reportId);
+        ReportResponse dtos = scanHistoryService.retrieveReport(reportId);
 
-        return ResponseEntity.ok().body(report);
+        return ResponseEntity.ok()
+                .body(new CommonResponse(dtos));
     }
 }
