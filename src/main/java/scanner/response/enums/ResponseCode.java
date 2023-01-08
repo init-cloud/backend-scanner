@@ -18,6 +18,7 @@ public enum ResponseCode {
     STATUS_4007(4007, HttpStatus.BAD_REQUEST,"Invalid Request."),
     /* Server Error. */
     STATUS_5001(5001, HttpStatus.INTERNAL_SERVER_ERROR,"Server busy."),
+    STATUS_5002(5002, HttpStatus.INTERNAL_SERVER_ERROR,"Scan Error."),
     STATUS_5100(5100, HttpStatus.INTERNAL_SERVER_ERROR,"Unknown error.");
 
     private final int code;
