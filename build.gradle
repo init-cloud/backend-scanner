@@ -25,6 +25,7 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-data-rest'
 	implementation 'org.springframework.boot:spring-boot-starter-validation'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
+	implementation 'org.springframework.boot:spring-boot-starter-security'
 
 	implementation 'io.jsonwebtoken:jjwt-api:0.11.2'
 	implementation 'io.jsonwebtoken:jjwt-gson:0.11.2'
@@ -38,8 +39,6 @@ dependencies {
 	implementation 'commons-codec:commons-codec:1.14'
 	implementation 'org.apache.commons:commons-compress:1.21'
 	implementation 'org.mapstruct:mapstruct-processor:1.5.3.Final'
-	//implementation 'org.apache.tomcat:tomcat-util:10.1.4'
-
 	implementation 'org.mariadb.jdbc:mariadb-java-client:3.0.8'
 
 	runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.2'
