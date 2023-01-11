@@ -9,12 +9,14 @@ import javax.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
+import scanner.exception.ApiException;
 import scanner.exception.CheckListException;
 import scanner.dto.CheckListDetailDto;
 import scanner.dto.CheckListSimpleDto;
 import scanner.model.CustomRule;
 import scanner.repository.CheckListRepository;
 import scanner.response.checklist.CheckListDetailResponse;
+import scanner.response.enums.ResponseCode;
 
 
 @Service
@@ -124,8 +126,11 @@ public class CheckListService {
                 return null;
             
             checkListRepository.resetRule(target.getId());
+            CustomRule rule = checkListRepository.findById(target.getId())
+                    .orElseThrow(
+                        () -> new ApiException(ResponseCode.STATUS_4007));
             
-            return new CheckListSimpleDto(checkListRepository.findById(target.getId()));
+            return new CheckListSimpleDto();
         }
         catch(CheckListException che){
             return null;

@@ -1,6 +1,7 @@
 package scanner.repository;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -11,7 +12,7 @@ import org.springframework.stereotype.Repository;
 import scanner.model.CustomRule;
 
 @Repository
-public interface CheckListRepository extends JpaRepository<CustomRule, String> {
+public interface CheckListRepository extends JpaRepository<CustomRule, Long> {
 
     // 룰 on/off, 커스텀 수정
     @Modifying
@@ -34,7 +35,7 @@ public interface CheckListRepository extends JpaRepository<CustomRule, String> {
     // 특정 id 룰만 검색
     List<CustomRule> findByIdIn(List<Long> id);
 
-    CustomRule findById(Long id);
-
     CustomRule findByRuleId(String ruleId);
+
+    Optional<CustomRule> findById(Long idd);
 }
