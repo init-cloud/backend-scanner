@@ -32,9 +32,11 @@ public class User {
     private String password;
 
     @Column(name = "ROLE_TYPE")
+    @Enumerated(EnumType.STRING)
     private RoleType roleType;
 
     @Column(name = "USER_STATE")
+    @Enumerated(EnumType.STRING)
     private UserState userState;
 
     @Column(name = "EMAIL")
