@@ -17,9 +17,10 @@ import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
 import scanner.dto.ScanResultDto;
+import scanner.exception.ApiException;
 import scanner.exception.ScanException;
 import scanner.dto.CheckListDetailDto;
-import scanner.env.Env;
+import scanner.common.Env;
 import scanner.model.CustomRule;
 import scanner.model.ScanHistory;
 import scanner.model.ScanHistoryDetail;
@@ -28,8 +29,8 @@ import scanner.repository.ScanHistoryDetailsRepository;
 import scanner.repository.ScanHistoryRepository;
 import scanner.dto.CheckResultDto;
 import scanner.dto.ParseResultDto;
-import scanner.dto.ScanResultDto;
 import scanner.response.ScanResponse;
+import scanner.response.enums.ResponseCode;
 import scanner.utils.ParserRequest;
 
 
@@ -72,7 +73,7 @@ public class ScanService {
             return scanResult;
         } catch (Exception e) {
             e.printStackTrace();
-            throw new ScanException("Scan Error.");
+            throw new ApiException(ResponseCode.STATUS_5002);
         }
     }
 

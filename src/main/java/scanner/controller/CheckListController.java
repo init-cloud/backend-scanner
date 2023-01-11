@@ -13,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import scanner.dto.CheckListDetailDto;
 import scanner.dto.CheckListSimpleDto;
 import scanner.exception.CheckListException;
+import scanner.response.CommonResponse;
 import scanner.response.checklist.CheckListDetailResponse;
 import scanner.service.CheckListService;
 
@@ -35,7 +36,8 @@ public class CheckListController {
     public ResponseEntity<?> retrieveCheckList(){
         CheckListDetailResponse dtos = checkListService.retrieve();
 
-        return ResponseEntity.ok().body(dtos);
+        return ResponseEntity.ok()
+                .body(new CommonResponse(dtos));
     }
 
 
@@ -50,7 +52,8 @@ public class CheckListController {
     ){
         CheckListDetailResponse dtos = checkListService.create(data);
 
-        return ResponseEntity.ok().body(dtos);
+        return ResponseEntity.ok()
+                .body(new CommonResponse(dtos));
     }
 
     /**
@@ -67,7 +70,8 @@ public class CheckListController {
         if(dtos == null)
             return ResponseEntity.badRequest().body("Error: dtos null.");
 
-        return ResponseEntity.ok().body(dtos);
+        return ResponseEntity.ok()
+                .body(new CommonResponse(dtos));
     }
 
     /**
@@ -84,12 +88,12 @@ public class CheckListController {
                 return ResponseEntity.badRequest().body("Error: input null data.");
 
             List<CheckListSimpleDto> dtos = checkListService.modify(data);
-                
-            return ResponseEntity.ok().body(dtos);
+
+            return ResponseEntity.ok()
+                    .body(new CommonResponse(dtos));
         }
         catch(CheckListException che){
             return ResponseEntity.badRequest().body("Error: output null data.");
         }
-
     }
 }
