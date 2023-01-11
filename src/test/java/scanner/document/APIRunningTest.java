@@ -32,31 +32,39 @@ class CheckListTest {
         this.mockMvc.perform(get("/"))
         .andDo(print())
         .andDo(document("API Running-GET",
-            responseFields( 
-                fieldWithPath("scan").type(JsonFieldType.STRING).description("Scan"),
-                fieldWithPath("checklist").type(JsonFieldType.STRING).description("Checklist"),
-                fieldWithPath("history").type(JsonFieldType.STRING).description("History"),
-                fieldWithPath("report").type(JsonFieldType.STRING).description("Report")
+            responseFields(
+                fieldWithPath("success").type(JsonFieldType.BOOLEAN).description("is Success"),
+                fieldWithPath("error").type(JsonFieldType.NULL).description("error"),
+                fieldWithPath("data.scan").type(JsonFieldType.STRING).description("Scan"),
+                fieldWithPath("data.checklist").type(JsonFieldType.STRING).description("Checklist"),
+                fieldWithPath("data.history").type(JsonFieldType.STRING).description("History"),
+                fieldWithPath("data.report").type(JsonFieldType.STRING).description("Report")
             ))
         )
-        .andExpect(jsonPath("scan").isString())
-        .andExpect(jsonPath("checklist").isString())
-        .andExpect(jsonPath("history").isString())
-        .andExpect(jsonPath("report").isString());
+        .andExpect(jsonPath("success").isBoolean())
+        .andExpect(jsonPath("error").isEmpty())
+        .andExpect(jsonPath("data.scan").isString())
+        .andExpect(jsonPath("data.checklist").isString())
+        .andExpect(jsonPath("data.history").isString())
+        .andExpect(jsonPath("data.report").isString());
 
         this.mockMvc.perform(get("/api/v1"))
             .andDo(print())
             .andDo(document("API Running-GET",
-                responseFields( 
-                    fieldWithPath("scan").type(JsonFieldType.STRING).description("Scan"),
-                    fieldWithPath("checklist").type(JsonFieldType.STRING).description("Checklist"),
-                    fieldWithPath("history").type(JsonFieldType.STRING).description("History"),
-                    fieldWithPath("report").type(JsonFieldType.STRING).description("Report")
+                responseFields(
+                    fieldWithPath("success").type(JsonFieldType.BOOLEAN).description("is Success"),
+                    fieldWithPath("error").type(JsonFieldType.NULL).description("error"),
+                    fieldWithPath("data.scan").type(JsonFieldType.STRING).description("Scan"),
+                    fieldWithPath("data.checklist").type(JsonFieldType.STRING).description("Checklist"),
+                    fieldWithPath("data.history").type(JsonFieldType.STRING).description("History"),
+                    fieldWithPath("data.report").type(JsonFieldType.STRING).description("Report")
                 ))
             )
-        .andExpect(jsonPath("scan").isString())
-        .andExpect(jsonPath("checklist").isString())
-        .andExpect(jsonPath("history").isString())
-        .andExpect(jsonPath("report").isString());
+        .andExpect(jsonPath("success").isBoolean())
+        .andExpect(jsonPath("error").isEmpty())
+        .andExpect(jsonPath("data.scan").isString())
+        .andExpect(jsonPath("data.checklist").isString())
+        .andExpect(jsonPath("data.history").isString())
+        .andExpect(jsonPath("data.report").isString());
     }
 }
