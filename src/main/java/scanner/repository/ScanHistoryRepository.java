@@ -8,7 +8,7 @@ import org.springframework.stereotype.Repository;
 import scanner.model.ScanHistory;
 
 @Repository
-public interface ScanHistoryRepository extends JpaRepository<ScanHistory, String>  {
+public interface ScanHistoryRepository extends JpaRepository<ScanHistory, Long> {
 
     ScanHistory findByHistorySeq(Long reportId); 
 

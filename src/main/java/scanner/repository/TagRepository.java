@@ -6,6 +6,6 @@ import org.springframework.stereotype.Repository;
 import scanner.model.Tag;
 
 @Repository
-public interface TagRepository extends JpaRepository<Tag, String> {
+public interface TagRepository extends JpaRepository<Tag, Long> {
     
 }
