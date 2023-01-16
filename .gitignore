@@ -52,3 +52,5 @@ out/
 *.tf
 *.txt
 *.java.tmp
+
+.DS_Store
