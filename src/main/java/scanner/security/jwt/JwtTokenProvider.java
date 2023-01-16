@@ -8,6 +8,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
+import org.springframework.beans.factory.annotation.Value;
 import scanner.model.enums.RoleType;
 import scanner.security.dto.Token;
 import scanner.security.service.CustomUserDetailService;
@@ -23,7 +24,9 @@ import java.util.Date;
 public class JwtTokenProvider {
 
     private final long expiredTime = 60 * 60 * 1000L;
-    private final Key key;
+
+    @Value("${jwt.secret}")
+    private String key;
     private final CustomUserDetailService userDetailsService;
 
     public Token create(String username, RoleType role) {
