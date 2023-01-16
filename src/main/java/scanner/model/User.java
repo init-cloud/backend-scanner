@@ -1,7 +1,11 @@
 package scanner.model;
 
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import scanner.dto.user.UserSignupDto;
 import scanner.model.enums.RoleType;
 import scanner.model.enums.UserState;
 
@@ -10,7 +14,10 @@ import java.time.LocalDateTime;
 
 
 @Getter
+@Builder
 @Entity
+@NoArgsConstructor
+@AllArgsConstructor
 public class User {
 
     @Id
@@ -46,4 +53,17 @@ public class User {
 
     @Column(name = "contact")
     private String contact;
+
+    public static User toEntity(UserSignupDto dto){
+        return User.builder()
+                .createdAt(LocalDateTime.now())
+                .modifiedAt(LocalDateTime.now())
+                .username(dto.getUsername())
+                .password(dto.getPassword())
+                .roleType(RoleType.GUEST)
+                .userState(UserState.ACTIVATE)
+                .email(dto.getEmail())
+                .contact(dto.getContact())
+                .build();
+    }
 }

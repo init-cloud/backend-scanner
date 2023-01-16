@@ -17,7 +17,10 @@ public class UsernameService implements UserService{
 
     @Override
     public Token signup(UserSignupDto dto) throws Exception{
-        return null;
+
+        User user = userRepository.save(User.toEntity(dto));
+
+        return jwtTokenProvider.create(user.getUsername(), user.getRoleType());
     }
 
     @Override

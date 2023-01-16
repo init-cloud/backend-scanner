@@ -8,4 +8,6 @@ import lombok.RequiredArgsConstructor;
 public class UserSignupDto extends UserDto{
 
     private String password;
+    private String email;
+    private String contact;
 }
