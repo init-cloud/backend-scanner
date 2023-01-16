@@ -9,7 +9,7 @@ import java.util.Arrays;
 @AllArgsConstructor
 public enum RoleType {
     ADMIN("ROLE_ADMIN"),
-    GUEST("ROLE_GUEST");
+    GUEST("ROLE_USER");
 
     private final String code;
 

@@ -25,29 +25,34 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-data-rest'
 	implementation 'org.springframework.boot:spring-boot-starter-validation'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
+	implementation 'org.springframework.boot:spring-boot-starter-security'
 
-	implementation 'io.jsonwebtoken:jjwt-api:0.11.2'
-	implementation 'io.jsonwebtoken:jjwt-gson:0.11.2'
-	implementation 'io.jsonwebtoken:jjwt-impl:0.11.0'
-	
-  	implementation 'jakarta.xml.bind:jakarta.xml.bind-api:2.3.2'
-	
-	implementation 'com.bertramlabs.plugins:hcl4j:0.4.4'
+	// https://mvnrepository.com/artifact/io.jsonwebtoken
+	implementation 'io.jsonwebtoken:jjwt:0.9.1'
+	implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
+	implementation 'io.jsonwebtoken:jjwt-gson:0.11.5'
+	implementation 'io.jsonwebtoken:jjwt-impl:0.11.5'
+	runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.5'
+
+	// https://mvnrepository.com/artifact/jakarta.xml.bind/jakarta.xml.bind-api
+  	// 2.3.2 -> 4.0.0
+	implementation 'jakarta.xml.bind:jakarta.xml.bind-api:4.0.0'
+
+	// https://mvnrepository.com/artifact/com.googlecode.json-simple/json-simple
 	implementation 'com.googlecode.json-simple:json-simple:1.1.1'
+
 	implementation 'commons-io:commons-io:2.11.0'
 	implementation 'commons-codec:commons-codec:1.14'
 	implementation 'org.apache.commons:commons-compress:1.21'
 	implementation 'org.mapstruct:mapstruct-processor:1.5.3.Final'
-	//implementation 'org.apache.tomcat:tomcat-util:10.1.4'
-
 	implementation 'org.mariadb.jdbc:mariadb-java-client:3.0.8'
 
-	runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.2'
 	runtimeOnly 'mysql:mysql-connector-java'
-	compileOnly 'org.projectlombok:lombok'
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
 
+	compileOnly 'org.projectlombok:lombok'
 	annotationProcessor 'org.projectlombok:lombok'
+
 	annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
 	annotationProcessor 'org.mapstruct:mapstruct-processor:1.5.3.Final'
 	
