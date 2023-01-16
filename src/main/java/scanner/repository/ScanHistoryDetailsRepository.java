@@ -10,7 +10,7 @@ import org.springframework.stereotype.Repository;
 import scanner.model.ScanHistoryDetail;
 
 @Repository
-public interface ScanHistoryDetailsRepository extends JpaRepository<ScanHistoryDetail, String>  {
+public interface ScanHistoryDetailsRepository extends JpaRepository<ScanHistoryDetail, Long>  {
 
     @Query(value = "SELECT * FROM scan_history_detail WHERE history_seq= :id", nativeQuery = true)
     List<ScanHistoryDetail> findByHistorySeq(@Param("id") Long id); 
