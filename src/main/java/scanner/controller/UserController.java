@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import scanner.dto.user.UserAuthenticationDto;
 import scanner.dto.user.UserSignupDto;
-import scanner.response.ResponseHeader;
 import scanner.security.dto.Token;
 import scanner.security.jwt.JwtTokenProvider;
 import scanner.service.user.UsernameService;
