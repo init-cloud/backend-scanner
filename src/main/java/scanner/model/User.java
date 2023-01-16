@@ -1,6 +1,7 @@
 package scanner.model;
 
 
+import lombok.Getter;
 import scanner.model.enums.RoleType;
 import scanner.model.enums.UserState;
 
@@ -8,6 +9,7 @@ import javax.persistence.*;
 import java.time.LocalDateTime;
 
 
+@Getter
 @Entity
 public class User {
 

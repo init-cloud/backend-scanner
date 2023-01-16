@@ -6,6 +6,6 @@ import lombok.RequiredArgsConstructor;
 
 @Getter
 @RequiredArgsConstructor
-public class UserAuthenticationDto {
-    private Long id;
+public class UserAuthenticationDto extends UserDto{
+    private String password;
 }

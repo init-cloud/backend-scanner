@@ -5,9 +5,7 @@ import lombok.RequiredArgsConstructor;
 
 @Getter
 @RequiredArgsConstructor
-public class UserSignupDto {
+public class UserSignupDto extends UserDto{
 
-    private Long id;
-    private String username;
     private String password;
 }
