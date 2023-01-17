@@ -37,8 +37,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.httpBasic()
             .disable()
                 .authorizeRequests()
-                .antMatchers().authenticated()
-                .antMatchers().permitAll()
+                .antMatchers("/").permitAll()
+                .antMatchers("/api/v1").permitAll()
+                .antMatchers("/api/v1/**").authenticated()
             .and()
                 .addFilterBefore(
                         new JwtAuthenticationFilter(jwtTokenProvider),
