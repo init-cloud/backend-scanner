@@ -1,4 +1,4 @@
-package scanner.utils.block;
+package scanner.common.utils.block;
 
 public enum TfBlockType {
     data("data"),

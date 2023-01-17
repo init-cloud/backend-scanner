@@ -1,4 +1,4 @@
-package scanner.utils;
+package scanner.common.utils;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
@@ -14,7 +14,7 @@ import org.json.simple.parser.ParseException;
 import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
-import scanner.env.Env;
+import scanner.common.enums.Env;
 
 
 @Service

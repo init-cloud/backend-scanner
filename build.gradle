@@ -47,6 +47,9 @@ dependencies {
 	implementation 'org.mapstruct:mapstruct-processor:1.5.3.Final'
 	implementation 'org.mariadb.jdbc:mariadb-java-client:3.0.8'
 
+	// https://mvnrepository.com/artifact/javax.xml.bind/jaxb-api
+	implementation 'javax.xml.bind:jaxb-api:2.3.1'
+
 	runtimeOnly 'mysql:mysql-connector-java'
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
 

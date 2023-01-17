@@ -1,4 +1,4 @@
-package scanner.utils;
+package scanner.common.utils;
 
 
 import java.io.FileInputStream;
