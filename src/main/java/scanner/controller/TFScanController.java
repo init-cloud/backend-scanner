@@ -21,6 +21,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import lombok.RequiredArgsConstructor;
 
+import scanner.response.CommonResponse;
 import scanner.response.ScanResponse;
 import scanner.service.ScanService;
 import scanner.service.StorageServiceImpl;
@@ -87,16 +88,17 @@ public class TFScanController {
         HttpServletResponse response,
         @PathVariable("provider") String provider,
         @RequestPart("file") MultipartFile file
-    ) throws ServletException, IllegalStateException, IOException, NullPointerException, NoSuchAlgorithmException, Exception
+    ) throws ServletException, IllegalStateException, NullPointerException
     {
         try{
             String[] result = {null, null};
 
             if(!file.isEmpty()) {
                 result = storageService.store(file);
-                ScanResponse<?> scanResponse = scanService.scanTerraform(result, provider);
+                ScanResponse<?> dtos= scanService.scanTerraform(result, provider);
 
-                return ResponseEntity.ok().body(scanResponse);
+                return ResponseEntity.ok()
+                        .body(new CommonResponse(dtos));
             }
 
             return ResponseEntity.badRequest().body(null);

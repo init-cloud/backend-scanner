@@ -16,7 +16,6 @@ import org.springframework.stereotype.Service;
 import lombok.RequiredArgsConstructor;
 import scanner.common.enums.Env;
 
-
 @Service
 @RequiredArgsConstructor
 public class ParserRequest {
