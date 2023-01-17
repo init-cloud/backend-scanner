@@ -15,7 +15,7 @@ public class ApiException extends RuntimeException{
         this.responseCode = responseCode;
     }
 
-    public ApiException(Exception ex, ResponseCode responseCode){
-        this.responseCode = responseCode;
+    public ApiException(Exception e){
+        this.responseCode = ResponseCode.STATUS_5100;
     }
 }
