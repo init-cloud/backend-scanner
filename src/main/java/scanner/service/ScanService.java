@@ -33,6 +33,7 @@ import scanner.common.utils.ParserRequest;
 import scanner.response.enums.ResponseCode;
 
 
+
 @Service
 @RequiredArgsConstructor
 public class ScanService {
