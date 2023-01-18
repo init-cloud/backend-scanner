@@ -9,6 +9,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import scanner.dto.user.UserAuthenticationDto;
 import scanner.dto.user.UserSignupDto;
+import scanner.exception.ApiException;
+import scanner.response.CommonResponse;
+import scanner.response.enums.ResponseCode;
 import scanner.security.dto.Token;
 import scanner.security.jwt.JwtTokenProvider;
 import scanner.service.user.UsernameService;
@@ -18,7 +21,6 @@ import scanner.service.user.UsernameService;
 @RequiredArgsConstructor
 public class UserController {
 
-    private final JwtTokenProvider jwtTokenProvider;
     private final UsernameService userService;
 
     @PostMapping("/signin")
@@ -27,10 +29,9 @@ public class UserController {
             Token response = userService.signin(dto);
 
             return ResponseEntity.ok()
-                    .body(response);
+                    .body(new CommonResponse<>(response));
         } catch(Exception e){
-            return ResponseEntity.badRequest()
-                    .body(null);
+            return CommonResponse.toException(new ApiException(ResponseCode.STATUS_4002));
         }
     }
 
@@ -40,10 +41,10 @@ public class UserController {
             Token response = userService.signup(dto);
 
             return ResponseEntity.ok()
-                    .body(response);
+                    .body(new CommonResponse<>(response));
         } catch(Exception e){
-            return ResponseEntity.badRequest()
-                    .body(null);
+            e.printStackTrace();
+            return CommonResponse.toException(new ApiException(ResponseCode.STATUS_5100));
         }
     }
 }

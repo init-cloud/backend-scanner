@@ -20,7 +20,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @Import(RestDocConfiguration.class)
 @AutoConfigureRestDocs
 @SpringBootTest
-class CheckListTest {
+class APIRunningTest {
 
     @Autowired
     private MockMvc mockMvc;

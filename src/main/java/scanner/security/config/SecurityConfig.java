@@ -38,18 +38,20 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
         http.httpBasic()
             .disable()
+                .sessionManagement()
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+            .and()
                 .authorizeRequests()
                 .antMatchers("/").permitAll()
                 .antMatchers("/api/v1").permitAll()
                 .antMatchers("/api/v1/user/**").permitAll()
-                .antMatchers("/api/v1/**").authenticated()
+            .and()
+                .authorizeRequests()
+                .anyRequest().authenticated()
             .and()
                 .addFilterBefore(
-                        new JwtAuthenticationFilter(jwtTokenProvider),
-                        UsernamePasswordAuthenticationFilter.class);
-
-        http.sessionManagement()
-            .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+                    new JwtAuthenticationFilter(jwtTokenProvider),
+                    UsernamePasswordAuthenticationFilter.class);
     }
 
     @Bean
