@@ -30,23 +30,23 @@ class APIRunningTest {
     void apiRunningTest() throws Exception {
 
         this.mockMvc.perform(get("/"))
-                .andDo(print())
-                .andDo(document("API Running-GET",
-                        responseFields(
-                                fieldWithPath("success").type(JsonFieldType.BOOLEAN).description("is Success"),
-                                fieldWithPath("error").type(JsonFieldType.NULL).description("error"),
-                                fieldWithPath("data.scan").type(JsonFieldType.STRING).description("Scan"),
-                                fieldWithPath("data.checklist").type(JsonFieldType.STRING).description("Checklist"),
-                                fieldWithPath("data.history").type(JsonFieldType.STRING).description("History"),
-                                fieldWithPath("data.report").type(JsonFieldType.STRING).description("Report")
-                        ))
-                )
-                .andExpect(jsonPath("success").isBoolean())
-                .andExpect(jsonPath("error").isEmpty())
-                .andExpect(jsonPath("data.scan").isString())
-                .andExpect(jsonPath("data.checklist").isString())
-                .andExpect(jsonPath("data.history").isString())
-                .andExpect(jsonPath("data.report").isString());
+            .andDo(print())
+            .andDo(document("API Running-GET",
+                responseFields(
+                    fieldWithPath("success").type(JsonFieldType.BOOLEAN).description("is Success"),
+                    fieldWithPath("error").type(JsonFieldType.NULL).description("error"),
+                    fieldWithPath("data.scan").type(JsonFieldType.STRING).description("Scan"),
+                    fieldWithPath("data.checklist").type(JsonFieldType.STRING).description("Checklist"),
+                    fieldWithPath("data.history").type(JsonFieldType.STRING).description("History"),
+                    fieldWithPath("data.report").type(JsonFieldType.STRING).description("Report")
+                ))
+            )
+            .andExpect(jsonPath("success").isBoolean())
+            .andExpect(jsonPath("error").isEmpty())
+            .andExpect(jsonPath("data.scan").isString())
+            .andExpect(jsonPath("data.checklist").isString())
+            .andExpect(jsonPath("data.history").isString())
+            .andExpect(jsonPath("data.report").isString());
 
         this.mockMvc.perform(get("/api/v1"))
             .andDo(print())
