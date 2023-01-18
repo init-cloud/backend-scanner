@@ -29,6 +29,7 @@ public class CheckListService {
      * 
      * @return
      */
+    @Transactional
     public CheckListDetailResponse retrieve(){
 
         List<CustomRule> ruleList = checkListRepository.findAll();

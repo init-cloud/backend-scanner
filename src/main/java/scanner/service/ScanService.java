@@ -18,9 +18,8 @@ import org.springframework.stereotype.Service;
 import lombok.RequiredArgsConstructor;
 import scanner.dto.ScanResultDto;
 import scanner.exception.ApiException;
-import scanner.exception.ScanException;
 import scanner.dto.CheckListDetailDto;
-import scanner.common.Env;
+import scanner.common.enums.Env;
 import scanner.model.CustomRule;
 import scanner.model.ScanHistory;
 import scanner.model.ScanHistoryDetail;
@@ -30,8 +29,8 @@ import scanner.repository.ScanHistoryRepository;
 import scanner.dto.CheckResultDto;
 import scanner.dto.ParseResultDto;
 import scanner.response.ScanResponse;
+import scanner.common.utils.ParserRequest;
 import scanner.response.enums.ResponseCode;
-import scanner.utils.ParserRequest;
 
 
 @Service
@@ -72,7 +71,6 @@ public class ScanService {
             FileUtils.deleteDirectory(file);
             return scanResult;
         } catch (Exception e) {
-            e.printStackTrace();
             throw new ApiException(ResponseCode.STATUS_5002);
         }
     }

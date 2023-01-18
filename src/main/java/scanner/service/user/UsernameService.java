@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import scanner.dto.user.UserAuthenticationDto;
 import scanner.dto.user.UserSignupDto;
 import scanner.model.User;
+import scanner.model.enums.RoleType;
 import scanner.repository.UserRepository;
 import scanner.security.dto.Token;
 import scanner.security.jwt.JwtTokenProvider;
@@ -19,8 +20,7 @@ public class UsernameService implements UserService{
     public Token signup(UserSignupDto dto) throws Exception{
 
         User user = userRepository.save(User.toEntity(dto));
-
-        return jwtTokenProvider.create(user.getUsername(), user.getRoleType());
+        return jwtTokenProvider.create(user.getUsername(), RoleType.GUEST);
     }
 
     @Override
