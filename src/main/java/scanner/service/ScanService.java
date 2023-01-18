@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
 import scanner.dto.ScanResultDto;
+import scanner.exception.ApiException;
 import scanner.exception.ScanException;
 import scanner.dto.CheckListDetailDto;
 import scanner.common.enums.Env;
@@ -28,6 +29,7 @@ import scanner.repository.ScanHistoryDetailsRepository;
 import scanner.repository.ScanHistoryRepository;
 import scanner.dto.CheckResultDto;
 import scanner.dto.ParseResultDto;
+import scanner.dto.ScanResultDto;
 import scanner.response.ScanResponse;
 import scanner.common.utils.ParserRequest;
 
