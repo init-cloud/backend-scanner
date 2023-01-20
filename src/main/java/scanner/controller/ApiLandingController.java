@@ -3,6 +3,7 @@ package scanner.controller;
 
 import java.util.HashMap;
 
+import io.swagger.annotations.ApiOperation;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -17,6 +18,7 @@ import scanner.response.CommonResponse;
 @RequiredArgsConstructor
 public class ApiLandingController {
 
+    @ApiOperation(value = "API List", notes = "API List")
     @GetMapping
     public ResponseEntity<?> retrieveAPI(){
         HashMap<String, String> api = new HashMap<String, String>(); 
@@ -29,6 +31,7 @@ public class ApiLandingController {
                 .body(new CommonResponse(api));
     }
 
+    @ApiOperation(value = "API List", notes = "API List")
     @GetMapping("/api/v1")
     public ResponseEntity<?> retrieveAPI2(){
         HashMap<String, String> api = new HashMap<String, String>(); 
