@@ -19,7 +19,7 @@ spring:
       ddl-auto: none
     open-in-view: false
     mvc:
-      pathmatch:
+      matching-strategy:
       - matching-strategy=ant_path_matcher
 
 jwt:

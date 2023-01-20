@@ -47,6 +47,9 @@ public class StorageServiceImpl implements StorageService{
     @Override
     public String[] store(MultipartFile file){
         try {
+            if(file.isEmpty())
+                throw new ApiException(ResponseCode.STATUS_4005);
+
             String[] result = {null, null, null};
             UUID uniqName = UUID.randomUUID();
             String saved = uniqName.toString();

@@ -23,7 +23,7 @@ public class ApiLandingController {
             notes = "API List",
             response = ResponseEntity.class)
     @GetMapping
-    public ResponseEntity<CommonResponse> retrieveAPI(){
+    public ResponseEntity<CommonResponse<HashMap<String, String>>> retrieveAPI(){
         HashMap<String, String> api = new HashMap<String, String>();
         api.put("checklist", "/api/v1/checklist");
         api.put("scan", "/api/v1/file/{provider}");
@@ -38,7 +38,7 @@ public class ApiLandingController {
             notes = "API List",
             response = ResponseEntity.class)
     @GetMapping("/api/v1")
-    public ResponseEntity<CommonResponse> retrieveAPI2(){
+    public ResponseEntity<CommonResponse<HashMap<String, String>>> retrieveAPI2(){
         HashMap<String, String> api = new HashMap<String, String>();
         api.put("checklist", "/api/v1/checklist");
         api.put("scan", "/api/v1/file/{provider}");

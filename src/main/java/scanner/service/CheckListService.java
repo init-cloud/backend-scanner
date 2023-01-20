@@ -81,7 +81,10 @@ public class CheckListService {
     @Transactional
     public List<CheckListSimpleDto> modify(
         List<CheckListSimpleDto> data
-    ){  
+    ){
+        if(data == null)
+            throw new ApiException(ResponseCode.STATUS_4005);
+
         List<Long> ruleIds = new ArrayList<Long>();
                                         
         for(int i = 0 ; i < data.size() ; i++){
