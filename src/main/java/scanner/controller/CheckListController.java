@@ -14,9 +14,11 @@ import org.springframework.web.bind.annotation.RestController;
 import lombok.RequiredArgsConstructor;
 import scanner.dto.CheckListDetailDto;
 import scanner.dto.CheckListSimpleDto;
+import scanner.exception.ApiException;
 import scanner.exception.CheckListException;
 import scanner.response.CommonResponse;
 import scanner.response.checklist.CheckListDetailResponse;
+import scanner.response.enums.ResponseCode;
 import scanner.service.CheckListService;
 
 
@@ -57,7 +59,7 @@ public class CheckListController {
         CheckListSimpleDto dtos = checkListService.reset(data);
 
         if(dtos == null)
-            return ResponseEntity.badRequest().body("Error: dtos null.");
+            return CommonResponse.toException(new ApiException(ResponseCode.STATUS_4005));
 
         return ResponseEntity.ok()
                 .body(new CommonResponse(dtos));
@@ -70,7 +72,7 @@ public class CheckListController {
     ){
         try{
             if(data == null)
-                return ResponseEntity.badRequest().body("Error: input null data.");
+                return CommonResponse.toException(new ApiException(ResponseCode.STATUS_4005));
 
             List<CheckListSimpleDto> dtos = checkListService.modify(data);
 
@@ -78,7 +80,7 @@ public class CheckListController {
                     .body(new CommonResponse(dtos));
         }
         catch(CheckListException che){
-            return ResponseEntity.badRequest().body("Error: output null data.");
+            return CommonResponse.toException(new ApiException(ResponseCode.STATUS_4005));
         }
     }
 }

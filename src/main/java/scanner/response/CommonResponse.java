@@ -43,4 +43,13 @@ public class CommonResponse<T> {
                         .error(new ExceptionDto(ResponseCode.STATUS_5100))
                 .build());
     }
+
+    public static ResponseEntity<Object> toException(Throwable e, String message){
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(CommonResponse.builder()
+                        .success(false)
+                        .data(null)
+                        .error(new ExceptionDto(ResponseCode.STATUS_4007.getCode(), message))
+                        .build());
+    }
 }

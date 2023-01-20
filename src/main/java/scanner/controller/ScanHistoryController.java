@@ -13,8 +13,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import lombok.RequiredArgsConstructor;
 import scanner.dto.history.HistoryDto;
+import scanner.exception.ApiException;
 import scanner.response.CommonResponse;
 import scanner.response.ReportResponse;
+import scanner.response.enums.ResponseCode;
 import scanner.service.ScanHistoryService;
 import scanner.model.ScanHistory;
 
@@ -41,7 +43,7 @@ public class ScanHistoryController {
                     .body(new CommonResponse(dtos));
         }
         catch(Exception e){
-            return ResponseEntity.badRequest().body(null);
+            return CommonResponse.toException(e);
         }
     }
 
