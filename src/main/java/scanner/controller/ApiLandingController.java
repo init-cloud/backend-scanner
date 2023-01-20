@@ -13,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import scanner.response.CommonResponse;
 
 
+@ApiOperation("API Landing check")
 @RestController
 @RequestMapping
 @RequiredArgsConstructor

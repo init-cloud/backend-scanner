@@ -7,6 +7,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import io.swagger.annotations.ApiOperation;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -27,6 +28,7 @@ import scanner.service.ScanService;
 import scanner.service.StorageServiceImpl;
 
 
+@ApiOperation("Terraform Scan API")
 @RestController
 @RequestMapping("/api/v1")
 @RequiredArgsConstructor
@@ -35,14 +37,7 @@ public class TFScanController {
     private final StorageServiceImpl storageService;
     private final ScanService scanService;
 
-    /**
-     *
-     * @param request
-     * @param response
-     * @param file
-     * @return
-     * @throws IOException
-     */
+    @ApiOperation(value = "Download File", notes = "Unused. Deprecated.")
     @GetMapping("/file/{file}")
     public ResponseEntity<?> downloadFile(
         HttpServletRequest request, 
@@ -68,20 +63,7 @@ public class TFScanController {
                 .body(resource);
     }
 
-    /**
-     *
-     * @param request
-     * @param response
-     * @param provider
-     * @param file
-     * @return
-     * @throws ServletException
-     * @throws IllegalStateException
-     * @throws IOException
-     * @throws NullPointerException
-     * @throws NoSuchAlgorithmException
-     * @throws Exception
-     */
+    @ApiOperation(value = "Scan Terraform File", notes = "Uploads .tf or .zip file to scan.")
     @PostMapping("/file/{provider}")
     public ResponseEntity<?> uploadFile(
         HttpServletRequest request, 
