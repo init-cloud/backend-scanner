@@ -7,7 +7,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import io.swagger.annotations.ApiOperation;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -22,15 +21,12 @@ import org.springframework.web.multipart.MultipartFile;
 
 import lombok.RequiredArgsConstructor;
 
-import scanner.exception.ApiException;
 import scanner.response.CommonResponse;
 import scanner.response.ScanResponse;
-import scanner.response.enums.ResponseCode;
 import scanner.service.ScanService;
 import scanner.service.StorageServiceImpl;
 
 
-@ApiOperation("Terraform Scan API")
 @RestController
 @RequestMapping("/api/v1")
 @RequiredArgsConstructor
@@ -39,9 +35,14 @@ public class TFScanController {
     private final StorageServiceImpl storageService;
     private final ScanService scanService;
 
-    @ApiOperation(value = "Download File",
-            notes = "Unused. Deprecated.",
-            response = ResponseEntity.class)
+    /**
+     *
+     * @param request
+     * @param response
+     * @param file
+     * @return
+     * @throws IOException
+     */
     @GetMapping("/file/{file}")
     public ResponseEntity<?> downloadFile(
         HttpServletRequest request, 
@@ -55,7 +56,7 @@ public class TFScanController {
             contentType = request.getServletContext()
                                 .getMimeType(resource.getFile().getAbsolutePath());
         } catch (IOException ex) {
-            return CommonResponse.toException(new ApiException(ResponseCode.STATUS_5100));
+            
         }
 
         if(contentType == null) {
@@ -67,9 +68,20 @@ public class TFScanController {
                 .body(resource);
     }
 
-    @ApiOperation(value = "Scan Terraform File",
-            notes = "Uploads .tf or .zip file to scan.",
-            response = ResponseEntity.class)
+    /**
+     *
+     * @param request
+     * @param response
+     * @param provider
+     * @param file
+     * @return
+     * @throws ServletException
+     * @throws IllegalStateException
+     * @throws IOException
+     * @throws NullPointerException
+     * @throws NoSuchAlgorithmException
+     * @throws Exception
+     */
     @PostMapping("/file/{provider}")
     public ResponseEntity<?> uploadFile(
         HttpServletRequest request, 
@@ -89,10 +101,10 @@ public class TFScanController {
                         .body(new CommonResponse(dtos));
             }
 
-            return CommonResponse.toException(new ApiException(ResponseCode.STATUS_4005));
+            return ResponseEntity.badRequest().body(null);
         }
         catch(Exception e){
-            return CommonResponse.toException(e);
+            return ResponseEntity.badRequest().body(null);
         }
     }
 }
