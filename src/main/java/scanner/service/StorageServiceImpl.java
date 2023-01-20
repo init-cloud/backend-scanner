@@ -40,7 +40,7 @@ public class StorageServiceImpl implements StorageService{
         try {
             Files.createDirectories(Paths.get(uploadPath));
         } catch (IOException e) {
-            throw new RuntimeException("Could not create upload directory.");
+            throw new ApiException(e, ResponseCode.STATUS_5005);
         }
     }
 
@@ -85,10 +85,10 @@ public class StorageServiceImpl implements StorageService{
             }
         }
         catch (Exception e) {
-            throw new RuntimeException("Could not store the file. Error: ");
+            throw new ApiException(e, ResponseCode.STATUS_5003);
         }
         catch (Throwable e) {
-            throw new RuntimeException("Could not decompress the file. Error: ");
+            throw new ApiException(e, ResponseCode.STATUS_5004);
         }
     }
 
@@ -170,10 +170,10 @@ public class StorageServiceImpl implements StorageService{
             if(rsc.exists() || rsc.isReadable())
                 return rsc;
             else
-                throw new RuntimeException("Error");
+                throw new ApiException(ResponseCode.STATUS_5100);
         }
         catch(MalformedURLException e){
-            throw new RuntimeException("Error");
+            throw new ApiException(e, ResponseCode.STATUS_5100);
         }
     }
 

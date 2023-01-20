@@ -10,9 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import scanner.dto.user.UserAuthenticationDto;
 import scanner.dto.user.UserSignupDto;
-import scanner.exception.ApiException;
 import scanner.response.CommonResponse;
-import scanner.response.enums.ResponseCode;
 import scanner.security.dto.Token;
 import scanner.service.user.UsernameService;
 
@@ -29,21 +27,21 @@ public class UserController {
             notes = "Join. return access token",
             response = ResponseEntity.class)
     @PostMapping("/signin")
-    public ResponseEntity<Object> login(@RequestBody UserAuthenticationDto dto){
+    public ResponseEntity<CommonResponse<Token>> login(@RequestBody UserAuthenticationDto dto){
         Token response = userService.signin(dto);
 
         return ResponseEntity.ok()
-                .body(new CommonResponse<Token>(response));
+                .body(new CommonResponse(response));
     }
 
     @ApiOperation(value = "Signup",
             notes = "Register. return access token",
             response = ResponseEntity.class)
     @PostMapping("/signup")
-    public ResponseEntity<Object> register(@RequestBody UserSignupDto dto){
+    public ResponseEntity<CommonResponse<Token>> register(@RequestBody UserSignupDto dto){
         Token response = userService.signup(dto);
 
         return ResponseEntity.ok()
-                .body(new CommonResponse<Token>(response));
+                .body(new CommonResponse(response));
     }
 }

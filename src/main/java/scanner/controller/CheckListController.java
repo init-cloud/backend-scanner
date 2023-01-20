@@ -15,7 +15,6 @@ import lombok.RequiredArgsConstructor;
 import scanner.dto.CheckListDetailDto;
 import scanner.dto.CheckListSimpleDto;
 import scanner.exception.ApiException;
-import scanner.exception.CheckListException;
 import scanner.response.CommonResponse;
 import scanner.response.checklist.CheckListDetailResponse;
 import scanner.response.enums.ResponseCode;

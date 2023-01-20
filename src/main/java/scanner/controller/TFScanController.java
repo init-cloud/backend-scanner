@@ -1,11 +1,7 @@
 package scanner.controller;
 
-import java.io.IOException;
-import java.security.NoSuchAlgorithmException;
 
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 import io.swagger.annotations.ApiOperation;
 import org.springframework.core.io.Resource;
@@ -64,13 +60,11 @@ public class TFScanController {
         @PathVariable("provider") String provider,
         @RequestPart("file") MultipartFile file) {
 
-        String[] result = {null, null};
-
         if(file.isEmpty())
             throw new ApiException(ResponseCode.STATUS_4005);
 
         else{
-            result = storageService.store(file);
+            String[] result = storageService.store(file);
             ScanResponse dtos= scanService.scanTerraform(result, provider);
 
             return ResponseEntity.ok()
