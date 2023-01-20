@@ -29,9 +29,11 @@ public class ScanHistoryController {
 
     private final ScanHistoryService scanHistoryService;
 
-    @ApiOperation(value = "Retrieve Scan History", notes = "Retrieve scan histories for reports.")
+    @ApiOperation(value = "Retrieve Scan History",
+            notes = "Retrieve scan histories for reports.",
+            response = ResponseEntity.class)
     @GetMapping("/history")
-    public ResponseEntity<?> retrieveHistory() {
+    public ResponseEntity<Object> retrieveHistory() {
         try{
             List<ScanHistory> history = scanHistoryService.retrieveHistoryList();
 
@@ -47,9 +49,11 @@ public class ScanHistoryController {
         }
     }
 
-    @ApiOperation(value = "Retrieve Scan Report", notes = "Retrieve report from Scan histories.")
+    @ApiOperation(value = "Retrieve Scan Report",
+            notes = "Retrieve report from Scan histories.",
+            response = ResponseEntity.class)
     @GetMapping("/report/{reportId}")
-    public ResponseEntity<?> retrieveReport(
+    public ResponseEntity<CommonResponse<ReportResponse>> retrieveReport(
         @PathVariable Long reportId
     ){
         ReportResponse dtos = scanHistoryService.retrieveReport(reportId);
