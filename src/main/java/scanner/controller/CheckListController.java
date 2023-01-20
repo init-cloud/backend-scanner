@@ -2,8 +2,7 @@ package scanner.controller;
 
 import java.util.List;
 
-import io.swagger.annotations.ApiOperation;
-
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -14,15 +13,15 @@ import org.springframework.web.bind.annotation.RestController;
 import lombok.RequiredArgsConstructor;
 import scanner.dto.CheckListDetailDto;
 import scanner.dto.CheckListSimpleDto;
-import scanner.exception.ApiException;
 import scanner.exception.CheckListException;
 import scanner.response.CommonResponse;
 import scanner.response.checklist.CheckListDetailResponse;
-import scanner.response.enums.ResponseCode;
 import scanner.service.CheckListService;
 
 
-@ApiOperation("Checklist API. Checklist is same as Rule.")
+/**
+ * "CheckList" is same as "Rule".
+ */
 @RestController
 @RequestMapping("/api/v1/checklist")
 @RequiredArgsConstructor
@@ -30,11 +29,12 @@ public class CheckListController {
     
     private final CheckListService checkListService;
 
-    @ApiOperation(value = "Retrieve Checklist",
-            notes = "Retrieve all checklists.",
-            response = ResponseEntity.class)
+    /**
+     * 룰 조회
+     * @return
+     */
     @GetMapping
-    public ResponseEntity<CommonResponse<CheckListDetailResponse>> retrieveCheckList(){
+    public ResponseEntity<?> retrieveCheckList(){
         CheckListDetailResponse dtos = checkListService.retrieve();
 
         return ResponseEntity.ok()
@@ -42,9 +42,11 @@ public class CheckListController {
     }
 
 
-    @ApiOperation(value = "Create Custom Checklist",
-            notes = "Create custom new checklist from origin.",
-            response = ResponseEntity.class)
+    /**
+     * 룰 생성
+     * @param data
+     * @return
+     */
     @PostMapping
     public ResponseEntity<?> createCheckList(
         CheckListDetailDto data
@@ -55,9 +57,11 @@ public class CheckListController {
                 .body(new CommonResponse(dtos));
     }
 
-    @ApiOperation(value = "Reset Checklist",
-            notes = "Reset custom checklist to origin.",
-            response = ResponseEntity.class)
+    /**
+     * 룰 초기화
+     * @param data
+     * @return
+     */
     @PostMapping("/reset")
     public ResponseEntity<?> resetCheckList(
         @RequestBody CheckListSimpleDto data
@@ -65,22 +69,24 @@ public class CheckListController {
         CheckListSimpleDto dtos = checkListService.reset(data);
 
         if(dtos == null)
-            return CommonResponse.toException(new ApiException(ResponseCode.STATUS_4005));
+            return ResponseEntity.badRequest().body("Error: dtos null.");
 
         return ResponseEntity.ok()
                 .body(new CommonResponse(dtos));
     }
 
-    @ApiOperation(value = "Modify Checklist",
-            notes = "Make Custom checklist by modifying origin.",
-            response = ResponseEntity.class)
+    /**
+     * 룰 수정
+     * @param data
+     * @return
+     */
     @PostMapping("/state")
     public ResponseEntity<?> modifyCheckList(
         @RequestBody List<CheckListSimpleDto> data
     ){
         try{
             if(data == null)
-                return CommonResponse.toException(new ApiException(ResponseCode.STATUS_4005));
+                return ResponseEntity.badRequest().body("Error: input null data.");
 
             List<CheckListSimpleDto> dtos = checkListService.modify(data);
 
@@ -88,7 +94,7 @@ public class CheckListController {
                     .body(new CommonResponse(dtos));
         }
         catch(CheckListException che){
-            return CommonResponse.toException(new ApiException(ResponseCode.STATUS_4005));
+            return ResponseEntity.badRequest().body("Error: output null data.");
         }
     }
 }
