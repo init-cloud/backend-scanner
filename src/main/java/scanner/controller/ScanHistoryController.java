@@ -33,20 +33,15 @@ public class ScanHistoryController {
             notes = "Retrieve scan histories for reports.",
             response = ResponseEntity.class)
     @GetMapping("/history")
-    public ResponseEntity<Object> retrieveHistory() {
-        try{
-            List<ScanHistory> history = scanHistoryService.retrieveHistoryList();
+    public ResponseEntity<CommonResponse<List<HistoryDto>>> retrieveHistory() {
+        List<ScanHistory> history = scanHistoryService.retrieveHistoryList();
 
-            List<HistoryDto> dtos = history.stream()
-                                            .map(HistoryDto::new)
-                                            .collect(Collectors.toList());
+        List<HistoryDto> dtos = history.stream()
+                                        .map(HistoryDto::new)
+                                        .collect(Collectors.toList());
 
-            return ResponseEntity.ok()
-                    .body(new CommonResponse(dtos));
-        }
-        catch(Exception e){
-            return CommonResponse.toException(e);
-        }
+        return ResponseEntity.ok()
+                .body(new CommonResponse(dtos));
     }
 
     @ApiOperation(value = "Retrieve Scan Report",

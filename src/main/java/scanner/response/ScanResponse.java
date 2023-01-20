@@ -12,16 +12,8 @@ import scanner.dto.ScanResultDto;
 
 @Getter
 @AllArgsConstructor
-public class ScanResponse<T> {
+public class ScanResponse {
     private final CheckResultDto check;
     private final List<ScanResultDto> result;
     private final ParseResultDto parse;
-
-//    public static <T> ScanResponse<T> toDto(
-//        CheckResultDto check,
-//        List<ScanResultDto> results,
-//        ParseResultDto parse
-//    ) {
-//        return new ScanResponse<T>(check, results, parse);
-//    }
 }

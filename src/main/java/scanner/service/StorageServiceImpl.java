@@ -23,6 +23,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import scanner.common.utils.FileDigest;
+import scanner.exception.ApiException;
+import scanner.response.enums.ResponseCode;
+
+import javax.servlet.http.HttpServletRequest;
 
 
 @Service
@@ -176,5 +180,22 @@ public class StorageServiceImpl implements StorageService{
     @Override
     public void deleteAll() {
 
+    }
+
+    public String getContentType(HttpServletRequest request, Resource resource){
+        String contentType = null;
+
+        try {
+            contentType = request.getServletContext()
+                    .getMimeType(resource.getFile().getAbsolutePath());
+        } catch (IOException ex) {
+            throw new ApiException(ResponseCode.STATUS_5100);
+        }
+
+        if(contentType == null) {
+            return "application/octet-stream";
+        }
+
+        return contentType;
     }
 }

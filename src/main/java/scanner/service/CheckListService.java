@@ -106,7 +106,7 @@ public class CheckListService {
                                     .collect(Collectors.toList());
 
         if(ruleDtos == null || ruleDtos.size() == 0)
-            throw new CheckListException("No data modified.");
+            throw new ApiException(ResponseCode.STATUS_4005);
 
         return ruleDtos;
     }
@@ -124,18 +124,16 @@ public class CheckListService {
             CustomRule target = CheckListSimpleDto.toEntity(data);
 
             if(target.getId() == null)
-                return null;
+                throw new ApiException(ResponseCode.STATUS_4005);
             
             checkListRepository.resetRule(target.getId());
             CustomRule rule = checkListRepository.findById(target.getId())
-                    .orElseThrow(
-                        () -> new ApiException(ResponseCode.STATUS_4007));
-            
+                    .orElseThrow(() -> new ApiException(ResponseCode.STATUS_4005));
+
             return new CheckListSimpleDto();
         }
-        catch(CheckListException che){
-            return null;
+        catch(CheckListException e){
+            throw new ApiException(ResponseCode.STATUS_4005);
         }
-
     }
 }

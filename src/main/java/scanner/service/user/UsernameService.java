@@ -17,14 +17,15 @@ public class UsernameService implements UserService{
     private final JwtTokenProvider jwtTokenProvider;
 
     @Override
-    public Token signup(UserSignupDto dto) throws Exception{
+    public Token signup(UserSignupDto dto){
 
         User user = userRepository.save(User.toEntity(dto));
+
         return jwtTokenProvider.create(user.getUsername(), RoleType.GUEST);
     }
 
     @Override
-    public Token signin(UserAuthenticationDto dto) throws Exception{
+    public Token signin(UserAuthenticationDto dto){
 
         User user = userRepository.findByUsername(dto.getUsername())
                 .orElseThrow(() -> new IllegalArgumentException("Invalid User."));
