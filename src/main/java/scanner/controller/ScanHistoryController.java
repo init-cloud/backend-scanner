@@ -18,7 +18,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 
-@ApiOperation("ScanHistory API")
 @RestController
 @RequestMapping("/api/v1")
 @RequiredArgsConstructor
@@ -26,9 +25,10 @@ public class ScanHistoryController {
 
     private final ScanHistoryService scanHistoryService;
 
-    @ApiOperation(value = "Retrieve Scan History",
-            notes = "Retrieve scan histories for reports.",
-            response = ResponseEntity.class)
+    /**
+     *
+     * @return
+     */
     @GetMapping("/history")
     public ResponseEntity<CommonResponse<List<HistoryDto>>> retrieveHistory() {
         List<ScanHistory> history = scanHistoryService.retrieveHistoryList();
@@ -41,11 +41,13 @@ public class ScanHistoryController {
                 .body(new CommonResponse(dtos));
     }
 
-    @ApiOperation(value = "Retrieve Scan Report",
-            notes = "Retrieve report from Scan histories.",
-            response = ResponseEntity.class)
+    /**
+     *
+     * @param reportId
+     * @return
+     */
     @GetMapping("/report/{reportId}")
-    public ResponseEntity<CommonResponse<ReportResponse>> retrieveReport(
+    public ResponseEntity<?> retrieveReport(
         @PathVariable Long reportId
     ){
         ReportResponse dtos = scanHistoryService.retrieveReport(reportId);

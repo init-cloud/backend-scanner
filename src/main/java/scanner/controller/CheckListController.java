@@ -2,8 +2,7 @@ package scanner.controller;
 
 import java.util.List;
 
-import io.swagger.annotations.ApiOperation;
-
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -17,11 +16,12 @@ import scanner.dto.CheckListSimpleDto;
 import scanner.exception.ApiException;
 import scanner.response.CommonResponse;
 import scanner.response.checklist.CheckListDetailResponse;
-import scanner.response.enums.ResponseCode;
 import scanner.service.CheckListService;
 
 
-@ApiOperation("Checklist API. Checklist is same as Rule.")
+/**
+ * "CheckList" is same as "Rule".
+ */
 @RestController
 @RequestMapping("/api/v1/checklist")
 @RequiredArgsConstructor
@@ -29,11 +29,12 @@ public class CheckListController {
     
     private final CheckListService checkListService;
 
-    @ApiOperation(value = "Retrieve Checklist",
-            notes = "Retrieve all checklists.",
-            response = ResponseEntity.class)
+    /**
+     * 룰 조회
+     * @return
+     */
     @GetMapping
-    public ResponseEntity<CommonResponse<CheckListDetailResponse>> retrieveCheckList(){
+    public ResponseEntity<?> retrieveCheckList(){
         CheckListDetailResponse dtos = checkListService.retrieve();
 
         return ResponseEntity.ok()
@@ -41,9 +42,11 @@ public class CheckListController {
     }
 
 
-    @ApiOperation(value = "Create Custom Checklist",
-            notes = "Create custom new checklist from origin.",
-            response = ResponseEntity.class)
+    /**
+     * 룰 생성
+     * @param data
+     * @return
+     */
     @PostMapping
     public ResponseEntity<CommonResponse<CheckListDetailResponse>> createCheckList(
         @RequestBody CheckListDetailDto data
@@ -54,9 +57,11 @@ public class CheckListController {
                 .body(new CommonResponse(dtos));
     }
 
-    @ApiOperation(value = "Reset Checklist",
-            notes = "Reset custom checklist to origin.",
-            response = ResponseEntity.class)
+    /**
+     * 룰 초기화
+     * @param data
+     * @return
+     */
     @PostMapping("/reset")
     public ResponseEntity<CommonResponse<CheckListSimpleDto>> resetCheckList(
         @RequestBody CheckListSimpleDto data
@@ -67,9 +72,11 @@ public class CheckListController {
                 .body(new CommonResponse(dtos));
     }
 
-    @ApiOperation(value = "Modify Checklist",
-            notes = "Make Custom checklist by modifying origin.",
-            response = ResponseEntity.class)
+    /**
+     * 룰 수정
+     * @param data
+     * @return
+     */
     @PostMapping("/state")
     public ResponseEntity<CommonResponse<List<CheckListSimpleDto>>> modifyCheckList(
         @RequestBody List<CheckListSimpleDto> data
