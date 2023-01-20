@@ -2,7 +2,8 @@ package scanner.controller;
 
 import java.util.List;
 
-import lombok.extern.slf4j.Slf4j;
+import io.swagger.annotations.ApiOperation;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -14,27 +15,26 @@ import lombok.RequiredArgsConstructor;
 import scanner.dto.CheckListDetailDto;
 import scanner.dto.CheckListSimpleDto;
 import scanner.exception.ApiException;
+import scanner.exception.CheckListException;
 import scanner.response.CommonResponse;
 import scanner.response.checklist.CheckListDetailResponse;
+import scanner.response.enums.ResponseCode;
 import scanner.service.CheckListService;
 
 
-/**
- * "CheckList" is same as "Rule".
- */
+@ApiOperation("Checklist API. Checklist is same as Rule.")
 @RestController
 @RequestMapping("/api/v1/checklist")
 @RequiredArgsConstructor
 public class CheckListController {
-    
+
     private final CheckListService checkListService;
 
-    /**
-     * 룰 조회
-     * @return
-     */
+    @ApiOperation(value = "Retrieve Checklist",
+            notes = "Retrieve all checklists.",
+            response = ResponseEntity.class)
     @GetMapping
-    public ResponseEntity<?> retrieveCheckList(){
+    public ResponseEntity<CommonResponse<CheckListDetailResponse>> retrieveCheckList(){
         CheckListDetailResponse dtos = checkListService.retrieve();
 
         return ResponseEntity.ok()
@@ -42,14 +42,12 @@ public class CheckListController {
     }
 
 
-    /**
-     * 룰 생성
-     * @param data
-     * @return
-     */
+    @ApiOperation(value = "Create Custom Checklist",
+            notes = "Create custom new checklist from origin.",
+            response = ResponseEntity.class)
     @PostMapping
-    public ResponseEntity<CommonResponse<CheckListDetailResponse>> createCheckList(
-        @RequestBody CheckListDetailDto data
+    public ResponseEntity<?> createCheckList(
+            CheckListDetailDto data
     ){
         CheckListDetailResponse dtos = checkListService.create(data);
 
@@ -57,36 +55,40 @@ public class CheckListController {
                 .body(new CommonResponse(dtos));
     }
 
-    /**
-     * 룰 초기화
-     * @param data
-     * @return
-     */
+    @ApiOperation(value = "Reset Checklist",
+            notes = "Reset custom checklist to origin.",
+            response = ResponseEntity.class)
     @PostMapping("/reset")
-    public ResponseEntity<CommonResponse<CheckListSimpleDto>> resetCheckList(
-        @RequestBody CheckListSimpleDto data
+    public ResponseEntity<?> resetCheckList(
+            @RequestBody CheckListSimpleDto data
     ){
         CheckListSimpleDto dtos = checkListService.reset(data);
+
+        if(dtos == null)
+            return CommonResponse.toException(new ApiException(ResponseCode.STATUS_4005));
 
         return ResponseEntity.ok()
                 .body(new CommonResponse(dtos));
     }
 
-    /**
-     * 룰 수정
-     * @param data
-     * @return
-     */
+    @ApiOperation(value = "Modify Checklist",
+            notes = "Make Custom checklist by modifying origin.",
+            response = ResponseEntity.class)
     @PostMapping("/state")
-    public ResponseEntity<CommonResponse<List<CheckListSimpleDto>>> modifyCheckList(
-        @RequestBody List<CheckListSimpleDto> data
+    public ResponseEntity<?> modifyCheckList(
+            @RequestBody List<CheckListSimpleDto> data
     ){
-        if(data == null)
-            throw new ApiException(ResponseCode.STATUS_4005);
+        try{
+            if(data == null)
+                return CommonResponse.toException(new ApiException(ResponseCode.STATUS_4005));
 
-        List<CheckListSimpleDto> dtos = checkListService.modify(data);
+            List<CheckListSimpleDto> dtos = checkListService.modify(data);
 
-        return ResponseEntity.ok()
-                .body(new CommonResponse(dtos));
+            return ResponseEntity.ok()
+                    .body(new CommonResponse(dtos));
+        }
+        catch(CheckListException che){
+            return CommonResponse.toException(new ApiException(ResponseCode.STATUS_4005));
+        }
     }
 }
