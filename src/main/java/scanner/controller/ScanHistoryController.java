@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import io.swagger.annotations.ApiOperation;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -18,6 +19,7 @@ import scanner.service.ScanHistoryService;
 import scanner.model.ScanHistory;
 
 
+@ApiOperation("ScanHistory API")
 @RestController
 @RequestMapping("/api/v1")
 @RequiredArgsConstructor
@@ -25,10 +27,7 @@ public class ScanHistoryController {
 
     private final ScanHistoryService scanHistoryService;
 
-    /**
-     *
-     * @return
-     */
+    @ApiOperation(value = "Retrieve Scan History", notes = "Retrieve scan histories for reports.")
     @GetMapping("/history")
     public ResponseEntity<?> retrieveHistory() {
         try{
@@ -46,11 +45,7 @@ public class ScanHistoryController {
         }
     }
 
-    /**
-     *
-     * @param reportId
-     * @return
-     */
+    @ApiOperation(value = "Retrieve Scan Report", notes = "Retrieve report from Scan histories.")
     @GetMapping("/report/{reportId}")
     public ResponseEntity<?> retrieveReport(
         @PathVariable Long reportId

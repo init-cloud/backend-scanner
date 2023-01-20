@@ -2,7 +2,8 @@ package scanner.controller;
 
 import java.util.List;
 
-import lombok.extern.slf4j.Slf4j;
+import io.swagger.annotations.ApiOperation;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -19,9 +20,7 @@ import scanner.response.checklist.CheckListDetailResponse;
 import scanner.service.CheckListService;
 
 
-/**
- * "CheckList" is same as "Rule".
- */
+@ApiOperation("Checklist API. Checklist is same as Rule.")
 @RestController
 @RequestMapping("/api/v1/checklist")
 @RequiredArgsConstructor
@@ -29,10 +28,7 @@ public class CheckListController {
     
     private final CheckListService checkListService;
 
-    /**
-     * 룰 조회
-     * @return
-     */
+    @ApiOperation(value = "Retrieve Checklist", notes = "Retrieve all checklists.")
     @GetMapping
     public ResponseEntity<?> retrieveCheckList(){
         CheckListDetailResponse dtos = checkListService.retrieve();
@@ -42,11 +38,7 @@ public class CheckListController {
     }
 
 
-    /**
-     * 룰 생성
-     * @param data
-     * @return
-     */
+    @ApiOperation(value = "Create Custom Checklist", notes = "Create custom new checklist from origin.")
     @PostMapping
     public ResponseEntity<?> createCheckList(
         CheckListDetailDto data
@@ -57,11 +49,7 @@ public class CheckListController {
                 .body(new CommonResponse(dtos));
     }
 
-    /**
-     * 룰 초기화
-     * @param data
-     * @return
-     */
+    @ApiOperation(value = "Reset Checklist", notes = "Reset custom checklist to origin.")
     @PostMapping("/reset")
     public ResponseEntity<?> resetCheckList(
         @RequestBody CheckListSimpleDto data
@@ -75,11 +63,7 @@ public class CheckListController {
                 .body(new CommonResponse(dtos));
     }
 
-    /**
-     * 룰 수정
-     * @param data
-     * @return
-     */
+    @ApiOperation(value = "Modify Checklist", notes = "Make Custom checklist by modifying origin.")
     @PostMapping("/state")
     public ResponseEntity<?> modifyCheckList(
         @RequestBody List<CheckListSimpleDto> data

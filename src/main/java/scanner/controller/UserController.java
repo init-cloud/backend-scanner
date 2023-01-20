@@ -1,5 +1,6 @@
 package scanner.controller;
 
+import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -13,9 +14,10 @@ import scanner.exception.ApiException;
 import scanner.response.CommonResponse;
 import scanner.response.enums.ResponseCode;
 import scanner.security.dto.Token;
-import scanner.security.jwt.JwtTokenProvider;
 import scanner.service.user.UsernameService;
 
+
+@ApiOperation("User and IAM API")
 @RestController
 @RequestMapping("/api/v1/user")
 @RequiredArgsConstructor
@@ -23,6 +25,7 @@ public class UserController {
 
     private final UsernameService userService;
 
+    @ApiOperation(value = "Signin", notes = "Join. return access token")
     @PostMapping("/signin")
     public ResponseEntity<?> login(@RequestBody UserAuthenticationDto dto){
         try{
@@ -35,6 +38,7 @@ public class UserController {
         }
     }
 
+    @ApiOperation(value = "Signup", notes = "Register. return access token")
     @PostMapping("/signup")
     public ResponseEntity<?> register(@RequestBody UserSignupDto dto){
         try{
