@@ -39,7 +39,9 @@ public class TFScanController {
     private final StorageServiceImpl storageService;
     private final ScanService scanService;
 
-    @ApiOperation(value = "Download File", notes = "Unused. Deprecated.")
+    @ApiOperation(value = "Download File",
+            notes = "Unused. Deprecated.",
+            response = ResponseEntity.class)
     @GetMapping("/file/{file}")
     public ResponseEntity<?> downloadFile(
         HttpServletRequest request, 
@@ -65,7 +67,9 @@ public class TFScanController {
                 .body(resource);
     }
 
-    @ApiOperation(value = "Scan Terraform File", notes = "Uploads .tf or .zip file to scan.")
+    @ApiOperation(value = "Scan Terraform File",
+            notes = "Uploads .tf or .zip file to scan.",
+            response = ResponseEntity.class)
     @PostMapping("/file/{provider}")
     public ResponseEntity<?> uploadFile(
         HttpServletRequest request, 

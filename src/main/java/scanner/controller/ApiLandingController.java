@@ -19,9 +19,11 @@ import scanner.response.CommonResponse;
 @RequiredArgsConstructor
 public class ApiLandingController {
 
-    @ApiOperation(value = "API List", notes = "API List")
+    @ApiOperation(value = "API List",
+            notes = "API List",
+            response = ResponseEntity.class)
     @GetMapping
-    public ResponseEntity<?> retrieveAPI(){
+    public ResponseEntity<CommonResponse> retrieveAPI(){
         HashMap<String, String> api = new HashMap<String, String>(); 
         api.put("checklist", "/api/v1/checklist");
         api.put("scan", "/api/v1/file/{provider}");
@@ -32,9 +34,11 @@ public class ApiLandingController {
                 .body(new CommonResponse(api));
     }
 
-    @ApiOperation(value = "API List", notes = "API List")
+    @ApiOperation(value = "API List",
+            notes = "API List",
+            response = ResponseEntity.class)
     @GetMapping("/api/v1")
-    public ResponseEntity<?> retrieveAPI2(){
+    public ResponseEntity<CommonResponse> retrieveAPI2(){
         HashMap<String, String> api = new HashMap<String, String>(); 
         api.put("checklist", "/api/v1/checklist");
         api.put("scan", "/api/v1/file/{provider}");

@@ -30,9 +30,11 @@ public class CheckListController {
     
     private final CheckListService checkListService;
 
-    @ApiOperation(value = "Retrieve Checklist", notes = "Retrieve all checklists.")
+    @ApiOperation(value = "Retrieve Checklist",
+            notes = "Retrieve all checklists.",
+            response = ResponseEntity.class)
     @GetMapping
-    public ResponseEntity<?> retrieveCheckList(){
+    public ResponseEntity<CommonResponse<CheckListDetailResponse>> retrieveCheckList(){
         CheckListDetailResponse dtos = checkListService.retrieve();
 
         return ResponseEntity.ok()
@@ -40,7 +42,9 @@ public class CheckListController {
     }
 
 
-    @ApiOperation(value = "Create Custom Checklist", notes = "Create custom new checklist from origin.")
+    @ApiOperation(value = "Create Custom Checklist",
+            notes = "Create custom new checklist from origin.",
+            response = ResponseEntity.class)
     @PostMapping
     public ResponseEntity<?> createCheckList(
         CheckListDetailDto data
@@ -51,7 +55,9 @@ public class CheckListController {
                 .body(new CommonResponse(dtos));
     }
 
-    @ApiOperation(value = "Reset Checklist", notes = "Reset custom checklist to origin.")
+    @ApiOperation(value = "Reset Checklist",
+            notes = "Reset custom checklist to origin.",
+            response = ResponseEntity.class)
     @PostMapping("/reset")
     public ResponseEntity<?> resetCheckList(
         @RequestBody CheckListSimpleDto data
@@ -65,7 +71,9 @@ public class CheckListController {
                 .body(new CommonResponse(dtos));
     }
 
-    @ApiOperation(value = "Modify Checklist", notes = "Make Custom checklist by modifying origin.")
+    @ApiOperation(value = "Modify Checklist",
+            notes = "Make Custom checklist by modifying origin.",
+            response = ResponseEntity.class)
     @PostMapping("/state")
     public ResponseEntity<?> modifyCheckList(
         @RequestBody List<CheckListSimpleDto> data
