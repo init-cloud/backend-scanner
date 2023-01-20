@@ -1,24 +1,21 @@
 package scanner.controller;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
 
 import io.swagger.annotations.ApiOperation;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import lombok.RequiredArgsConstructor;
 import scanner.dto.history.HistoryDto;
-import scanner.exception.ApiException;
+import scanner.model.ScanHistory;
 import scanner.response.CommonResponse;
 import scanner.response.ReportResponse;
-import scanner.response.enums.ResponseCode;
 import scanner.service.ScanHistoryService;
-import scanner.model.ScanHistory;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 
 @ApiOperation("ScanHistory API")
@@ -33,20 +30,15 @@ public class ScanHistoryController {
             notes = "Retrieve scan histories for reports.",
             response = ResponseEntity.class)
     @GetMapping("/history")
-    public ResponseEntity<Object> retrieveHistory() {
-        try{
-            List<ScanHistory> history = scanHistoryService.retrieveHistoryList();
+    public ResponseEntity<CommonResponse<List<HistoryDto>>> retrieveHistory() {
+        List<ScanHistory> history = scanHistoryService.retrieveHistoryList();
 
-            List<HistoryDto> dtos = history.stream()
-                                            .map(HistoryDto::new)
-                                            .collect(Collectors.toList());
+        List<HistoryDto> dtos = history.stream()
+                                        .map(HistoryDto::new)
+                                        .collect(Collectors.toList());
 
-            return ResponseEntity.ok()
-                    .body(new CommonResponse(dtos));
-        }
-        catch(Exception e){
-            return CommonResponse.toException(e);
-        }
+        return ResponseEntity.ok()
+                .body(new CommonResponse(dtos));
     }
 
     @ApiOperation(value = "Retrieve Scan Report",

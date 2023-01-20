@@ -15,7 +15,6 @@ import lombok.RequiredArgsConstructor;
 import scanner.dto.CheckListDetailDto;
 import scanner.dto.CheckListSimpleDto;
 import scanner.exception.ApiException;
-import scanner.exception.CheckListException;
 import scanner.response.CommonResponse;
 import scanner.response.checklist.CheckListDetailResponse;
 import scanner.response.enums.ResponseCode;
@@ -46,8 +45,8 @@ public class CheckListController {
             notes = "Create custom new checklist from origin.",
             response = ResponseEntity.class)
     @PostMapping
-    public ResponseEntity<?> createCheckList(
-        CheckListDetailDto data
+    public ResponseEntity<CommonResponse<CheckListDetailResponse>> createCheckList(
+        @RequestBody CheckListDetailDto data
     ){
         CheckListDetailResponse dtos = checkListService.create(data);
 
@@ -59,13 +58,10 @@ public class CheckListController {
             notes = "Reset custom checklist to origin.",
             response = ResponseEntity.class)
     @PostMapping("/reset")
-    public ResponseEntity<?> resetCheckList(
+    public ResponseEntity<CommonResponse<CheckListSimpleDto>> resetCheckList(
         @RequestBody CheckListSimpleDto data
     ){
         CheckListSimpleDto dtos = checkListService.reset(data);
-
-        if(dtos == null)
-            return CommonResponse.toException(new ApiException(ResponseCode.STATUS_4005));
 
         return ResponseEntity.ok()
                 .body(new CommonResponse(dtos));
@@ -75,20 +71,15 @@ public class CheckListController {
             notes = "Make Custom checklist by modifying origin.",
             response = ResponseEntity.class)
     @PostMapping("/state")
-    public ResponseEntity<?> modifyCheckList(
+    public ResponseEntity<CommonResponse<List<CheckListSimpleDto>>> modifyCheckList(
         @RequestBody List<CheckListSimpleDto> data
     ){
-        try{
-            if(data == null)
-                return CommonResponse.toException(new ApiException(ResponseCode.STATUS_4005));
+        if(data == null)
+            throw new ApiException(ResponseCode.STATUS_4005);
 
-            List<CheckListSimpleDto> dtos = checkListService.modify(data);
+        List<CheckListSimpleDto> dtos = checkListService.modify(data);
 
-            return ResponseEntity.ok()
-                    .body(new CommonResponse(dtos));
-        }
-        catch(CheckListException che){
-            return CommonResponse.toException(new ApiException(ResponseCode.STATUS_4005));
-        }
+        return ResponseEntity.ok()
+                .body(new CommonResponse(dtos));
     }
 }

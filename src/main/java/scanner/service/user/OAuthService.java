@@ -13,12 +13,12 @@ public class OAuthService implements UserService{
     private final UserRepository userRepository;
 
     @Override
-    public Token signup(UserSignupDto dto) throws Exception{
+    public Token signup(UserSignupDto dto){
         return null;
     }
 
     @Override
-    public Token signin(UserAuthenticationDto dto) throws Exception{
+    public Token signin(UserAuthenticationDto dto){
         return null;
     }
 }
