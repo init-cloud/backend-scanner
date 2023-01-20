@@ -18,6 +18,8 @@ spring:
     hibernate:
       ddl-auto: none
     open-in-view: false
-
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
 jwt:
   secret: ${JWT_SECRET}
