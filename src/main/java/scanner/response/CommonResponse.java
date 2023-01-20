@@ -29,18 +29,27 @@ public class CommonResponse<T> {
     public static ResponseEntity<Object> toException(ApiException e){
         return ResponseEntity.status(e.getResponseCode().getHttpStatus())
                 .body(CommonResponse.builder()
-                        .success(false)
-                        .data(null)
-                        .error(new ExceptionDto(e.getResponseCode()))
+                    .success(false)
+                    .data(null)
+                    .error(new ExceptionDto(e.getResponseCode()))
                 .build());
     }
 
     public static ResponseEntity<Object> toException(Exception e){
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body(CommonResponse.builder()
-                        .success(false)
-                        .data(null)
-                        .error(new ExceptionDto(ResponseCode.STATUS_5100))
+                    .success(false)
+                    .data(null)
+                    .error(new ExceptionDto(ResponseCode.STATUS_5100))
+                .build());
+    }
+
+    public static ResponseEntity<Object> toException(Throwable e, String message){
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(CommonResponse.builder()
+                    .success(false)
+                    .data(null)
+                    .error(new ExceptionDto(ResponseCode.STATUS_4007.getCode(), message))
                 .build());
     }
 }

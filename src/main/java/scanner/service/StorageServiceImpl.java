@@ -23,6 +23,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import scanner.common.utils.FileDigest;
+import scanner.exception.ApiException;
+import scanner.response.enums.ResponseCode;
+
+import javax.servlet.http.HttpServletRequest;
 
 
 @Service
@@ -36,7 +40,7 @@ public class StorageServiceImpl implements StorageService{
         try {
             Files.createDirectories(Paths.get(uploadPath));
         } catch (IOException e) {
-            throw new RuntimeException("Could not create upload directory.");
+            throw new ApiException(e, ResponseCode.STATUS_5005);
         }
     }
 
@@ -81,10 +85,10 @@ public class StorageServiceImpl implements StorageService{
             }
         }
         catch (Exception e) {
-            throw new RuntimeException("Could not store the file. Error: ");
+            throw new ApiException(e, ResponseCode.STATUS_5003);
         }
         catch (Throwable e) {
-            throw new RuntimeException("Could not decompress the file. Error: ");
+            throw new ApiException(e, ResponseCode.STATUS_5004);
         }
     }
 
@@ -166,15 +170,32 @@ public class StorageServiceImpl implements StorageService{
             if(rsc.exists() || rsc.isReadable())
                 return rsc;
             else
-                throw new RuntimeException("Error");
+                throw new ApiException(ResponseCode.STATUS_5100);
         }
         catch(MalformedURLException e){
-            throw new RuntimeException("Error");
+            throw new ApiException(e, ResponseCode.STATUS_5100);
         }
     }
 
     @Override
     public void deleteAll() {
 
+    }
+
+    public String getContentType(HttpServletRequest request, Resource resource){
+        String contentType = null;
+
+        try {
+            contentType = request.getServletContext()
+                    .getMimeType(resource.getFile().getAbsolutePath());
+        } catch (IOException ex) {
+            throw new ApiException(ResponseCode.STATUS_5100);
+        }
+
+        if(contentType == null) {
+            return "application/octet-stream";
+        }
+
+        return contentType;
     }
 }

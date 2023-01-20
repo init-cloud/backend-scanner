@@ -42,26 +42,19 @@ public class ScanService {
     private final ScanHistoryDetailsRepository scanHistoryDetailsRepository;
     private final CheckListRepository checkListRepository;
 
-    /**
-     * 
-     * @param args
-     * @return
-     * @throws Exception
-     */
-    public ScanResponse<?> scanTerraform(String[] args, String provider)
-    throws Exception 
-    {
+
+    public ScanResponse scanTerraform(String[] args, String provider) {
         try {
             List<CustomRule> offRules = checkListService.retrieveOffEntity();
             String offStr = getSkipCheckCmd(offRules);
             String fileUploadPath = Env.UPLOAD_PATH.getValue();
             File file = new File(fileUploadPath + File.separator + args[1]);
-            
+
             String[] cmd = {"bash", "-l", "-c", Env.SHELL_COMMAND_RAW.getValue() + args[1] + Env.getCSPExternalPath(provider) + offStr};
 
             Process p = Runtime.getRuntime().exec(cmd);
             BufferedReader br = new BufferedReader(new InputStreamReader(p.getInputStream()));
-            ScanResponse<?> scanResult = resultToJson(br, args[1], provider);
+            ScanResponse scanResult = resultToJson(br, args[1], provider);
 
             p.waitFor();
             p.destroy();
@@ -70,19 +63,13 @@ public class ScanService {
             save(scanResult.getCheck(), scanResult.getResult(), args, provider, totalCount);
             FileUtils.deleteDirectory(file);
             return scanResult;
+        } catch (NullPointerException e){
+            throw new ApiException(ResponseCode.STATUS_4005);
         } catch (Exception e) {
             throw new ApiException(ResponseCode.STATUS_5002);
         }
     }
 
-    /**
-     * 
-     * @param scanResult
-     * @param scanDetail
-     * @param args
-     * @param provider
-     * @return
-     */
     @Transactional
     public boolean save(CheckResultDto scanResult, List<ScanResultDto> scanDetail, String[] args, String provider, double[] total)
     {
@@ -110,12 +97,6 @@ public class ScanService {
         }
     }
 
-
-    /**
-     * 
-     * @param scan
-     * @return
-     */
     public CheckResultDto parseScanCheck(String scan){
         String[] lines = scan.strip().split(", ");
         String[] passed = lines[0].split("checks:");
@@ -129,12 +110,6 @@ public class ScanService {
         );
     }
 
-    /**
-     * 
-     * @param rawResult
-     * @param result
-     * @return
-     */
     public ScanResultDto parseScanResult(
         String rawResult,
         ScanResultDto result,
@@ -174,14 +149,7 @@ public class ScanService {
         return result;
     }
 
-    /**
-     * 
-     * @param br
-     * @return
-     * @throws IOException
-     * @throws ParseException
-     */
-    public ScanResponse<?> resultToJson(BufferedReader br, String path, String provider) 
+    public ScanResponse resultToJson(BufferedReader br, String path, String provider)
     throws IOException, ParseException, FileNotFoundException
     {
         String rawResult;
@@ -227,11 +195,6 @@ public class ScanService {
         return new ScanResponse(check, resultLists, parse);
     }
 
-    /**
-     * get Skip rule List
-     * @param offRules
-     * @return offStr (String)
-     */
     private String getSkipCheckCmd(List<CustomRule> offRules){
         String offStr = "";
 
@@ -251,11 +214,6 @@ public class ScanService {
         return offStr;
     }
 
-    /**
-     * 
-     * @param results
-     * @return
-     */
     private double[] calc(List<ScanResultDto> results){
         /* score, high, medium, low, unknown */
         double[] count = new double[5];
