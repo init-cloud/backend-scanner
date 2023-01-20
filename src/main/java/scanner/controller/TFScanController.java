@@ -22,8 +22,10 @@ import org.springframework.web.multipart.MultipartFile;
 
 import lombok.RequiredArgsConstructor;
 
+import scanner.exception.ApiException;
 import scanner.response.CommonResponse;
 import scanner.response.ScanResponse;
+import scanner.response.enums.ResponseCode;
 import scanner.service.ScanService;
 import scanner.service.StorageServiceImpl;
 
@@ -51,7 +53,7 @@ public class TFScanController {
             contentType = request.getServletContext()
                                 .getMimeType(resource.getFile().getAbsolutePath());
         } catch (IOException ex) {
-            
+            return CommonResponse.toException(new ApiException(ResponseCode.STATUS_5100));
         }
 
         if(contentType == null) {
@@ -83,10 +85,10 @@ public class TFScanController {
                         .body(new CommonResponse(dtos));
             }
 
-            return ResponseEntity.badRequest().body(null);
+            return CommonResponse.toException(new ApiException(ResponseCode.STATUS_4005));
         }
         catch(Exception e){
-            return ResponseEntity.badRequest().body(null);
+            return CommonResponse.toException(e);
         }
     }
 }
