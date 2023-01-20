@@ -30,29 +30,21 @@ public class UserController {
             notes = "Join. return access token",
             response = ResponseEntity.class)
     @PostMapping("/signin")
-    public ResponseEntity<Object> login(@RequestBody UserAuthenticationDto dto){
-        try{
-            Token response = userService.signin(dto);
+    public ResponseEntity<CommonResponse<Token>> login(@RequestBody UserAuthenticationDto dto){
+        Token response = userService.signin(dto);
 
-            return ResponseEntity.ok()
-                    .body(new CommonResponse<Token>(response));
-        } catch(Exception e){
-            return CommonResponse.toException(new ApiException(ResponseCode.STATUS_4002));
-        }
+        return ResponseEntity.ok()
+                .body(new CommonResponse<Token>(response));
     }
 
     @ApiOperation(value = "Signup",
             notes = "Register. return access token",
             response = ResponseEntity.class)
     @PostMapping("/signup")
-    public ResponseEntity<Object> register(@RequestBody UserSignupDto dto){
-        try{
-            Token response = userService.signup(dto);
+    public ResponseEntity<CommonResponse<Token>> register(@RequestBody UserSignupDto dto){
+        Token response = userService.signup(dto);
 
-            return ResponseEntity.ok()
-                    .body(new CommonResponse<Token>(response));
-        } catch(Exception e){
-            return CommonResponse.toException(new ApiException(ResponseCode.STATUS_5100));
-        }
+        return ResponseEntity.ok()
+                .body(new CommonResponse<Token>(response));
     }
 }

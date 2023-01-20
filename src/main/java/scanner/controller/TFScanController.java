@@ -43,24 +43,12 @@ public class TFScanController {
             notes = "Unused. Deprecated.",
             response = ResponseEntity.class)
     @GetMapping("/file/{file}")
-    public ResponseEntity<?> downloadFile(
+    public ResponseEntity<Resource> downloadFile(
             HttpServletRequest request,
-            HttpServletResponse response,
-            @PathVariable String file
-    ) throws IOException{
+            @PathVariable String file){
         Resource resource = storageService.loadAsResource(file);
-        String contentType = null;
+        String contentType = storageService.getContentType(request, resource);
 
-        try {
-            contentType = request.getServletContext()
-                    .getMimeType(resource.getFile().getAbsolutePath());
-        } catch (IOException ex) {
-            return CommonResponse.toException(new ApiException(ResponseCode.STATUS_5100));
-        }
-
-        if(contentType == null) {
-            contentType = "application/octet-stream";
-        }
         return ResponseEntity.ok()
                 .contentType(MediaType.parseMediaType(contentType))
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + resource.getFilename() + "\"")
@@ -71,28 +59,16 @@ public class TFScanController {
             notes = "Uploads .tf or .zip file to scan.",
             response = ResponseEntity.class)
     @PostMapping("/file/{provider}")
-    public ResponseEntity<?> uploadFile(
+    public ResponseEntity<CommonResponse<ScanResponse>> uploadFile(
             HttpServletRequest request,
             HttpServletResponse response,
             @PathVariable("provider") String provider,
-            @RequestPart("file") MultipartFile file
-    ) throws ServletException, IllegalStateException, NullPointerException
-    {
-        try{
-            String[] result = {null, null};
+            @RequestPart("file") MultipartFile file) {
 
-            if(!file.isEmpty()) {
-                result = storageService.store(file);
-                ScanResponse dtos= scanService.scanTerraform(result, provider);
+        String[] result = storageService.store(file);
+        ScanResponse dtos= scanService.scanTerraform(result, provider);
 
-                return ResponseEntity.ok()
-                        .body(new CommonResponse(dtos));
-            }
-
-            return CommonResponse.toException(new ApiException(ResponseCode.STATUS_4005));
-        }
-        catch(Exception e){
-            return CommonResponse.toException(e);
-        }
+        return ResponseEntity.ok()
+                .body(new CommonResponse(dtos));
     }
 }
