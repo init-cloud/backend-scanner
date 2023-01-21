@@ -3,8 +3,6 @@ name: SCANNER-PROD CI/CD
 on:
   push:
     branches: ['main']
-  pull_request:
-    branches: ['main']
 
 jobs:
   build:
@@ -27,7 +25,7 @@ jobs:
       - name: Docker login
         run: docker login -u ${{ secrets.REGISTRY_USER }} -p ${{ secrets.REGISTRY_PW }}
 
-      - name: Docker build
+      - name: Docker build for Release.
         run: |
             DATE=$(date "+%y.%m.%d")
             docker build -t ${{ secrets.REGISTRY_002 }}/scanner_api_v2:latest .
