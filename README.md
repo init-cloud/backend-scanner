@@ -2,7 +2,6 @@
  
 # Initcloud Scanner
 
-  
 </div>
  
 ## Description   
@@ -31,6 +30,7 @@ REACT_APP_BASE_URL=http://initcloud_scanner:9090/api/v1
 
 # Scanner
 SCANNER_PORT=9090 # YOUR SCANNER PORT
+JWT_SECRET= # YOUR RANDOM VALUE LONGER THAN 32
 
 # Parser
 PARSER_PORT=9001 # YOUR PARSER PORT
