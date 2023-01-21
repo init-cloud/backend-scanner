@@ -15,7 +15,7 @@ Initcloud Scanner is Terraform Scanner & Visualizer for AWS, NCP.
 2. Cloning Initcloud Scanner
 ```bash
 git clone https://github.com/init-cloud/backend-scanner.git
-cd ./initcloud-scanner
+cd ./backend-scanner
 ```  
 3. Set your Environment Variables. 
 ```bash
@@ -23,6 +23,7 @@ touch .env
 ```
 ```bash
 # .env
+TZ= #YOUR TIMEZONE
 
 # Dashboard
 BOARD_PORT=5555 # YOUR BOARD PORT
