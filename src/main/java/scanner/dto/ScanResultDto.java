@@ -11,12 +11,12 @@ import lombok.NoArgsConstructor;
 public class ScanResultDto {
     private String status;
 
-    private String rule_id;
+    private String ruleId;
     private String description;
 
-    private String target_resource;
+    private String targetResource;
 
-    private String target_file;
+    private String targetFile;
     private String lines;
 
     private String level;

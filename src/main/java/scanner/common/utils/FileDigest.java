@@ -2,13 +2,19 @@ package scanner.common.utils;
 
 
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 
 public class FileDigest  {
 
-    public static byte[] createChecksum(String filename) 
-    throws Exception 
+    private FileDigest() {
+        throw new IllegalStateException("Utility class");
+    }
+
+    public static byte[] createChecksum(String filename)
+    throws IOException, NoSuchAlgorithmException
     {
         InputStream fis =  new FileInputStream(filename);
 
@@ -28,15 +34,14 @@ public class FileDigest  {
     }
 
     public static String getChecksum(String filename)
-    throws Exception
+    throws IOException, NoSuchAlgorithmException
     {
         byte[] b = createChecksum(filename);
-        String result = "";
+        StringBuilder result = new StringBuilder();
 
-        for (int i=0; i < b.length; i++) {
-            result += Integer.toString( ( b[i] & 0xff ) + 0x100, 16).substring(1);
-        }
+        for (int i=0; i < b.length; i++)
+            result.append(Integer.toString( ( b[i] & 0xff ) + 0x100, 16).substring(1));
 
-        return result;
+        return result.toString();
     }
 }

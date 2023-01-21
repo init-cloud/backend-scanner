@@ -41,7 +41,7 @@ public class Tag {
     @Column(name = "TAG")
     @NotNull
     @Size(max = 64)
-    private String tag;
+    private String tagName;
 
     @Column(name = "CREATED_AT")
     @NotNull

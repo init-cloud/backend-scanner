@@ -65,10 +65,10 @@ public class ScanHistoryDetail {
         return ScanHistoryDetail.builder()
                                 .ruleSeq(rule)
                                 .historySeq(history)
-                                .resource(dto.getTarget_resource())
-                                .resourceName(dto.getTarget_resource())
+                                .resource(dto.getTargetResource())
+                                .resourceName(dto.getTargetResource())
                                 .scanResult(dto.getStatus())
-                                .targetFile(dto.getTarget_file())
+                                .targetFile(dto.getTargetFile())
                                 .line(dto.getLines())
                                 .code(dto.getDetail())
                                 .build();

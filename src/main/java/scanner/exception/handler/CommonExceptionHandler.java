@@ -12,12 +12,12 @@ import scanner.response.CommonResponse;
 public class CommonExceptionHandler {
 
     @ExceptionHandler(value = ApiException.class)
-    public ResponseEntity<?> handleApi(ApiException exception){
+    public ResponseEntity<Object> handleApi(ApiException exception){
         return CommonResponse.toException(exception);
     }
 
     @ExceptionHandler(value = Exception.class)
-    public ResponseEntity<?> handle(Exception exception){
+    public ResponseEntity<Object> handle(Exception exception){
         return CommonResponse.toException(exception);
     }
 }

@@ -42,7 +42,17 @@ public class ScanService {
     private final ScanHistoryDetailsRepository scanHistoryDetailsRepository;
     private final CheckListRepository checkListRepository;
 
+    private static final String CHECK = "checks:";
+    private static final String PASSED = "passed";
+    private static final String FAILED = "failed";
+    private static final String STATUSCHECK = "Check";
+    private static final String STATUSPASSED = "PASSED";
+    private static final String STATUSFAILED= "FAILED";
+    private static final String STATUSFILE = "File";
 
+    private static final String SPLITCOLON = ": ";
+
+    @Transactional
     public ScanResponse scanTerraform(String[] args, String provider) {
         try {
             List<CustomRule> offRules = checkListService.retrieveOffEntity();
@@ -62,12 +72,18 @@ public class ScanService {
 
             save(scanResult.getCheck(), scanResult.getResult(), args, provider, totalCount);
             FileUtils.deleteDirectory(file);
+
             return scanResult;
         } catch (NullPointerException e){
             throw new ApiException(ResponseCode.STATUS_4005);
-        } catch (Exception e) {
-            throw new ApiException(ResponseCode.STATUS_5002);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        } catch (IOException e){
+            throw new ApiException(ResponseCode.STATUS_5006);
+        } catch (ParseException e){
+            throw new ApiException(ResponseCode.STATUS_5007);
         }
+        return null;
     }
 
     @Transactional
@@ -81,7 +97,7 @@ public class ScanService {
             List<ScanHistoryDetail> details = new ArrayList<>();
 
             for(int i = 0 ; i < scanDetail.size() ; i++){
-                CustomRule saveRule = checkListRepository.findByRuleId(scanDetail.get(i).getRule_id());
+                CustomRule saveRule = checkListRepository.findByRuleId(scanDetail.get(i).getRuleId());
 
                 if(saveRule == null || saveRule.getId() == null)
                     continue;
@@ -99,9 +115,9 @@ public class ScanService {
 
     public CheckResultDto parseScanCheck(String scan){
         String[] lines = scan.strip().split(", ");
-        String[] passed = lines[0].split("checks:");
-        String[] failed = lines[1].split("checks:");
-        String[] skipped = lines[2].split("checks:");
+        String[] passed = lines[0].split(CHECK);
+        String[] failed = lines[1].split(CHECK);
+        String[] skipped = lines[2].split(CHECK);
 
         return new CheckResultDto(
             Integer.parseInt(passed[1].strip()), 
@@ -117,32 +133,32 @@ public class ScanService {
     ){
         String[] lines;
 
-        if(rawResult.contains("Check:")){
-            lines = rawResult.split(": ");
+        if(rawResult.contains(STATUSCHECK)){
+            lines = rawResult.split(SPLITCOLON);
 
-            result.setRule_id(lines[1].strip());
+            result.setRuleId(lines[1].strip());
             result.setDescription(lines[2].strip());
             result.setLevel(rulesMap.get(lines[1].strip()));
         }
         
-        if(rawResult.contains("PASSED")){
-            lines = rawResult.split(": ");
+        if(rawResult.contains(STATUSPASSED)){
+            lines = rawResult.split(SPLITCOLON);
 
-            result.setStatus("passed");
+            result.setStatus(PASSED);
             result.setDetail("No");
-            result.setTarget_resource(lines[1].strip());
+            result.setTargetResource(lines[1].strip());
         }
-        else if(rawResult.contains("FAILED")){
-            lines = rawResult.split(": ");
+        else if(rawResult.contains(STATUSFAILED)){
+            lines = rawResult.split(SPLITCOLON);
 
-            result.setStatus("failed");
-            result.setTarget_resource(lines[1].strip());
+            result.setStatus(FAILED);
+            result.setTargetResource(lines[1].strip());
         }
 
-        if(rawResult.contains("File")){
-            lines = rawResult.split(":");
+        if(rawResult.contains(STATUSFILE)){
+            lines = rawResult.split(SPLITCOLON);
 
-            result.setTarget_file(lines[1].strip());
+            result.setTargetFile(lines[1].strip());
             result.setLines(lines[2].strip());
         }
 
@@ -150,7 +166,7 @@ public class ScanService {
     }
 
     public ScanResponse resultToJson(BufferedReader br, String path, String provider)
-    throws IOException, ParseException, FileNotFoundException
+    throws IOException, ParseException
     {
         String rawResult;
         StringBuilder sb = new StringBuilder();
@@ -159,7 +175,7 @@ public class ScanService {
         List<ScanResultDto> resultLists = new ArrayList<>();
         ParseResultDto parse = new ParseResultDto(parserReq.getTerraformParsingData(path, provider));
         List<CheckListDetailDto> rulesInfo = checkListService.retrieve().getDocs();
-        Map<String, String> rulesMap = new HashMap<String, String>(); 
+        Map<String, String> rulesMap = new HashMap<>();
         
         for(int i = 0 ; i < rulesInfo.size(); i++)
             rulesMap.put(rulesInfo.get(i).getId(), rulesInfo.get(i).getLevel());
@@ -172,8 +188,8 @@ public class ScanService {
 
             result = parseScanResult(rawResult, result, rulesMap);
 
-            if(result.getTarget_file() != null){
-                if(result.getStatus() == "passed"){
+            if(result.getTargetFile() != null){
+                if(result.getStatus().equals(PASSED)){
                     resultLists.add(result);
                     result = new ScanResultDto();
                     sb = new StringBuilder();
@@ -196,83 +212,86 @@ public class ScanService {
     }
 
     private String getSkipCheckCmd(List<CustomRule> offRules){
-        String offStr = "";
+        StringBuilder offStr = new StringBuilder();
+        offStr.append("");
 
-        if(offRules.size() > 0){
-            offStr += " --skip-check ";
+        if(!offRules.isEmpty()){
+            offStr.append(" --skip-check ");
 
             for(int i = 0 ; i < offRules.size() ; i++){
-                if(offRules.get(i) == null || offRules.get(i).getRuleId() == null)
+                if(offRules.get(i) == null)
                     continue;
 
-                offStr += offRules.get(i).getRuleId();
+                offStr.append(offRules.get(i).getRuleId());
 
                 if(i + 1 < offRules.size())
-                    offStr += ",";
+                    offStr.append(",");
             }
         }
-        return offStr;
+        return offStr.toString();
     }
 
     private double[] calc(List<ScanResultDto> results){
         /* score, high, medium, low, unknown */
-        double[] count = new double[5];
-        count[0] = 0.0;
-        count[1] = 0.0;
-        count[2] = 0.0;
-        count[3] = 0.0;
-        count[4] = 0.0;
+        double[] count = new double[]{0.0, 0.0, 0.0, 0.0, 0.0};
         int success = 0;
         int total = 0;
         int severity = 0;
         int totalSeverity = 0;
 
         for(ScanResultDto result: results){
-            try{
-                total += 1;
 
-                switch(result.getLevel()){
-                    case "High":
-                        if(result.getStatus() == "passed"){
-                            success += 1;
-                            severity += 3;
-                            count[1] += 1;
-                        }
-                        totalSeverity += 3;
-                    case "Medium":
-                        if(result.getStatus() == "passed"){
-                            success += 1;
-                            severity += 2;
-                            count[2] += 1;
-                        }
-                        totalSeverity += 2;
-                    case "Low":
-                        if(result.getStatus() == "passed"){
-                            success += 1;
-                            severity += 1;
-                            count[3] += 1;
-                        }
-                        totalSeverity += 1;
-                    default:
-                        if(result.getStatus() == "passed"){
-                            success += 1;
-                            severity += 1;
-                            count[4] += 1;
-                        }
-                        totalSeverity += 1;
-                }
-            }
-            catch(NullPointerException e){
+            if(result == null)
                 continue;
+
+            total += 1;
+            switch(result.getLevel()){
+                case "High":
+                    if(result.getStatus().equals(PASSED)){
+                        success += 1;
+                        severity += 3;
+                        count[1] += 1;
+                    }
+                    totalSeverity += 3;
+                    break;
+                case "Medium":
+                    if(result.getStatus().equals(PASSED)){
+                        success += 1;
+                        severity += 2;
+                        count[2] += 1;
+                    }
+                    totalSeverity += 2;
+                    break;
+                case "Low":
+                    if(result.getStatus().equals(PASSED)){
+                        success += 1;
+                        severity += 1;
+                        count[3] += 1;
+                    }
+                    totalSeverity += 1;
+                    break;
+                default:
+                    if(result.getStatus().equals(PASSED)){
+                        success += 1;
+                        severity += 1;
+                        count[4] += 1;
+                    }
+                    totalSeverity += 1;
+                    break;
             }
         }
-        
+
         double down = (total * totalSeverity);
+
+        return getScore(down, count, success, severity);
+    }
+
+    private double[] getScore(double down, double[] count, int success, int severity) {
 
         if(down == 0.0)
             count[0] = 0.0;
         else
-            count[0] = Math.round((double)(success * severity * 100.0)/(double)down) * 10.0 / 10.0;
+            count[0] = Math.round((success * severity * 100.0)/down) * 10.0 / 10.0;
 
         return count;
     }

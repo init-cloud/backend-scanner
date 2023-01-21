@@ -35,11 +35,14 @@ public class ScanHistoryDetailDto {
 
     public static ScanHistoryDetailDto toDto(final ScanHistoryDetail entity){
         CustomRule rule = entity.getRuleSeq();
-        List<ComplianceDto> compliance = rule.getCompliance().stream().map(ComplianceDto::toDto).collect(Collectors.toList());
+        List<ComplianceDto> compliance = rule.getCompliance()
+                .stream()
+                .map(ComplianceDto::toDto)
+                .collect(Collectors.toList());
 
         List<String> tag = rule.getTag()
                                 .stream()
-                                .map(Tag::getTag)
+                                .map(Tag::getTagName)
                                 .collect(Collectors.toList()); 
 
         return ScanHistoryDetailDto.builder()

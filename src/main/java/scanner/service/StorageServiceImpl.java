@@ -34,13 +34,15 @@ public class StorageServiceImpl implements StorageService{
 
     @Value("${spring.servlet.multipart.location}")
     private String uploadPath;
+
+    private static final String ROOTPATH = "./uploads/";
     
     @Override
     public void init() {
         try {
             Files.createDirectories(Paths.get(uploadPath));
         } catch (IOException e) {
-            throw new ApiException(e, ResponseCode.STATUS_5005);
+            throw new ApiException(ResponseCode.STATUS_5005);
         }
     }
 
@@ -61,7 +63,7 @@ public class StorageServiceImpl implements StorageService{
             }
 
             if (file.isEmpty()) {
-                throw new Exception("File is empty.");
+                throw new ApiException(ResponseCode.STATUS_4005);
             }
 
             if (!Files.exists(root)) {
@@ -70,15 +72,15 @@ public class StorageServiceImpl implements StorageService{
 
             try (InputStream inputStream = file.getInputStream()) {
                 if(isNotValidExt(file.getOriginalFilename()))
-                    throw new RuntimeException("Could not store the file. Error: ");
+                    throw new ApiException(ResponseCode.STATUS_5003);
 
                 Files.copy(
                     inputStream, root.resolve(file.getOriginalFilename()), StandardCopyOption.REPLACE_EXISTING);
 
-                String fileHash = FileDigest.getChecksum("./uploads/" + saved + "/" + file.getOriginalFilename());
+                String fileHash = FileDigest.getChecksum(ROOTPATH + saved + "/" + file.getOriginalFilename());
 
                 if(isCompressed(file.getOriginalFilename()))
-                    decompress("./uploads/" + saved + "/" + file.getOriginalFilename(), "./uploads/" + saved );
+                    decompress(ROOTPATH + saved + "/" + file.getOriginalFilename(), ROOTPATH + saved );
 
                 result[0] = fileHash;
                 result[1] = saved;
@@ -88,10 +90,10 @@ public class StorageServiceImpl implements StorageService{
             }
         }
         catch (Exception e) {
-            throw new ApiException(e, ResponseCode.STATUS_5003);
+            throw new ApiException(ResponseCode.STATUS_5003);
         }
         catch (Throwable e) {
-            throw new ApiException(e, ResponseCode.STATUS_5004);
+            throw new ApiException(ResponseCode.STATUS_5004);
         }
     }
 
@@ -117,34 +119,32 @@ public class StorageServiceImpl implements StorageService{
                     createFile(file, zis); 
                 }
             }
-        } catch (Throwable e) { 
-            throw e; 
+        } catch (Throwable e) {
+            throw new ApiException(ResponseCode.STATUS_5004);
         } finally {
             if (zis != null) zis.close();
             if (fis != null) fis.close();
         }
     }
         
-    private static void createFile(File file, ZipInputStream zis) 
-    throws Throwable {
+    private static void createFile(File file, ZipInputStream zis) {
         File parentDir = new File(file.getParent());
         if (!parentDir.exists()) {
             parentDir.mkdirs(); 
         }
         
         try (FileOutputStream fos = new FileOutputStream(file)) {
-            byte[] buffer = new byte[256]; int size = 0;
+            byte[] buffer = new byte[256];
+            int size = 0;
             while ((size = zis.read(buffer)) > 0) {
                 fos.write(buffer, 0, size); }
-        } catch (Throwable e) { 
-            throw e; 
+        } catch (Throwable e) {
+            throw new ApiException(ResponseCode.STATUS_5003);
         }
     }
 
-    public boolean isNotValidExt(String fullname){
-        String pt = "..|\\/|\\|;";
-        
-        return fullname.matches(pt);
+    public boolean isNotValidExt(String fullName){
+        return fullName.matches("..|\\/|\\|;");
     }
 
     public boolean isCompressed(String fileName){
@@ -176,13 +176,12 @@ public class StorageServiceImpl implements StorageService{
                 throw new ApiException(ResponseCode.STATUS_5100);
         }
         catch(MalformedURLException e){
-            throw new ApiException(e, ResponseCode.STATUS_5100);
+            throw new ApiException(ResponseCode.STATUS_5100);
         }
     }
 
     @Override
-    public void deleteAll() {
-
+    public void deleteAll() throws UnsupportedOperationException{
     }
 
     public String getContentType(HttpServletRequest request, Resource resource){

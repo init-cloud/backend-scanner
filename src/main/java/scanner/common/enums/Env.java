@@ -17,15 +17,20 @@ public enum Env {
 
     private final String value;
 
+    private static final String AWS = "aws";
+    private static final String NCP = "ncp";
+    private static final String NCLOUD = "ncloud";
+    private static final String OPENSTACK = "openstack";
+
     public static String getCSPExternalPath(String provider){
 
-        if(provider.hashCode() == "aws".hashCode())
+        if(provider.hashCode() == AWS.hashCode())
             return AWS_EXTERNAL_CHECK.getValue();
 
-        else if (provider.hashCode() == "ncloud".hashCode() || provider.hashCode() == "ncp".hashCode())
+        else if (provider.hashCode() == NCLOUD.hashCode() || provider.hashCode() == NCP.hashCode())
             return NCP_EXTERNAL_CHECK.getValue();
 
-        else if(provider.hashCode() == "openstack".hashCode())
+        else if(provider.hashCode() == OPENSTACK.hashCode())
             return OPEN_EXTERNAL_CHECK.getValue();
 
         else
@@ -34,14 +39,14 @@ public enum Env {
 
     public static String getCSP(String provider){
 
-        if(provider.hashCode() == "aws".hashCode())
-            return "aws";
+        if(provider.hashCode() == AWS.hashCode())
+            return AWS;
 
-        else if (provider.hashCode() == "ncloud".hashCode() || provider.hashCode() == "ncp".hashCode())
-            return "ncloud";
+        else if (provider.hashCode() == NCLOUD.hashCode() || provider.hashCode() == NCP.hashCode())
+            return NCLOUD;
 
-        else if(provider.hashCode() == "openstack".hashCode())
-            return "openstack";
+        else if(provider.hashCode() == OPENSTACK.hashCode())
+            return OPENSTACK;
 
         else
             return "none";

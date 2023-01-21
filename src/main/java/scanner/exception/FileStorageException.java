@@ -9,6 +9,4 @@ public class FileStorageException extends RuntimeException{
         super(message, cause); 
     }
 
-    public FileStorageException(Exception ex) {
-    }
 }

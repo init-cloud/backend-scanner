@@ -13,6 +13,8 @@ import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "USER_TOKEN")
+@NoArgsConstructor
+@AllArgsConstructor
 public class UserToken {
 
     @Id
