@@ -1,6 +1,6 @@
 ---
 name: fix/hot-fix
-about: "버그 수정"
+about: "버그 수정 (fix bugs, typo, build error, etc.)"
 title: "fix: "
 labels: ''
 assignees: ''

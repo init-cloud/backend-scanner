@@ -1,6 +1,6 @@
 ---
 name: test
-about: "테스트 및 테스트 코드"
+about: "테스트 및 테스트 코드 (Write Test code.)"
 title: "test: "
 labels: ''
 assignees: ''
