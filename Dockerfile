@@ -8,10 +8,10 @@ RUN pip3 install checkov
 WORKDIR /app/
 
 COPY ./build/libs/scanner-2.0.0.jar ./scanner.jar
-COPY ./uploads/aws ./external/aws
-COPY ./uploads/ncp ./external/ncp
-COPY ./uploads/openstack ./external/openstack
-COPY ./uploads/none ./external/none
+COPY ./volume/uploads/aws ./external/aws
+COPY ./volume/uploads/ncp ./external/ncp
+COPY ./volume/uploads/openstack ./external/openstack
+COPY ./volume/uploads/none ./external/none
 
 EXPOSE 8080 
 
