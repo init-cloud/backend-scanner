@@ -7,6 +7,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import scanner.dto.user.UserAuthenticationDto;
+import scanner.dto.user.UserDto;
 import scanner.dto.user.UserSignupDto;
 import scanner.exception.ApiException;
 import scanner.model.User;
@@ -50,5 +51,9 @@ public class UsernameService implements UserService{
         return jwtTokenProvider.create(
             dto.getUsername(),
             ((User) authentication.getPrincipal()).getRoleType());
+    }
+
+    public Boolean updateRole(UserDto target){
+        return false;
     }
 }
