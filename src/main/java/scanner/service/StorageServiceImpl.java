@@ -16,6 +16,7 @@ import java.util.stream.Stream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
@@ -29,6 +30,7 @@ import scanner.response.enums.ResponseCode;
 import javax.servlet.http.HttpServletRequest;
 
 
+@Slf4j
 @Service
 public class StorageServiceImpl implements StorageService{
 
@@ -49,9 +51,6 @@ public class StorageServiceImpl implements StorageService{
     @Override
     public String[] store(MultipartFile file){
         try {
-            if(file.isEmpty())
-                throw new ApiException(ResponseCode.STATUS_4005);
-
             String[] result = {null, null, null};
             UUID uniqName = UUID.randomUUID();
             String saved = uniqName.toString();
