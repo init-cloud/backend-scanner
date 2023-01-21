@@ -12,12 +12,12 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import scanner.security.filter.JwtAuthenticationFilter;
-import scanner.security.jwt.JwtTokenProvider;
+import scanner.security.provider.JwtTokenProvider;
 
 
-@RequiredArgsConstructor
-@EnableWebSecurity
 @Configuration
+@EnableWebSecurity
+@RequiredArgsConstructor
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final JwtTokenProvider jwtTokenProvider;

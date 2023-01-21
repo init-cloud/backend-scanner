@@ -4,10 +4,7 @@ package scanner.controller;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import scanner.dto.user.UserAuthenticationDto;
 import scanner.dto.user.UserSignupDto;
 import scanner.response.CommonResponse;
@@ -28,10 +25,11 @@ public class UserController {
             response = ResponseEntity.class)
     @PostMapping("/signin")
     public ResponseEntity<CommonResponse<Token>> login(@RequestBody UserAuthenticationDto dto){
+
         Token response = userService.signin(dto);
 
         return ResponseEntity.ok()
-                .body(new CommonResponse<Token>(response));
+                .body(new CommonResponse<>(response));
     }
 
     @ApiOperation(value = "Signup",
@@ -42,6 +40,6 @@ public class UserController {
         Token response = userService.signup(dto);
 
         return ResponseEntity.ok()
-                .body(new CommonResponse<Token>(response));
+                .body(new CommonResponse<>(response));
     }
 }

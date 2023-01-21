@@ -4,8 +4,8 @@ package scanner.security.filter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.filter.GenericFilterBean;
-import scanner.security.jwt.JwtTokenProvider;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import scanner.security.provider.JwtTokenProvider;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -15,7 +15,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 
 @RequiredArgsConstructor
-public class JwtAuthenticationFilter extends GenericFilterBean {
+public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
     private final JwtTokenProvider jwtTokenProvider;
 

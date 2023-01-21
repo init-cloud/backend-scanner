@@ -1,4 +1,4 @@
-package scanner.security.jwt;
+package scanner.security.provider;
 
 
 import io.jsonwebtoken.*;
@@ -23,7 +23,7 @@ import java.util.Date;
 @Component
 public class JwtTokenProvider {
 
-    private final long expiredTime = 3 * 24 * 60 * 60 * 1000L;
+    private static final long EXPIREDTIME = 3 * 24 * 60 * 60 * 1000L;
 
     private final JwtProperties jwt;
     private final CustomUserDetailService userDetailsService;
@@ -36,7 +36,7 @@ public class JwtTokenProvider {
                 .setSubject(username)
                 .claim("role", role)
                 .setIssuedAt(now)
-                .setExpiration(new Date(now.getTime() + expiredTime))
+                .setExpiration(new Date(now.getTime() + EXPIREDTIME))
                 .signWith(SignatureAlgorithm.HS256, jwt.getSecret())
                 .compact();
 
