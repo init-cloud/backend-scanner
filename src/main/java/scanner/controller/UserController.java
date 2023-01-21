@@ -21,7 +21,7 @@ public class UserController {
     private final UsernameService userService;
 
     @ApiOperation(value = "Signin",
-            notes = "Join. return access token",
+            notes = "Login. return access token",
             response = ResponseEntity.class)
     @PostMapping("/signin")
     public ResponseEntity<CommonResponse<Token>> login(@RequestBody UserAuthenticationDto dto){
