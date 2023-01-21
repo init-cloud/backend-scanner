@@ -1,6 +1,6 @@
 ---
 name: docs
-about: "문서 관리"
+about: "문서 관리 (Adjust docs.)"
 title: "docs: "
 labels: ''
 assignees: ''

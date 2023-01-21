@@ -25,10 +25,6 @@ public class CheckListService {
     
     private final CheckListRepository checkListRepository;
 
-    /**
-     * 
-     * @return
-     */
     @Transactional
     public CheckListDetailResponse retrieve(){
 
@@ -40,10 +36,6 @@ public class CheckListService {
         return new CheckListDetailResponse(ruleDtos);
     }
 
-    /**
-     * 
-     * @return
-     */
     @Transactional
     public CheckListDetailResponse retrieveOff(){
 
@@ -55,10 +47,6 @@ public class CheckListService {
         return new CheckListDetailResponse(ruleDtos);
     }
 
-    /**
-     * 
-     * @return
-     */
     public List<CustomRule> retrieveOffEntity(){
         return checkListRepository.findByRuleOnOff("n");
     }
@@ -73,11 +61,6 @@ public class CheckListService {
         return new CheckListDetailResponse(CheckListDetailDto.toDto(rule));
     }
 
-    /**
-     * 
-     * @param data
-     * @return
-     */
     @Transactional
     public List<CheckListSimpleDto> modify(
         List<CheckListSimpleDto> data
@@ -85,14 +68,15 @@ public class CheckListService {
         if(data == null)
             throw new ApiException(ResponseCode.STATUS_4005);
 
-        List<Long> ruleIds = new ArrayList<Long>();
+        List<Long> ruleIds = new ArrayList<>();
                                         
         for(int i = 0 ; i < data.size() ; i++){
             CheckListSimpleDto target = data.get(i);
             
             if(target == null)
                 continue;
-            else if(target.getCustom() == null || target.getCustom().getCustomDetail() == null){
+
+            if(target.getCustom() == null || target.getCustom().getCustomDetail() == null){
                 checkListRepository.updateRuleOnOff(target.getId(), target.getRuleOnOff());
                 ruleIds.add(target.getId());  
             } 
@@ -108,17 +92,12 @@ public class CheckListService {
                                     .map(CheckListSimpleDto::new)
                                     .collect(Collectors.toList());
 
-        if(ruleDtos == null || ruleDtos.size() == 0)
+        if(ruleDtos == null || ruleDtos.isEmpty())
             throw new ApiException(ResponseCode.STATUS_4005);
 
         return ruleDtos;
     }
 
-    /**
-     * 
-     * @param data
-     * @return
-     */
     @Transactional
     public CheckListSimpleDto reset(
         CheckListSimpleDto data
@@ -133,7 +112,7 @@ public class CheckListService {
             CustomRule rule = checkListRepository.findById(target.getId())
                     .orElseThrow(() -> new ApiException(ResponseCode.STATUS_4005));
 
-            return new CheckListSimpleDto();
+            return new CheckListSimpleDto(rule);
         }
         catch(CheckListException e){
             throw new ApiException(ResponseCode.STATUS_4005);

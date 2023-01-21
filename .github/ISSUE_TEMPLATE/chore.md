@@ -1,6 +1,6 @@
 ---
 name: chore
-about: "chore: issue"
+about: "소스 코드, 문서 외 관리. (Files exclude source code, docs.)"
 title: "chore: "
 labels: ''
 assignees: ''

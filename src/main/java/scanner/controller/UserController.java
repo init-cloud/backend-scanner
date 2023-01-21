@@ -8,12 +8,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
 import scanner.dto.user.UserAuthenticationDto;
 import scanner.dto.user.UserSignupDto;
-import scanner.exception.ApiException;
 import scanner.response.CommonResponse;
-import scanner.response.enums.ResponseCode;
 import scanner.security.dto.Token;
 import scanner.service.user.UsernameService;
 

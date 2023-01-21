@@ -2,6 +2,8 @@ package scanner.dto.history.report;
 
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
+
 import lombok.experimental.SuperBuilder;
 import scanner.model.Compliance;
 import scanner.model.ScanHistoryDetail;
@@ -13,9 +15,9 @@ public class FailedComplianceDto extends FailedDto{
         super(name, count);
     }
 
-    public static LinkedHashMap<String, Integer> toMapDto(List<ScanHistoryDetail> details){
+    public static Map<String, Integer> toMapDto(List<ScanHistoryDetail> details){
 
-        LinkedHashMap<String, Integer> compliance = new LinkedHashMap<>();
+        Map<String, Integer> compliance = new LinkedHashMap<>();
 
         if(details.isEmpty())
             return compliance;

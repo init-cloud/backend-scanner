@@ -26,10 +26,4 @@ public class TagService {
 
         return dtos;
     }
-
-    public List<TagDto> modify(
-        List<TagDto> data
-    ){
-        return null;
-    }
 }

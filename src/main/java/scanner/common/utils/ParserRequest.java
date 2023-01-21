@@ -5,7 +5,6 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
 
 import org.json.simple.parser.JSONParser;
@@ -15,16 +14,18 @@ import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
 import scanner.common.enums.Env;
+import scanner.exception.ApiException;
+import scanner.response.enums.ResponseCode;
 
 @Service
 @RequiredArgsConstructor
 public class ParserRequest {
 
-    private String API=Env.PARSE_API.getValue();
+    private static final String API = Env.PARSE_API.getValue();
     private final JSONParser jsonParser = new JSONParser();
 
     public Object getTerraformParsingData(String directory, String provider)
-    throws MalformedURLException, IOException, ParseException
+    throws IOException, ParseException
     {
         try{
             HttpURLConnection conn = null;
@@ -37,7 +38,7 @@ public class ParserRequest {
             BufferedReader in = new BufferedReader(
                                     new InputStreamReader(conn.getInputStream())); 
             String inputLine; 
-            StringBuffer response = new StringBuffer(); 
+            StringBuilder response = new StringBuilder();
             while ((inputLine = in.readLine()) != null) { 
                 response.append(inputLine); 
             } 
@@ -46,7 +47,7 @@ public class ParserRequest {
             return jsonParser.parse(response.toString());
         }
         catch(FileNotFoundException e){
-            return null;
+            throw new ApiException(ResponseCode.STATUS_4005);
         }
     }       
 }

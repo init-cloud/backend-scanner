@@ -24,19 +24,10 @@ public class ScanHistoryService {
     private final ScanHistoryRepository scanHistoryRepository;
     private final ScanHistoryDetailsRepository scanHistoryDetailsRepository;
 
-    /**
-     * 
-     * @return
-     */
     public List<ScanHistory> retrieveHistoryList(){
         return scanHistoryRepository.findTop10ByOrderByHistorySeqDesc();
     }
 
-    /**
-     * 
-     * @param reportId
-     * @return
-     */
     @Transactional
     public ReportResponse retrieveReport(Long reportId){
 

@@ -47,15 +47,15 @@ public class CustomRule {
 
     @Builder.Default
     @OneToMany(mappedBy = "ruleSeq")
-    private List<Tag> tag = new ArrayList<Tag>();
+    private List<Tag> tag = new ArrayList<>();
 
     @Builder.Default
     @OneToMany(mappedBy = "ruleSeq")
-    private List<Compliance> compliance = new ArrayList<Compliance>();
+    private List<Compliance> compliance = new ArrayList<>();
 
     @Builder.Default
     @OneToMany(mappedBy = "ruleSeq")
-    private List<ScanHistoryDetail> historyDetails = new ArrayList<ScanHistoryDetail>();
+    private List<ScanHistoryDetail> historyDetails = new ArrayList<>();
 
     @Column(name = "DEFAULT_RULE_ID", updatable=false)
     @NotNull

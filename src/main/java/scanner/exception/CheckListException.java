@@ -9,6 +9,4 @@ public class CheckListException extends RuntimeException{
         super(message, cause); 
     }
 
-    public CheckListException(Exception ex) {
-    }
 }

@@ -3,6 +3,7 @@ package scanner.dto.history.report;
 import java.time.format.DateTimeFormatter;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -18,7 +19,7 @@ import scanner.model.ScanHistoryDetail;
 public class ScanSummaryDto {
     private Long historySeq;
     private String date;
-    private String CSP;
+    private String csp;
     private String scanTarget;
     private String scanTargetHash;
     private Integer totalScanned;
@@ -38,14 +39,14 @@ public class ScanSummaryDto {
         
         List<ScanHistoryDetail> details = entity.getDetails();
 
-        LinkedHashMap<String, Integer> resource = FailedResourceDto.toMapDto(details);
-        LinkedHashMap<String, Integer> compliance = FailedComplianceDto.toMapDto(details);
-        LinkedHashMap<String, Integer> threat = FailedThreatDto.toMapDto(details);
+        Map<String, Integer> resource = FailedResourceDto.toMapDto(details);
+        Map<String, Integer> compliance = FailedComplianceDto.toMapDto(details);
+        Map<String, Integer> threat = FailedThreatDto.toMapDto(details);
 
         return ScanSummaryDto.builder()
                         .historySeq(entity.getHistorySeq())
                         .date(entity.getCreatedAt().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")))
-                        .CSP(entity.getCsp())
+                        .csp(entity.getCsp())
                         .scanTarget(entity.getFileName())
                         .scanTargetHash(entity.getFileHash())
                         .totalScanned(entity.getPassed() + entity.getFailed() + entity.getSkipped())

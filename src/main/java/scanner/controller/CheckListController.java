@@ -1,25 +1,16 @@
 package scanner.controller;
 
-import java.util.List;
-
 import io.swagger.annotations.ApiOperation;
-
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 import scanner.dto.CheckListDetailDto;
 import scanner.dto.CheckListSimpleDto;
-import scanner.exception.ApiException;
-import scanner.exception.CheckListException;
 import scanner.response.CommonResponse;
 import scanner.response.checklist.CheckListDetailResponse;
-import scanner.response.enums.ResponseCode;
 import scanner.service.CheckListService;
+
+import java.util.List;
 
 
 @ApiOperation("Checklist API. Checklist is same as Rule.")
@@ -38,7 +29,7 @@ public class CheckListController {
         CheckListDetailResponse dtos = checkListService.retrieve();
 
         return ResponseEntity.ok()
-                .body(new CommonResponse(dtos));
+                .body(new CommonResponse<>(dtos));
     }
 
 
@@ -52,7 +43,7 @@ public class CheckListController {
         CheckListDetailResponse dtos = checkListService.create(data);
 
         return ResponseEntity.ok()
-                .body(new CommonResponse(dtos));
+                .body(new CommonResponse<>(dtos));
     }
 
     @ApiOperation(value = "Reset Checklist",
@@ -65,19 +56,19 @@ public class CheckListController {
         CheckListSimpleDto dtos = checkListService.reset(data);
 
         return ResponseEntity.ok()
-                .body(new CommonResponse(dtos));
+                .body(new CommonResponse<>(dtos));
     }
 
     @ApiOperation(value = "Modify Checklist",
             notes = "Make Custom checklist by modifying origin.",
             response = ResponseEntity.class)
     @PostMapping("/state")
-    public ResponseEntity<?> modifyCheckList(
+    public ResponseEntity<CommonResponse<List<CheckListSimpleDto>>> modifyCheckList(
             @RequestBody List<CheckListSimpleDto> data
     ){
         List<CheckListSimpleDto> dtos = checkListService.modify(data);
 
         return ResponseEntity.ok()
-                .body(new CommonResponse(dtos));
+                .body(new CommonResponse<>(dtos));
     }
 }

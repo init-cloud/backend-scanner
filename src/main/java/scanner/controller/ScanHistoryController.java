@@ -37,7 +37,7 @@ public class ScanHistoryController {
                 .collect(Collectors.toList());
 
         return ResponseEntity.ok()
-                .body(new CommonResponse(dtos));
+                .body(new CommonResponse<>(dtos));
     }
 
     @ApiOperation(value = "Retrieve Scan Report",
@@ -50,6 +50,6 @@ public class ScanHistoryController {
         ReportResponse dtos = scanHistoryService.retrieveReport(reportId);
 
         return ResponseEntity.ok()
-                .body(new CommonResponse(dtos));
+                .body(new CommonResponse<>(dtos));
     }
 }

@@ -4,8 +4,7 @@ import java.util.List;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
+
 import scanner.dto.CheckResultDto;
 import scanner.dto.ParseResultDto;
 import scanner.dto.ScanResultDto;

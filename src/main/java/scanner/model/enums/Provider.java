@@ -1,16 +1,14 @@
 package scanner.model.enums;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 
+@AllArgsConstructor
 @Getter
 public enum Provider {
     AWS("AWS"),
     NCP("NCP");
 
-    private final String provider;
-
-    private Provider(String provider) { 
-        this.provider = provider; 
-    }
+    private final String csp;
 }
