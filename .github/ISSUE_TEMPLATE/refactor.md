@@ -1,6 +1,6 @@
 ---
 name: refactor
-about: "리팩토링, 코드 스타일 관련"
+about: "리팩토링, 코드 스타일 관련 (Refactoring, Adjust Code style, Lint, etc...)"
 title: "refactor: "
 labels: ''
 assignees: ''
