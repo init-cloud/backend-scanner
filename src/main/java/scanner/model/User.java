@@ -4,7 +4,9 @@ package scanner.model;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import scanner.dto.user.UserSignupDto;
 import scanner.model.enums.RoleType;
@@ -12,8 +14,8 @@ import scanner.model.enums.UserState;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Set;
 
 
 @Getter
@@ -31,9 +33,11 @@ public class User implements UserDetails {
     private LocalDateTime createdAt;
 
     @Column(name = "MODIFIED_AT")
+    @Setter
     private LocalDateTime modifiedAt;
 
     @Column(name = "LAST_LOGIN")
+    @Setter
     private LocalDateTime lastLogin;
 
     @Column(name = "USERNAME")
@@ -42,8 +46,13 @@ public class User implements UserDetails {
     @Column(name = "PASSWORD")
     private String password;
 
+    @Column
+    @Setter
+    private String authorities;
+
     @Column(name = "ROLE_TYPE")
     @Enumerated(EnumType.STRING)
+    @Setter
     private RoleType roleType;
 
     @Column(name = "USER_STATE")
@@ -94,6 +103,17 @@ public class User implements UserDetails {
         this.contact = contact;
     }
 
+    @Builder
+    public User(LocalDateTime modifiedAt,
+                String username,
+                String authorities,
+                RoleType roleType) {
+        this.modifiedAt = modifiedAt;
+        this.username = username;
+        this.authorities = authorities;
+        this.roleType = roleType;
+    }
+
     public static User toEntity(UserSignupDto dto){
         return User.builder()
                 .modifiedAt(LocalDateTime.now())
@@ -108,7 +128,21 @@ public class User implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return null;
+        Collection<GrantedAuthority> authorityList = new ArrayList<>();
+
+        for(String authority : this.authorities.split(","))
+            authorityList.add(new SimpleGrantedAuthority(authority));
+
+        return authorityList;
+    }
+
+    public static String getAuthorities(Collection<? extends GrantedAuthority> authorities) {
+        StringBuilder sb = new StringBuilder();
+
+        for(GrantedAuthority authority : authorities)
+            sb.append(authority.getAuthority());
+
+        return sb.toString();
     }
 
     @Override
@@ -128,6 +162,6 @@ public class User implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return false;
+        return this.userState.equals(UserState.ACTIVATE);
     }
 }

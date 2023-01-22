@@ -9,7 +9,9 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
+import scanner.exception.ApiException;
 import scanner.model.enums.RoleType;
+import scanner.response.enums.ResponseCode;
 import scanner.security.config.JwtProperties;
 import scanner.security.dto.Token;
 import scanner.security.service.CustomUserDetailService;
@@ -115,17 +117,16 @@ public class JwtTokenProvider {
         }
     }
 
-    private String extract(String rawToken){
-        if(rawToken == null)
+    public String resolve(HttpServletRequest request) {
+
+        String authorization = request.getHeader("Authorization");
+
+        if(authorization == null)
             return null;
 
-        if(!rawToken.startsWith("Bearer "))
-            throw new IllegalArgumentException();
+        if(!authorization.startsWith("Bearer "))
+            throw new ApiException(ResponseCode.STATUS_4002);
 
-        return rawToken.substring("Bearer ".length());
-    }
-
-    public String resolve(HttpServletRequest request) {
-        return this.extract(request.getHeader("Authorization"));
+        return authorization.substring(7);
     }
 }

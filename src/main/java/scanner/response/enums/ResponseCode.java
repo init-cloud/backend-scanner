@@ -20,6 +20,8 @@ public enum ResponseCode {
     STATUS_4009(4009, HttpStatus.BAD_REQUEST,"Password too short."),
     STATUS_4010(4010, HttpStatus.BAD_REQUEST,"Invalid Password Create rule."),
     STATUS_4011(4011, HttpStatus.BAD_REQUEST,"User exist."),
+    STATUS_4012(4012, HttpStatus.BAD_REQUEST,"Invalid Authority."),
+    STATUS_4013(4013, HttpStatus.UNAUTHORIZED,"Have no Authority."),
 
     /* Server Error. */
     STATUS_5001(5001, HttpStatus.INTERNAL_SERVER_ERROR,"Server busy."),
