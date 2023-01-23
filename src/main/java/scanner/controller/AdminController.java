@@ -4,14 +4,14 @@ package scanner.controller;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-import scanner.dto.user.UserRoleAuthorityDto;
+import org.springframework.web.bind.annotation.*;
+import scanner.dto.user.UserManagingDto;
+import scanner.dto.user.UserRetrieveDto;
 import scanner.response.CommonResponse;
 import scanner.security.service.CustomUserDetailService;
-import scanner.service.user.UsernameService;
+
+import java.util.List;
+
 
 @ApiOperation("Admin for managing.")
 @RequestMapping("/api/v1/admin")
@@ -20,25 +20,47 @@ import scanner.service.user.UsernameService;
 public class AdminController {
 
     private final CustomUserDetailService userDetailService;
-    private final UsernameService usernameService;
 
-    @ApiOperation(value = "Update User Role",
-            notes = "Managing User Role Type.",
+    @ApiOperation(value = "Retrieve Users",
+            notes = "Retrieve User List.",
             response = ResponseEntity.class)
-    @PostMapping("/role")
-    public ResponseEntity<CommonResponse<UserRoleAuthorityDto>> updateUserRole(@RequestBody UserRoleAuthorityDto dto){
-        UserRoleAuthorityDto response = userDetailService.updateRole(dto);
+    @GetMapping("/user")
+    public ResponseEntity<CommonResponse<List<UserRetrieveDto>>> retrieveUser(){
+        List<UserRetrieveDto> response = userDetailService.retrieve();
 
         return ResponseEntity.ok()
                 .body(new CommonResponse<>(response));
     }
 
-    @ApiOperation(value = "Update User Authority",
-            notes = "Managing User Authority Type.",
+    @ApiOperation(value = "Manage User",
+            notes = "Managing User Authority, Role and State.",
+            response = ResponseEntity.class)
+    @PostMapping("/user")
+    public ResponseEntity<CommonResponse<UserManagingDto>> manageUser(@RequestBody UserManagingDto dto){
+        UserManagingDto response = userDetailService.update(dto);
+
+        return ResponseEntity.ok()
+                .body(new CommonResponse<>(response));
+    }
+
+
+    @ApiOperation(value = "DEPRECATED",
+            notes = "DEPRECATED. Use manageUser",
+            response = ResponseEntity.class)
+    @PostMapping("/role")
+    public ResponseEntity<CommonResponse<UserManagingDto>> updateUserRole(@RequestBody UserManagingDto dto){
+        UserManagingDto response = userDetailService.updateRole(dto);
+
+        return ResponseEntity.ok()
+                .body(new CommonResponse<>(response));
+    }
+
+    @ApiOperation(value = "DEPRECATED",
+            notes = "DEPRECATED. Use manageUser",
             response = ResponseEntity.class)
     @PostMapping("/authority")
-    public ResponseEntity<CommonResponse<UserRoleAuthorityDto>> updateUserAuthority(@RequestBody UserRoleAuthorityDto dto){
-        UserRoleAuthorityDto response = userDetailService.updateAuthority(dto);
+    public ResponseEntity<CommonResponse<UserManagingDto>> updateUserAuthority(@RequestBody UserManagingDto dto){
+        UserManagingDto response = userDetailService.updateAuthority(dto);
 
         return ResponseEntity.ok()
                 .body(new CommonResponse<>(response));

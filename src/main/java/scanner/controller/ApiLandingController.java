@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.RestController;
 import lombok.RequiredArgsConstructor;
 import scanner.response.CommonResponse;
 
-
 @ApiOperation("API Landing check")
 @RestController
 @RequestMapping("/api/v1")
