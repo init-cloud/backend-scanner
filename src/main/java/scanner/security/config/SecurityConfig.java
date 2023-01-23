@@ -12,12 +12,12 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import scanner.security.filter.JwtAuthenticationFilter;
-import scanner.security.jwt.JwtTokenProvider;
+import scanner.security.provider.JwtTokenProvider;
 
 
-@RequiredArgsConstructor
-@EnableWebSecurity
 @Configuration
+@EnableWebSecurity
+@RequiredArgsConstructor
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final JwtTokenProvider jwtTokenProvider;
@@ -45,9 +45,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/swagger-ui/**").permitAll()
             .and()
                 .authorizeRequests()
-                .antMatchers("/").permitAll()
                 .antMatchers("/api/v1").permitAll()
-                .antMatchers("/api/v1/user/**").permitAll()
+                .antMatchers("/api/v1/user/signin").permitAll()
+                .antMatchers("/api/v1/user/signup").permitAll()
+            .and()
+                .authorizeRequests()
+                .antMatchers("/api/v1/admin/**").hasRole("ADMIN")
             .and()
                 .authorizeRequests()
                 .anyRequest().authenticated()

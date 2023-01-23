@@ -9,14 +9,15 @@ import java.util.Arrays;
 @AllArgsConstructor
 public enum RoleType {
     ADMIN("ROLE_ADMIN"),
-    GUEST("ROLE_USER");
+    USER("ROLE_USER"),
+    GUEST("ROLE_GUEST");
 
-    private final String code;
+    private final String role;
 
     public static RoleType of(String code) {
 
         return Arrays.stream(RoleType.values())
-                .filter(r -> r.getCode().equals(code))
+                .filter(r -> r.getRole().equals(code))
                 .findAny()
                 .orElse(GUEST);
     }

@@ -7,7 +7,7 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum Env {
     UPLOAD_PATH("/app/uploads"),
-    PARSE_API("http://initcloud_parser:8000/api/v2"),
+    PARSE_API("http://initcloud_parser:8000"),
     SHELL_COMMAND_RAW("checkov --directory /app/uploads/"),
 
     AWS_EXTERNAL_CHECK(" --external-checks-dir /app/external/aws"),

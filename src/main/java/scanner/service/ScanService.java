@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 import javax.transaction.Transactional;
 
+import lombok.extern.slf4j.Slf4j;
 import org.apache.tomcat.util.http.fileupload.FileUtils;
 import org.json.simple.parser.ParseException;
 import org.springframework.stereotype.Service;
@@ -33,6 +34,7 @@ import scanner.common.utils.ParserRequest;
 import scanner.response.enums.ResponseCode;
 
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class ScanService {
@@ -49,8 +51,8 @@ public class ScanService {
     private static final String STATUSPASSED = "PASSED";
     private static final String STATUSFAILED= "FAILED";
     private static final String STATUSFILE = "File";
-
-    private static final String SPLITCOLON = ": ";
+    private static final String SPLITCOLONBLANK = ": ";
+    private static final String SPLITCOLON = ":";
 
     @Transactional
     public ScanResponse scanTerraform(String[] args, String provider) {
@@ -74,8 +76,6 @@ public class ScanService {
             FileUtils.deleteDirectory(file);
 
             return scanResult;
-        } catch (NullPointerException e){
-            throw new ApiException(ResponseCode.STATUS_4005);
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
         } catch (IOException e){
@@ -108,7 +108,6 @@ public class ScanService {
 
             return true;
         } catch (Exception e) {
-            e.printStackTrace();
             return false;
         }
     }
@@ -134,7 +133,7 @@ public class ScanService {
         String[] lines;
 
         if(rawResult.contains(STATUSCHECK)){
-            lines = rawResult.split(SPLITCOLON);
+            lines = rawResult.split(SPLITCOLONBLANK);
 
             result.setRuleId(lines[1].strip());
             result.setDescription(lines[2].strip());
@@ -142,14 +141,14 @@ public class ScanService {
         }
         
         if(rawResult.contains(STATUSPASSED)){
-            lines = rawResult.split(SPLITCOLON);
+            lines = rawResult.split(SPLITCOLONBLANK);
 
             result.setStatus(PASSED);
             result.setDetail("No");
             result.setTargetResource(lines[1].strip());
         }
         else if(rawResult.contains(STATUSFAILED)){
-            lines = rawResult.split(SPLITCOLON);
+            lines = rawResult.split(SPLITCOLONBLANK);
 
             result.setStatus(FAILED);
             result.setTargetResource(lines[1].strip());
@@ -161,7 +160,6 @@ public class ScanService {
             result.setTargetFile(lines[1].strip());
             result.setLines(lines[2].strip());
         }
-
         return result;
     }
 
@@ -173,7 +171,7 @@ public class ScanService {
         CheckResultDto check = new CheckResultDto();
         ScanResultDto result = new ScanResultDto();
         List<ScanResultDto> resultLists = new ArrayList<>();
-        ParseResultDto parse = new ParseResultDto(parserReq.getTerraformParsingData(path, provider));
+        ParseResultDto parse = parserReq.getTerraformParsingData(path, provider);
         List<CheckListDetailDto> rulesInfo = checkListService.retrieve().getDocs();
         Map<String, String> rulesMap = new HashMap<>();
         
@@ -241,43 +239,44 @@ public class ScanService {
 
         for(ScanResultDto result: results){
 
-            if(result == null)
+            try {
+                total += 1;
+                switch (result.getLevel()) {
+                    case "High":
+                        if (result.getStatus().equals(PASSED)) {
+                            success += 1;
+                            severity += 3;
+                            count[1] += 1;
+                        }
+                        totalSeverity += 3;
+                        break;
+                    case "Medium":
+                        if (result.getStatus().equals(PASSED)) {
+                            success += 1;
+                            severity += 2;
+                            count[2] += 1;
+                        }
+                        totalSeverity += 2;
+                        break;
+                    case "Low":
+                        if (result.getStatus().equals(PASSED)) {
+                            success += 1;
+                            severity += 1;
+                            count[3] += 1;
+                        }
+                        totalSeverity += 1;
+                        break;
+                    default:
+                        if (result.getStatus().equals(PASSED)) {
+                            success += 1;
+                            severity += 1;
+                            count[4] += 1;
+                        }
+                        totalSeverity += 1;
+                        break;
+                }
+            }catch (NullPointerException e){
                 continue;
-
-            total += 1;
-            switch(result.getLevel()){
-                case "High":
-                    if(result.getStatus().equals(PASSED)){
-                        success += 1;
-                        severity += 3;
-                        count[1] += 1;
-                    }
-                    totalSeverity += 3;
-                    break;
-                case "Medium":
-                    if(result.getStatus().equals(PASSED)){
-                        success += 1;
-                        severity += 2;
-                        count[2] += 1;
-                    }
-                    totalSeverity += 2;
-                    break;
-                case "Low":
-                    if(result.getStatus().equals(PASSED)){
-                        success += 1;
-                        severity += 1;
-                        count[3] += 1;
-                    }
-                    totalSeverity += 1;
-                    break;
-                default:
-                    if(result.getStatus().equals(PASSED)){
-                        success += 1;
-                        severity += 1;
-                        count[4] += 1;
-                    }
-                    totalSeverity += 1;
-                    break;
             }
         }
 
