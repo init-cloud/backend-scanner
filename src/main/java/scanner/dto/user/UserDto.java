@@ -1,11 +1,12 @@
 package scanner.dto.user;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
+import java.time.LocalDateTime;
 
 @Getter
-@NoArgsConstructor
-public class UserDto {
-
+@AllArgsConstructor
+public abstract class UserDto {
     private String username;
+    private LocalDateTime lastLogin;
 }

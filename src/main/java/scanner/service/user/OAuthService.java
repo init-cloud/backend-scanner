@@ -1,16 +1,16 @@
 package scanner.service.user;
 
-import lombok.RequiredArgsConstructor;
+
+import lombok.NoArgsConstructor;
 import org.springframework.stereotype.Service;
 import scanner.dto.user.UserAuthenticationDto;
+import scanner.dto.user.UserDto;
 import scanner.dto.user.UserSignupDto;
-import scanner.repository.UserRepository;
 import scanner.security.dto.Token;
 
 @Service
-@RequiredArgsConstructor
+@NoArgsConstructor
 public class OAuthService implements UserService{
-    private final UserRepository userRepository;
 
     @Override
     public Token signup(UserSignupDto dto){
@@ -20,5 +20,9 @@ public class OAuthService implements UserService{
     @Override
     public Token signin(UserAuthenticationDto dto){
         return null;
+    }
+
+    @Override
+    public void updateLastLogin(UserDto user) {
     }
 }

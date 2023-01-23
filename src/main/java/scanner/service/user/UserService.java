@@ -1,11 +1,14 @@
 package scanner.service.user;
 
 import scanner.dto.user.UserAuthenticationDto;
+import scanner.dto.user.UserDto;
 import scanner.dto.user.UserSignupDto;
 import scanner.security.dto.Token;
 
+
 public interface UserService {
 
-    public Token signup(UserSignupDto dto);
-    public Token signin(UserAuthenticationDto dto);
+    Token signup(UserSignupDto dto);
+    Token signin(UserAuthenticationDto dto);
+    void updateLastLogin(UserDto user);
 }

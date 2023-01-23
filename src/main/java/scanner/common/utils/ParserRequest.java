@@ -14,8 +14,7 @@ import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
 import scanner.common.enums.Env;
-import scanner.exception.ApiException;
-import scanner.response.enums.ResponseCode;
+import scanner.dto.ParseResultDto;
 
 @Service
 @RequiredArgsConstructor
@@ -24,7 +23,7 @@ public class ParserRequest {
     private static final String API = Env.PARSE_API.getValue();
     private final JSONParser jsonParser = new JSONParser();
 
-    public Object getTerraformParsingData(String directory, String provider)
+    public ParseResultDto getTerraformParsingData(String directory, String provider)
     throws IOException, ParseException
     {
         try{
@@ -38,16 +37,16 @@ public class ParserRequest {
             BufferedReader in = new BufferedReader(
                                     new InputStreamReader(conn.getInputStream())); 
             String inputLine; 
-            StringBuilder response = new StringBuilder();
+            StringBuffer response = new StringBuffer();
             while ((inputLine = in.readLine()) != null) { 
                 response.append(inputLine); 
             } 
             in.close();
 
-            return jsonParser.parse(response.toString());
+            return new ParseResultDto(jsonParser.parse(response.toString()));
         }
         catch(FileNotFoundException e){
-            throw new ApiException(ResponseCode.STATUS_4005);
+            return null;
         }
     }       
 }

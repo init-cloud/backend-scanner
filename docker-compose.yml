@@ -45,7 +45,6 @@ services:
     env_file:
      - .env
     environment:
-      TZ: Asia/Seoul
       SPRING_DATASOURCE_URL: jdbc:mariadb://initcloud_db:3306/initcloud
       SPRING_DATASOURCE_USERNAME: ${MARIADB_USER}
       SPRING_DATASOURCE_PASSWORD: ${MARIADB_PASSWORD}
