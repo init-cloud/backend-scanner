@@ -59,9 +59,11 @@ public class User implements UserDetails {
     @Enumerated(EnumType.STRING)
     private UserState userState;
 
+    @Setter
     @Column(name = "EMAIL")
     private String email;
 
+    @Setter
     @Column(name = "contact")
     private String contact;
 

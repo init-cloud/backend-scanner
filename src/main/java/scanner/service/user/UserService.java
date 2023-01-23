@@ -8,4 +8,5 @@ public interface UserService {
 
     public Token signup(UserSignupDto dto);
     public Token signin(UserAuthenticationDto dto);
+    public void updateLastLogin(UserAuthenticationDto user);
 }

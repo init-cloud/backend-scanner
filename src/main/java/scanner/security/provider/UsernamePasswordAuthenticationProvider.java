@@ -26,10 +26,6 @@ public class UsernamePasswordAuthenticationProvider implements AuthenticationPro
         String password = authentication.getCredentials().toString();
         UserDetails user = userDetailsService.loadUserByUsername(name);
 
-        /* Local authentication */
-        if (user == null)
-            throw new BadCredentialsException("Bad Credentials.");
-
         if(!passwordEncoder.matches(password, user.getPassword()))
             throw new BadCredentialsException("Bad Credentials.");
 

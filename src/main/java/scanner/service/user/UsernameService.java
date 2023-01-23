@@ -7,6 +7,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import scanner.dto.user.UserAuthenticationDto;
+import scanner.dto.user.UserProfileDto;
 import scanner.dto.user.UserSignupDto;
 import scanner.exception.ApiException;
 import scanner.model.User;
@@ -16,6 +17,9 @@ import scanner.response.enums.ResponseCode;
 import scanner.security.dto.Token;
 import scanner.security.provider.JwtTokenProvider;
 import scanner.security.provider.UsernamePasswordAuthenticationProvider;
+
+import javax.transaction.Transactional;
+import java.time.LocalDateTime;
 
 @Service
 @RequiredArgsConstructor
@@ -39,6 +43,7 @@ public class UsernameService implements UserService{
         return jwtTokenProvider.create(user.getUsername(), RoleType.GUEST);
     }
 
+    @Transactional
     @Override
     public Token signin(UserAuthenticationDto dto){
 
@@ -47,8 +52,40 @@ public class UsernameService implements UserService{
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
+        updateLastLogin(dto);
+
         return jwtTokenProvider.create(
             dto.getUsername(),
             ((User) authentication.getPrincipal()).getRoleType());
+    }
+
+    @Override
+    public void updateLastLogin(UserAuthenticationDto dto){
+        User user = userRepository.findByUsername(dto.getUsername())
+                .orElseThrow(() -> new ApiException(ResponseCode.STATUS_4008));
+
+        user.setLastLogin(LocalDateTime.now());
+
+        userRepository.save(user);
+    }
+
+    public UserProfileDto retrieveProfile(UserProfileDto dto){
+        User user = userRepository.findByUsername(dto.getUsername())
+                .orElseThrow(() -> new ApiException(ResponseCode.STATUS_4008));
+
+        return new UserProfileDto(user.getUsername(), user.getEmail(), user.getContact(), user.getLastLogin());
+    }
+
+    @Transactional
+    public UserProfileDto manageProfile(UserProfileDto dto){
+        User user = userRepository.findByUsername(dto.getUsername())
+                .orElseThrow(() -> new ApiException(ResponseCode.STATUS_4008));
+
+        user.setEmail(dto.getEmail());
+        user.setContact(dto.getContact());
+
+        userRepository.save(user);
+
+        return dto;
     }
 }

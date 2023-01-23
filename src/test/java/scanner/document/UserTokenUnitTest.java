@@ -18,7 +18,7 @@ class UserTokenUnitTest {
     @Test
     @DisplayName("Password Validation Test")
     void validatePasswordTest(){
-        UserSignupDto registerDto = new UserSignupDto("user", "password", "email@addr.com", "010-1234-5678");
+        UserSignupDto registerDto = new UserSignupDto("user", "password", "email@addr.com", "010-1234-5678", null);
         PasswordEncoder passwordEncoder = new Pbkdf2PasswordEncoder();
         String origin = "password";
 
