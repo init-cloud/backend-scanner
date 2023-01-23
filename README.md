@@ -1,18 +1,21 @@
 <div align="center">    
  
-# Initcloud Scanner
+# Init Cloud IaC Scanner API
 
 </div>
  
 ## Description   
-Initcloud Scanner is Terraform Scanner & Visualizer for AWS, NCP.
+Init Cloud IaC Scanner is Scanner & Visualizer for AWS, NCP.
+* This API is in development.
+* In development, we will support only `Terraform`.
+* This API is except FE Dashboard. Only API.
 
 
-## How to run
+## How to install & run
 1. Install docker & docker-compose on your linux environment.  
     [install docker](https://docs.docker.com/engine/install/ubuntu/)  
     [install docker-compose](https://docs.docker.com/compose/install/linux/)
-2. Cloning Initcloud Scanner
+2. Cloning Init Cloud Scanner API
 ```bash
 git clone https://github.com/init-cloud/backend-scanner.git
 cd ./backend-scanner
@@ -47,6 +50,9 @@ DB_PORT=9002 #__YOUR_DATABASE_PORT__
 ```   
 4. Run with Docker-compose
 ```bash
-# pwd : ./initcloud-scanner
+# pwd : ./backend-scanner
+docker compose up
+
+# or
 docker compose up -d
 ```
