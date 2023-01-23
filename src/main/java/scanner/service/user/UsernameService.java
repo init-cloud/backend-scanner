@@ -7,6 +7,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import scanner.dto.user.UserAuthenticationDto;
+import scanner.dto.user.UserDto;
 import scanner.dto.user.UserProfileDto;
 import scanner.dto.user.UserSignupDto;
 import scanner.exception.ApiException;
@@ -60,7 +61,7 @@ public class UsernameService implements UserService{
     }
 
     @Override
-    public void updateLastLogin(UserAuthenticationDto dto){
+    public void updateLastLogin(UserDto dto){
         User user = userRepository.findByUsername(dto.getUsername())
                 .orElseThrow(() -> new ApiException(ResponseCode.STATUS_4008));
 
