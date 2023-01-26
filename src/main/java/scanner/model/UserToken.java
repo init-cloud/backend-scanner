@@ -2,19 +2,14 @@ package scanner.model;
 
 
 import lombok.*;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
-
 import javax.persistence.*;
-import javax.validation.constraints.NotNull;
-import java.time.LocalDateTime;
 
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
-@EntityListeners(AuditingEntityListener.class)
+
 @Entity
 @Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "USER_TOKEN")
-public class UserToken {
+public class UserToken extends BaseEntity{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -26,11 +21,6 @@ public class UserToken {
     @OneToOne(fetch = FetchType.LAZY)
     private User userId;
 
-
-    @CreatedDate
-    @Column(name = "CREATED_AT")
-    @NotNull
-    private LocalDateTime createdAt;
 
     @Getter
     @Column(name = "REFRESH_TOKEN")

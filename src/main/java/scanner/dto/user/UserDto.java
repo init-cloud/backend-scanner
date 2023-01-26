@@ -8,5 +8,6 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public abstract class UserDto {
     private String username;
+
     private LocalDateTime lastLogin;
 }

@@ -7,8 +7,8 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class FileUploadResponseDto {
-    private String originalname;
-    private String uniqname;
+    private String originalName;
+    private String uniqName;
     private Long size;
     private String type;
 }

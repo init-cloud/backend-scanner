@@ -16,26 +16,26 @@ public interface CheckListRepository extends JpaRepository<CustomRule, Long> {
 
     // 룰 on/off, 커스텀 수정
     @Modifying
-    @Query(value = "UPDATE custom_rule SET modified_at = now(),  is_modified='y', rule_onoff = :state, custom_detail = :detail WHERE rule_seq = :id", nativeQuery = true)
-    Integer updateRule(@Param("id") Long id, @Param("state") String state, @Param("detail") String detail);
+    @Query(value = "UPDATE custom_rule SET modified_at = now(),  is_modified='y', rule_onoff = :state, custom_detail = :detail WHERE rule_id = :rule_id", nativeQuery = true)
+    Integer updateRule(@Param("rule_id") String ruleId, @Param("state") String state, @Param("detail") String detail);
 
     // 룰 on/off
     @Modifying
-    @Query(value = "UPDATE custom_rule SET modified_at = now(), rule_onoff = :state WHERE rule_seq = :id", nativeQuery = true)
-    Integer updateRuleOnOff(@Param("id") Long id, @Param("state") String state);
+    @Query(value = "UPDATE custom_rule SET modified_at = now(), rule_onoff = :state WHERE rule_id = :rule_id", nativeQuery = true)
+    Integer updateRuleOnOff(@Param("rule_id") String ruleId, @Param("state") String state);
 
     // 룰 초기화
     @Modifying
-    @Query(value = "UPDATE custom_rule SET modified_at = now(), is_modified='n', custom_detail = (SELECT custom_default FROM custom_rule WHERE rule_seq = :id) WHERE rule_seq = :id", nativeQuery = true)
-    Integer resetRule(@Param("id") Long id);
+    @Query(value = "UPDATE custom_rule SET modified_at = now(), is_modified='n', custom_detail = (SELECT custom_default FROM custom_rule WHERE rule_id = :rule_id) WHERE rule_id = :rule_id", nativeQuery = true)
+    Integer resetRule(@Param("rule_id") String ruleId);
 
     // on 또는 off된 룰만 검색
     List<CustomRule> findByRuleOnOff(String string);
 
     // 특정 id 룰만 검색
-    List<CustomRule> findByIdIn(List<Long> id);
+    List<CustomRule> findByRuleIdIn(List<String> ruleId);
 
-    CustomRule findByRuleId(String ruleId);
+    Optional<CustomRule> findByRuleId(String ruleId);
 
     Optional<CustomRule> findById(Long idd);
 }

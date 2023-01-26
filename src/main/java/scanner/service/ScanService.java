@@ -96,7 +96,8 @@ public class ScanService {
             List<ScanHistoryDetail> details = new ArrayList<>();
 
             for(int i = 0 ; i < scanDetail.size() ; i++){
-                CustomRule saveRule = checkListRepository.findByRuleId(scanDetail.get(i).getRuleId());
+                CustomRule saveRule = checkListRepository.findByRuleId(scanDetail.get(i).getRuleId())
+                        .orElseThrow(() -> new ApiException(ResponseCode.STATUS_4007));
 
                 if(saveRule == null || saveRule.getId() == null)
                     continue;
@@ -167,15 +168,16 @@ public class ScanService {
     {
         String rawResult;
         StringBuilder sb = new StringBuilder();
+        List<ScanResultDto> resultLists = new ArrayList<>();
+
         CheckResultDto check = new CheckResultDto();
         ScanResultDto result = new ScanResultDto();
-        List<ScanResultDto> resultLists = new ArrayList<>();
         ParseResultDto parse = parserReq.getTerraformParsingData(path, provider);
         List<CheckListDetailDto> rulesInfo = checkListService.retrieve().getDocs();
+
         Map<String, String> rulesMap = new HashMap<>();
-        
         for(int i = 0 ; i < rulesInfo.size(); i++)
-            rulesMap.put(rulesInfo.get(i).getId(), rulesInfo.get(i).getLevel());
+            rulesMap.put(rulesInfo.get(i).getRuleId(), rulesInfo.get(i).getLevel());
 
         while((rawResult = br.readLine()) != null){
             if(rawResult.contains("Passed checks")){
