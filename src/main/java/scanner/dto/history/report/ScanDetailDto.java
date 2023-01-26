@@ -5,14 +5,14 @@ import java.util.stream.Collectors;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
 import scanner.model.CustomRule;
 import scanner.model.ScanHistoryDetail;
 
 
 @Builder
-@Data
 @AllArgsConstructor
+@Getter
 public class ScanDetailDto {
     private String ruleID;
     private String severity;

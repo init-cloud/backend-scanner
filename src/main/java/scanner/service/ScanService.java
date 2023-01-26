@@ -2,7 +2,6 @@ package scanner.service;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
@@ -90,7 +89,7 @@ public class ScanService {
     public boolean save(CheckResultDto scanResult, List<ScanResultDto> scanDetail, String[] args, String provider, double[] total)
     {
         try {
-            ScanHistory scan = ScanHistory.toEntity(args, provider, scanResult.getPassed(), scanResult.getSkipped(), scanResult.getFailed(), total, provider);
+            ScanHistory scan = ScanHistory.toEntity(args, scanResult.getPassed(), scanResult.getSkipped(), scanResult.getFailed(), total, provider);
 
             scan = scanHistoryRepository.save(scan);
 

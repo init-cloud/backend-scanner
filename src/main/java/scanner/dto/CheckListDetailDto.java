@@ -4,19 +4,16 @@ package scanner.dto;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import scanner.model.CustomRule;
 import scanner.model.enums.SecurityType;
 
 
 @Builder
-@Data
+@Getter
 @AllArgsConstructor
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class CheckListDetailDto {
     private Long seq;
     private String id;

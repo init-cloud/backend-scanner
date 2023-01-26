@@ -1,20 +1,18 @@
 package scanner.model;
 
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 
 
-@Entity
-@Table(name = "USER_TOKEN")
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Entity
+@Getter
+@Table(name = "USER_TOKEN")
 public class UserToken {
 
     @Id

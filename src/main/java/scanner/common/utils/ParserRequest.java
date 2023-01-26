@@ -12,12 +12,10 @@ import org.json.simple.parser.ParseException;
 
 import org.springframework.stereotype.Service;
 
-import lombok.RequiredArgsConstructor;
 import scanner.common.enums.Env;
 import scanner.dto.ParseResultDto;
 
 @Service
-@RequiredArgsConstructor
 public class ParserRequest {
 
     private static final String API = Env.PARSE_API.getValue();
@@ -27,9 +25,8 @@ public class ParserRequest {
     throws IOException, ParseException
     {
         try{
-            HttpURLConnection conn = null;
             URL url = new URL(API + "/" + provider + "/" + directory);
-            conn = (HttpURLConnection) url.openConnection();
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod("GET"); 
             conn.setUseCaches(false);
             conn.setDoOutput(true);

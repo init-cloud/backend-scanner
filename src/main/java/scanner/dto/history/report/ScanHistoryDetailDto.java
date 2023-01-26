@@ -3,19 +3,16 @@ package scanner.dto.history.report;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import scanner.model.CustomRule;
 import scanner.model.ScanHistoryDetail;
 import scanner.model.Tag;
 
 
 @Builder
-@Data
+@Getter
 @AllArgsConstructor
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class ScanHistoryDetailDto {
 
     private String ruleID;

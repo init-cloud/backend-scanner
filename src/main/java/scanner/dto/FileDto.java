@@ -1,11 +1,11 @@
 package scanner.dto;
 
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.*;
 
-@Data
+@Getter
 @AllArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class FileDto {
     private Integer id;
     private String originalname;

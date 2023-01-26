@@ -1,18 +1,14 @@
 package scanner.dto.history;
 
+import lombok.*;
 import scanner.model.ScanHistory;
 
 import java.time.LocalDateTime;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-
 @Builder
-@Data
+@Getter
 @AllArgsConstructor
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class HistoryDto {
     private Long id;
     private LocalDateTime scanDateTime;

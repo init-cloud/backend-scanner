@@ -1,21 +1,17 @@
 package scanner.dto.history.report;
 
 import java.time.format.DateTimeFormatter;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import scanner.model.ScanHistory;
 import scanner.model.ScanHistoryDetail;
 
 @Builder
-@Data
+@Getter
 @AllArgsConstructor
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class ScanSummaryDto {
     private Long historySeq;
     private String date;

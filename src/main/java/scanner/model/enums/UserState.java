@@ -5,8 +5,9 @@ import lombok.Getter;
 
 import java.util.Arrays;
 
-@Getter
+
 @AllArgsConstructor
+@Getter
 public enum UserState {
     ACTIVATE("Activate"),
     DEACTIVATE("Deactivate"),

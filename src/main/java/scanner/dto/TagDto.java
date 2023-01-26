@@ -1,16 +1,13 @@
 package scanner.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import scanner.model.Tag;
 
 
 @Builder
-@Data
+@Getter
 @AllArgsConstructor
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class TagDto {
     private Long tagId;
     private String tag;

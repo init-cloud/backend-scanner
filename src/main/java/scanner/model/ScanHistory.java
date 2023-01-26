@@ -13,17 +13,14 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import scanner.common.enums.Env;
 
 @Builder
-@Data
+@Getter
 @AllArgsConstructor
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 @Table(name = "SCAN_HISTORY")
 public class ScanHistory {
@@ -43,7 +40,7 @@ public class ScanHistory {
 
     @Builder.Default
     @OneToMany(mappedBy = "historySeq")
-    private List<ScanHistoryDetail> details = new ArrayList<ScanHistoryDetail>();
+    private List<ScanHistoryDetail> details = new ArrayList<>();
 
     @Column(name = "FILE_NAME")
     @NotNull
@@ -91,7 +88,6 @@ public class ScanHistory {
 
     public static ScanHistory toEntity(
         String[] args,
-        String csp,
         Integer passed,
         Integer skipped,
         Integer failed,

@@ -1,13 +1,13 @@
 package scanner.model.enums;
 
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 
 import java.util.Arrays;
 
 @Getter
-@RequiredArgsConstructor
+@AllArgsConstructor
 public enum SecurityType {
     GENERAL("GENERAL"), 
     INCIDENT_RESPONSE("INCIDENT RESPONSE"), 

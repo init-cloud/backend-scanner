@@ -1,17 +1,14 @@
 package scanner.dto.history.report;
 
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import scanner.model.Compliance;
 
 
 @Builder
-@Data
+@Getter
 @AllArgsConstructor
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class ComplianceDto {
     private String compliance;
     private String complianceNumber;
