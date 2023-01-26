@@ -1,7 +1,6 @@
 package scanner.dto;
 
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 import lombok.*;
@@ -73,12 +72,10 @@ public class CheckListDetailDto {
 
     public static CustomRule toEntity(final CheckListDetailDto dto){
         return CustomRule.builder()
-                .id(dto.getSeq())
                 .ruleId(dto.getId())
                 .ruleOnOff(dto.getState())
                 .isModified("y")
                 .customDetail(dto.getCustomDetail())
-                .modifiedAt(LocalDateTime.now())
                 .build();
     }
 }

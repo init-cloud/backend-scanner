@@ -1,8 +1,6 @@
 package scanner.model;
 
 
-import java.time.LocalDateTime;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -17,13 +15,11 @@ import javax.validation.constraints.Size;
 import lombok.*;
 
 
-@Builder
+@Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AllArgsConstructor
-@Entity
 @Table(name = "COMPLIANCE")
-public class Compliance {
+public class Compliance extends BaseEntity{
 
     @Id
     @Column(name = "COMP_ID", updatable=false)
@@ -33,14 +29,6 @@ public class Compliance {
     @ManyToOne
     @JoinColumn(name = "rule_seq", updatable=false)
     private CustomRule ruleSeq;
-
-    @Column(name = "CREATED_AT")
-    @NotNull
-    private LocalDateTime createdAt;
-
-    @Column(name = "MODIFIED_AT")
-    @NotNull
-    private LocalDateTime modifiedAt;
 
     @Column(name = "COMPLIANCE_NAME")
     @NotNull
@@ -66,4 +54,23 @@ public class Compliance {
 
     @Column(name = "DETAIL")
     private String detail;
+
+
+    @Builder
+    public Compliance(CustomRule ruleSeq,
+                      String complianceName,
+                      String complianceNumber,
+                      String category,
+                      String article,
+                      String description,
+                      String detail
+    ) {
+        this.ruleSeq = ruleSeq;
+        this.complianceName = complianceName;
+        this.complianceNumber = complianceNumber;
+        this.category = category;
+        this.article = article;
+        this.description = description;
+        this.detail = detail;
+    }
 }

@@ -14,7 +14,6 @@ import scanner.response.enums.ResponseCode;
 
 import javax.persistence.*;
 import javax.transaction.Transactional;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -40,7 +39,6 @@ public class CustomUserDetailService implements UserDetailsService {
                 .orElseThrow(() -> new ApiException(ResponseCode.STATUS_4008));
 
         user.setRoleType(dto.getRole());
-        user.setModifiedAt(LocalDateTime.now());
 
         userRepository.save(user);
 
@@ -55,7 +53,6 @@ public class CustomUserDetailService implements UserDetailsService {
                 .orElseThrow(() -> new ApiException(ResponseCode.STATUS_4008));
 
         user.setAuthorities(User.getAuthorities(dto.getAuthorities()));
-        user.setModifiedAt(LocalDateTime.now());
 
         userRepository.save(user);
 
@@ -76,7 +73,6 @@ public class CustomUserDetailService implements UserDetailsService {
 
             user.setRoleType(dto.getRole());
             user.setAuthorities(User.getAuthorities(dto.getAuthorities()));
-            user.setModifiedAt(LocalDateTime.now());
 
             manager.persist(user);
             transaction.commit();

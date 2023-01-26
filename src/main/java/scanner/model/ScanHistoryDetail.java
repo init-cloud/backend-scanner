@@ -13,13 +13,12 @@ import javax.validation.constraints.NotNull;
 import lombok.*;
 import scanner.dto.ScanResultDto;
 
-@Builder
+
 @Getter
-@AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 @Table(name = "SCAN_HISTORY_DETAIL")
-public class ScanHistoryDetail {
+public class ScanHistoryDetail extends BaseEntity{
     
     @Id
     @Column(name = "ID", updatable=false)
@@ -57,6 +56,27 @@ public class ScanHistoryDetail {
     @Column(name = "CODE")
     @NotNull
     private String code;
+
+
+    @Builder
+    public ScanHistoryDetail(CustomRule ruleSeq,
+                             ScanHistory historySeq,
+                             String resource,
+                             String resourceName,
+                             String scanResult,
+                             String targetFile,
+                             String line,
+                             String code
+    ) {
+        this.ruleSeq = ruleSeq;
+        this.historySeq = historySeq;
+        this.resource = resource;
+        this.resourceName = resourceName;
+        this.scanResult = scanResult;
+        this.targetFile = targetFile;
+        this.line = line;
+        this.code = code;
+    }
 
     public static ScanHistoryDetail toEntity(final ScanResultDto dto, CustomRule rule, ScanHistory history){
         return ScanHistoryDetail.builder()

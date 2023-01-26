@@ -39,8 +39,6 @@ public class ScanReportDto {
 
     public static ScanHistory toEntity(final ScanReportDto dto){
         return ScanHistory.builder()
-            .createdAt(dto.getCreatedAt())
-            .modifiedAt(dto.getCreatedAt())
             .fileName(dto.getFileName())
             .fileHash(dto.getFileHash())
             .csp(dto.getCsp())

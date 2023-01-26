@@ -1,6 +1,5 @@
 package scanner.model;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,28 +16,17 @@ import lombok.*;
 
 import scanner.common.enums.Env;
 
-@Builder
 @Getter
-@AllArgsConstructor
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "SCAN_HISTORY")
-public class ScanHistory {
+public class ScanHistory extends BaseEntity {
     
     @Id
     @Column(name = "HISTORY_SEQ")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long historySeq;
 
-    @Column(name = "CREATED_AT", updatable=false)
-    @NotNull
-    private LocalDateTime createdAt;
-
-    @Column(name = "MODIFIED_AT")
-    @NotNull
-    private LocalDateTime modifiedAt;
-
-    @Builder.Default
     @OneToMany(mappedBy = "historySeq")
     private List<ScanHistoryDetail> details = new ArrayList<>();
 
@@ -86,6 +74,35 @@ public class ScanHistory {
     @NotNull
     private Double score;
 
+
+    @Builder
+    public ScanHistory(Long historySeq,
+                       String fileName,
+                       String fileHash,
+                       String csp,
+                       Integer passed,
+                       Integer skipped,
+                       Integer failed,
+                       Integer high,
+                       Integer medium,
+                       Integer low,
+                       Integer unknown,
+                       Double score
+    ) {
+        this.historySeq = historySeq;
+        this.fileName = fileName;
+        this.fileHash = fileHash;
+        this.csp = csp;
+        this.passed = passed;
+        this.skipped = skipped;
+        this.failed = failed;
+        this.high = high;
+        this.medium = medium;
+        this.low = low;
+        this.unknown = unknown;
+        this.score = score;
+    }
+
     public static ScanHistory toEntity(
         String[] args,
         Integer passed,
@@ -95,8 +112,6 @@ public class ScanHistory {
         String provider
     ){
         return ScanHistory.builder()
-                        .createdAt(LocalDateTime.now())
-                        .modifiedAt(LocalDateTime.now())
                         .passed(passed)
                         .skipped(skipped)
                         .failed(failed)

@@ -2,6 +2,8 @@ package scanner.model;
 
 
 import lombok.*;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -26,11 +28,14 @@ public class User implements UserDetails {
     @Column(name = "USER_ID")
     private Long id;
 
+
+    @CreatedDate
     @Column(name = "CREATED_AT")
     private LocalDateTime createdAt;
 
+
+    @LastModifiedDate
     @Column(name = "MODIFIED_AT")
-    @Setter
     private LocalDateTime modifiedAt;
 
     @Column(name = "LAST_LOGIN")
@@ -65,17 +70,13 @@ public class User implements UserDetails {
     private String contact;
 
     @Builder
-    public User(Long id,
-                LocalDateTime modifiedAt,
-                LocalDateTime lastLogin,
+    public User(LocalDateTime lastLogin,
                 String username,
                 String password,
                 RoleType roleType,
                 UserState userState,
                 String email,
                 String contact){
-        this.id = id;
-        this.modifiedAt = modifiedAt;
         this.lastLogin = lastLogin;
         this.username = username;
         this.password = password;
@@ -86,14 +87,12 @@ public class User implements UserDetails {
     }
 
     @Builder
-    public User(LocalDateTime modifiedAt,
-                String username,
+    public User(String username,
                 String password,
                 RoleType roleType,
                 UserState userState,
                 String email,
                 String contact){
-        this.modifiedAt = modifiedAt;
         this.username = username;
         this.password = password;
         this.roleType = roleType;
@@ -103,11 +102,9 @@ public class User implements UserDetails {
     }
 
     @Builder
-    public User(LocalDateTime modifiedAt,
-                String username,
+    public User(String username,
                 String authorities,
                 RoleType roleType) {
-        this.modifiedAt = modifiedAt;
         this.username = username;
         this.authorities = authorities;
         this.roleType = roleType;
@@ -115,7 +112,6 @@ public class User implements UserDetails {
 
     public static User toEntity(UserSignupDto dto){
         return User.builder()
-                .modifiedAt(LocalDateTime.now())
                 .username(dto.getUsername())
                 .password(dto.getPassword())
                 .roleType(RoleType.GUEST)

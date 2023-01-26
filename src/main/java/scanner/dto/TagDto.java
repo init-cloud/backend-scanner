@@ -26,7 +26,6 @@ public class TagDto {
 
     public static Tag toEntity(final TagDto dto){
         return Tag.builder()
-                .id(dto.getTagId())
                 .tagName(dto.getTag())
                 .build();
     }

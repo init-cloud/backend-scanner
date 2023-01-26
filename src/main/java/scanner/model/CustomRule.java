@@ -1,7 +1,6 @@
 package scanner.model;
 
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -22,15 +21,12 @@ import lombok.*;
 import scanner.model.enums.Provider;
 import scanner.dto.TagDto;
 
-
-@Builder
 @Getter
-@ToString(exclude = "compliance")
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AllArgsConstructor
 @Entity
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@ToString(exclude = "compliance")
 @Table(name = "CUSTOM_RULE")
-public class CustomRule {
+public class CustomRule extends BaseEntity{
     @Id
     @Column(name = "RULE_SEQ", updatable=false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -41,15 +37,12 @@ public class CustomRule {
     @Size(max = 16)
     private String ruleId;
 
-    @Builder.Default
     @OneToMany(mappedBy = "ruleSeq")
     private List<Tag> tag = new ArrayList<>();
 
-    @Builder.Default
     @OneToMany(mappedBy = "ruleSeq")
     private List<Compliance> compliance = new ArrayList<>();
 
-    @Builder.Default
     @OneToMany(mappedBy = "ruleSeq")
     private List<ScanHistoryDetail> historyDetails = new ArrayList<>();
 
@@ -77,14 +70,6 @@ public class CustomRule {
 
     @Column(name = "CUSTOM_DETAIL")
     private String customDetail;
-
-    @Column(name = "CREATED_AT")
-    @NotNull
-    private LocalDateTime createdAt;
-
-    @Column(name = "MODIFIED_AT")
-    @NotNull
-    private LocalDateTime modifiedAt;
 
     @Column(name = "DESCRIPTION")
     private String description;
@@ -115,6 +100,45 @@ public class CustomRule {
 
     @Column(name = "CUSTOM_DEFAULT", updatable=false)
     private String customDefault;
+
+
+    @Builder
+    public CustomRule(String ruleId,
+                      String defaultRuleId,
+                      String ruleOnOff,
+                      Provider provider,
+                      String ruleType,
+                      String level,
+                      String customDetail,
+                      String description,
+                      String explanation,
+                      String possibleImpact,
+                      String insecureExample,
+                      String secureExample,
+                      String sol,
+                      String code,
+                      String isModified,
+                      String isModifiable,
+                      String customDefault
+    ) {
+        this.ruleId = ruleId;
+        this.defaultRuleId = defaultRuleId;
+        this.ruleOnOff = ruleOnOff;
+        this.provider = provider;
+        this.ruleType = ruleType;
+        this.level = level;
+        this.customDetail = customDetail;
+        this.description = description;
+        this.explanation = explanation;
+        this.possibleImpact = possibleImpact;
+        this.insecureExample = insecureExample;
+        this.secureExample = secureExample;
+        this.sol = sol;
+        this.code = code;
+        this.isModified = isModified;
+        this.isModifiable = isModifiable;
+        this.customDefault = customDefault;
+    }
 
     public List<TagDto> getTagDto(){
         return tag.stream()
