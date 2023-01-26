@@ -1,6 +1,8 @@
 package scanner.dto.user;
 
+import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import scanner.exception.ApiException;
 import scanner.response.enums.ResponseCode;
@@ -9,6 +11,7 @@ import java.time.LocalDateTime;
 
 
 @Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class UserSignupDto extends UserProfileDto{
 
     private String password;

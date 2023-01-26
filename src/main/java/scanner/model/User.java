@@ -48,7 +48,7 @@ public class User implements UserDetails {
     @Column(name = "PASSWORD")
     private String password;
 
-    @Column
+    @Column(name = "AUTHORITIES")
     @Setter
     private String authorities;
 
