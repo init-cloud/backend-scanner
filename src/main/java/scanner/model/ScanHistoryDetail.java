@@ -18,7 +18,7 @@ import scanner.dto.ScanResultDto;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 @Table(name = "SCAN_HISTORY_DETAIL")
-public class ScanHistoryDetail extends BaseEntity{
+public class ScanHistoryDetail extends BaseEntity {
     
     @Id
     @Column(name = "ID", updatable=false)
