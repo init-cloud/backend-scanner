@@ -16,6 +16,7 @@ public class HistoryDto {
 
 
     public HistoryDto(ScanHistory entity){
+        this.id = entity.getHistorySeq();
         this.scanDateTime = entity.getCreatedAt(); 
         this.score = entity.getScore();
     }
