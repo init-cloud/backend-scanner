@@ -5,15 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
@@ -37,14 +29,14 @@ public class CustomRule extends BaseEntity{
     @Size(max = 16)
     private String ruleId;
 
-    @OneToMany(mappedBy = "ruleSeq")
-    private List<Tag> tag = new ArrayList<>();
+    @OneToMany(mappedBy = "ruleSeq", fetch = FetchType.LAZY)
+    private final List<Tag> tag = new ArrayList<>();
 
-    @OneToMany(mappedBy = "ruleSeq")
-    private List<Compliance> compliance = new ArrayList<>();
+    @OneToMany(mappedBy = "ruleSeq", fetch = FetchType.LAZY)
+    private final List<Compliance> compliance = new ArrayList<>();
 
-    @OneToMany(mappedBy = "ruleSeq")
-    private List<ScanHistoryDetail> historyDetails = new ArrayList<>();
+    @OneToMany(mappedBy = "ruleSeq", fetch = FetchType.LAZY)
+    private final List<ScanHistoryDetail> historyDetails = new ArrayList<>();
 
     @Column(name = "DEFAULT_RULE_ID", updatable=false)
     @NotNull

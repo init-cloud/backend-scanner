@@ -24,6 +24,8 @@ public class CheckListService {
     
     private final CheckListRepository checkListRepository;
 
+
+    @Transactional
     public CheckListDetailResponse retrieve(){
 
         List<CustomRule> ruleList = checkListRepository.findAll();
@@ -34,6 +36,8 @@ public class CheckListService {
         return new CheckListDetailResponse(ruleDtos);
     }
 
+
+    @Transactional
     public CheckListDetailResponse retrieveOff(){
 
         List<CustomRule> ruleList = checkListRepository.findByRuleOnOff("n");
@@ -48,6 +52,8 @@ public class CheckListService {
         return checkListRepository.findByRuleOnOff("n");
     }
 
+
+    @Transactional
     public CheckListDetailResponse create(
         CheckListDetailDto data
     ){
@@ -66,9 +72,8 @@ public class CheckListService {
             throw new ApiException(ResponseCode.STATUS_4005);
 
         List<String> ruleIds = new ArrayList<>();
-                                        
-        for(int i = 0 ; i < data.size() ; i++){
-            CheckListSimpleDto target = data.get(i);
+
+        for(CheckListSimpleDto target : data){
             
             if(target == null)
                 continue;
@@ -88,7 +93,7 @@ public class CheckListService {
                                     .map(CheckListSimpleDto::new)
                                     .collect(Collectors.toList());
 
-        if(ruleDtos == null || ruleDtos.isEmpty())
+        if(ruleDtos.isEmpty())
             throw new ApiException(ResponseCode.STATUS_4005);
 
         return ruleDtos;
