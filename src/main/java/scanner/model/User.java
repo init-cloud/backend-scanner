@@ -9,12 +9,14 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import scanner.dto.user.UserSignupDto;
 import scanner.model.enums.RoleType;
+import scanner.model.enums.UserAuthority;
 import scanner.model.enums.UserState;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Optional;
 
 
 @Getter
@@ -74,6 +76,7 @@ public class User implements UserDetails {
                 String username,
                 String password,
                 RoleType roleType,
+                String authorities,
                 UserState userState,
                 String email,
                 String contact){
@@ -81,6 +84,7 @@ public class User implements UserDetails {
         this.username = username;
         this.password = password;
         this.roleType = roleType;
+        this.authorities = authorities;
         this.userState = userState;
         this.email = email;
         this.contact = contact;
@@ -115,6 +119,7 @@ public class User implements UserDetails {
                 .username(dto.getUsername())
                 .password(dto.getPassword())
                 .roleType(RoleType.GUEST)
+                .authorities(UserAuthority.GUEST.toString())
                 .userState(UserState.ACTIVATE)
                 .email(dto.getEmail())
                 .contact(dto.getContact())
