@@ -22,6 +22,7 @@ public enum ResponseCode {
     STATUS_4011(4011, HttpStatus.BAD_REQUEST,"User exist."),
     STATUS_4012(4012, HttpStatus.BAD_REQUEST,"Invalid Authority."),
     STATUS_4013(4013, HttpStatus.UNAUTHORIZED,"Have no Authority."),
+    STATUS_4014(4014, HttpStatus.UNAUTHORIZED,"Error During Parse JSON."),
 
     /* Server Error. */
     STATUS_5001(5001, HttpStatus.INTERNAL_SERVER_ERROR,"Server busy."),

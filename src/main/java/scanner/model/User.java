@@ -114,6 +114,14 @@ public class User implements UserDetails {
         this.roleType = roleType;
     }
 
+    public User(String username, String password, RoleType roleType, String authorities, UserState userState) {
+        this.username = username;
+        this.password = password;
+        this.authorities = authorities;
+        this.roleType = roleType;
+        this.userState = userState;
+    }
+
     public static User toEntity(UserSignupDto dto){
         return User.builder()
                 .username(dto.getUsername())

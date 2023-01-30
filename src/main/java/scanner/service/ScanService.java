@@ -12,10 +12,11 @@ import javax.transaction.Transactional;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.tomcat.util.http.fileupload.FileUtils;
-import org.json.simple.parser.ParseException;
 import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
+import scanner.common.dto.HttpRequestUrlParam;
+import scanner.common.utils.CommonHttpRequest;
 import scanner.dto.ScanResultDto;
 import scanner.exception.ApiException;
 import scanner.dto.CheckListDetailDto;
@@ -27,9 +28,7 @@ import scanner.repository.CheckListRepository;
 import scanner.repository.ScanHistoryDetailsRepository;
 import scanner.repository.ScanHistoryRepository;
 import scanner.dto.CheckResultDto;
-import scanner.dto.ParseResultDto;
 import scanner.response.ScanResponse;
-import scanner.common.utils.ParserRequest;
 import scanner.response.enums.ResponseCode;
 
 
@@ -37,7 +36,6 @@ import scanner.response.enums.ResponseCode;
 @Service
 @RequiredArgsConstructor
 public class ScanService {
-    private final ParserRequest parserReq;
     private final CheckListService checkListService;
     private final ScanHistoryRepository scanHistoryRepository;
     private final ScanHistoryDetailsRepository scanHistoryDetailsRepository;
@@ -79,8 +77,6 @@ public class ScanService {
             Thread.currentThread().interrupt();
         } catch (IOException e){
             throw new ApiException(ResponseCode.STATUS_5006);
-        } catch (ParseException e){
-            throw new ApiException(ResponseCode.STATUS_5007);
         }
         return null;
     }
@@ -164,21 +160,26 @@ public class ScanService {
     }
 
     public ScanResponse resultToJson(BufferedReader br, String path, String provider)
-    throws IOException, ParseException
+    throws IOException
     {
-        String rawResult;
-        StringBuilder sb = new StringBuilder();
-        List<ScanResultDto> resultLists = new ArrayList<>();
+        CommonHttpRequest commonHttpRequest = new CommonHttpRequest();
 
+        StringBuilder sb = new StringBuilder();
+
+        List<ScanResultDto> resultLists = new ArrayList<>();
         CheckResultDto check = new CheckResultDto();
         ScanResultDto result = new ScanResultDto();
-        ParseResultDto parse = parserReq.getTerraformParsingData(path, provider);
-        List<CheckListDetailDto> rulesInfo = checkListService.retrieve().getDocs();
+
+        HttpRequestUrlParam get = new HttpRequestUrlParam();
+        get.setUrlParam(provider + "/" + path);
+        Object parse = commonHttpRequest.HttpGetRequestBuffer(Env.PARSE_API.getValue(), get);
 
         Map<String, String> rulesMap = new HashMap<>();
-        for(int i = 0 ; i < rulesInfo.size(); i++)
-            rulesMap.put(rulesInfo.get(i).getRuleId(), rulesInfo.get(i).getLevel());
+        List<CheckListDetailDto> rulesInfo = checkListService.retrieve().getDocs();
+        for(CheckListDetailDto info : rulesInfo)
+            rulesMap.put(info.getRuleId(), info.getLevel());
 
+        String rawResult;
         while((rawResult = br.readLine()) != null){
             if(rawResult.contains("Passed checks")){
                 check = parseScanCheck(rawResult);

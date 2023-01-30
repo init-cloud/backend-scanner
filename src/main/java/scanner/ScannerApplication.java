@@ -10,6 +10,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 public class ScannerApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(ScannerApplication.class, args);
+		SpringApplication app = new SpringApplication(ScannerApplication.class);
+		app.run(args);
 	}
 }
