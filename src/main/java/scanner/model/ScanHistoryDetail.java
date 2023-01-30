@@ -11,7 +11,7 @@ import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
 import lombok.*;
-import scanner.dto.scan.ScanResultDto;
+import scanner.dto.scan.ScanDto;
 
 
 @Getter
@@ -78,7 +78,7 @@ public class ScanHistoryDetail extends BaseEntity {
         this.code = code;
     }
 
-    public static ScanHistoryDetail toEntity(final ScanResultDto dto, CustomRule rule, ScanHistory history){
+    public static ScanHistoryDetail toEntity(final ScanDto.Result dto, CustomRule rule, ScanHistory history){
         return ScanHistoryDetail.builder()
                                 .ruleSeq(rule)
                                 .historySeq(history)
