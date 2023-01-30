@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import scanner.dto.user.UserAuthenticationDto;
 import scanner.dto.user.UserProfileDto;
 import scanner.dto.user.UserSignupDto;
-import scanner.response.CommonResponse;
+import scanner.dto.CommonResponse;
 import scanner.security.dto.Token;
 import scanner.service.user.UsernameService;
 

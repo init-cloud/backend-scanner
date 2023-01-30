@@ -1,4 +1,4 @@
-package scanner.response;
+package scanner.dto;
 
 
 import lombok.AllArgsConstructor;
@@ -7,9 +7,8 @@ import lombok.Getter;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.lang.Nullable;
-import scanner.dto.ExceptionDto;
+import scanner.dto.enums.ResponseCode;
 import scanner.exception.ApiException;
-import scanner.response.enums.ResponseCode;
 
 
 @AllArgsConstructor

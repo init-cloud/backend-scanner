@@ -1,4 +1,4 @@
-package scanner.dto.history.report;
+package scanner.dto.report;
 
 
 import lombok.*;

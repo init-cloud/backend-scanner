@@ -1,4 +1,4 @@
-package scanner.dto;
+package scanner.dto.scan;
 
 
 import lombok.*;
@@ -6,9 +6,10 @@ import lombok.*;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class FileUploadResponseDto {
+public class FileDto {
+    private Integer id;
     private String originalName;
     private String uniqName;
-    private Long size;
+    private Integer size;
     private String type;
 }

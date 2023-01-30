@@ -9,8 +9,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import scanner.dto.history.HistoryDto;
 import scanner.model.ScanHistory;
-import scanner.response.CommonResponse;
-import scanner.response.ReportResponse;
+import scanner.dto.CommonResponse;
+import scanner.dto.report.ReportResponse;
 import scanner.service.ScanHistoryService;
 
 import java.util.List;

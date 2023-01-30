@@ -9,8 +9,8 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import scanner.response.CommonResponse;
-import scanner.response.ScanResponse;
+import scanner.dto.CommonResponse;
+import scanner.dto.scan.ScanResponse;
 import scanner.service.ScanService;
 import scanner.service.StorageServiceImpl;
 

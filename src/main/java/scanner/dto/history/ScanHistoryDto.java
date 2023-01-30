@@ -1,4 +1,4 @@
-package scanner.dto;
+package scanner.dto.history;
 
 import lombok.*;
 import scanner.model.ScanHistory;

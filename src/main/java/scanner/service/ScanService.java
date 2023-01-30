@@ -17,9 +17,9 @@ import org.springframework.stereotype.Service;
 import lombok.RequiredArgsConstructor;
 import scanner.common.dto.HttpRequestUrlParam;
 import scanner.common.utils.CommonHttpRequest;
-import scanner.dto.ScanResultDto;
+import scanner.dto.scan.ScanResultDto;
 import scanner.exception.ApiException;
-import scanner.dto.CheckListDetailDto;
+import scanner.dto.checklist.CheckListDetail;
 import scanner.common.enums.Env;
 import scanner.model.CustomRule;
 import scanner.model.ScanHistory;
@@ -27,9 +27,9 @@ import scanner.model.ScanHistoryDetail;
 import scanner.repository.CheckListRepository;
 import scanner.repository.ScanHistoryDetailsRepository;
 import scanner.repository.ScanHistoryRepository;
-import scanner.dto.CheckResultDto;
-import scanner.response.ScanResponse;
-import scanner.response.enums.ResponseCode;
+import scanner.dto.checklist.CheckResultDto;
+import scanner.dto.scan.ScanResponse;
+import scanner.dto.enums.ResponseCode;
 
 
 @Slf4j
@@ -175,8 +175,8 @@ public class ScanService {
         Object parse = commonHttpRequest.HttpGetRequestBuffer(Env.PARSE_API.getValue(), get);
 
         Map<String, String> rulesMap = new HashMap<>();
-        List<CheckListDetailDto> rulesInfo = checkListService.retrieve().getDocs();
-        for(CheckListDetailDto info : rulesInfo)
+        List<CheckListDetail.Detail> rulesInfo = checkListService.retrieve().getDocs();
+        for(CheckListDetail.Detail info : rulesInfo)
             rulesMap.put(info.getRuleId(), info.getLevel());
 
         String rawResult;

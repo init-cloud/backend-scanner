@@ -14,7 +14,7 @@ import scanner.exception.ApiException;
 import scanner.model.User;
 import scanner.model.enums.RoleType;
 import scanner.repository.UserRepository;
-import scanner.response.enums.ResponseCode;
+import scanner.dto.enums.ResponseCode;
 import scanner.security.dto.Token;
 import scanner.security.provider.JwtTokenProvider;
 import scanner.security.provider.UsernamePasswordAuthenticationProvider;

@@ -1,13 +1,10 @@
-package scanner.response;
+package scanner.dto.report;
 
 import java.util.List;
 
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
-import scanner.dto.history.report.ScanHistoryDetailDto;
-import scanner.dto.history.report.ScanSummaryDto;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)

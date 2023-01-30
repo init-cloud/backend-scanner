@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import lombok.RequiredArgsConstructor;
-import scanner.response.CommonResponse;
+import scanner.dto.CommonResponse;
 
 @ApiOperation("API Landing check")
 @RestController

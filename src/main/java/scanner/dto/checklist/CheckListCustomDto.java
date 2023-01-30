@@ -1,4 +1,4 @@
-package scanner.dto;
+package scanner.dto.checklist;
 
 import lombok.*;
 

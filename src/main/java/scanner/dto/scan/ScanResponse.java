@@ -1,11 +1,10 @@
-package scanner.response;
+package scanner.dto.scan;
 
 import java.util.List;
 
 import lombok.Getter;
 
-import scanner.dto.CheckResultDto;
-import scanner.dto.ScanResultDto;
+import scanner.dto.checklist.CheckResultDto;
 
 @Getter
 public class ScanResponse {

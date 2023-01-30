@@ -5,7 +5,7 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import scanner.common.dto.HttpRequestUrlParam;
 import scanner.exception.ApiException;
-import scanner.response.enums.ResponseCode;
+import scanner.dto.enums.ResponseCode;
 
 import java.io.BufferedReader;
 import java.io.IOException;

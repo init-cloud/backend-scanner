@@ -1,16 +1,13 @@
-package scanner.response;
+package scanner.dto.history;
 
 import java.util.List;
 
 import lombok.*;
-import scanner.dto.history.HistoryDto;
+
 
 @Getter
+@AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class HistoryResponse {
     List<HistoryDto> history;
-
-    public HistoryResponse(List<HistoryDto> history) {
-        this.history = history;
-    }
 }

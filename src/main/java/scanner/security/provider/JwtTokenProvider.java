@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 
 import scanner.exception.ApiException;
 import scanner.model.enums.RoleType;
-import scanner.response.enums.ResponseCode;
+import scanner.dto.enums.ResponseCode;
 import scanner.security.config.Properties;
 import scanner.security.dto.Token;
 import scanner.security.dto.UsernameToken;

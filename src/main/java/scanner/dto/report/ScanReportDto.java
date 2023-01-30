@@ -1,4 +1,4 @@
-package scanner.dto;
+package scanner.dto.report;
 
 import java.time.LocalDateTime;
 

@@ -12,6 +12,5 @@ import java.time.LocalDateTime;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public abstract class UserDto {
     private String username;
-
     private LocalDateTime lastLogin;
 }

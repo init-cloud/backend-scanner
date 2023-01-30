@@ -1,4 +1,4 @@
-package scanner.response;
+package scanner.dto;
 
 
 import lombok.Builder;

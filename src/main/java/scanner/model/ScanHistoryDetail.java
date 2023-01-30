@@ -11,7 +11,7 @@ import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
 import lombok.*;
-import scanner.dto.ScanResultDto;
+import scanner.dto.scan.ScanResultDto;
 
 
 @Getter
