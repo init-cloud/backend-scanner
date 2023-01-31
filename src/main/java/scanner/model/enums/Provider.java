@@ -8,6 +8,7 @@ import lombok.Getter;
 @Getter
 public enum Provider {
     AWS("AWS"),
+    OPENSTACK("OPENSTACK"),
     NCP("NCP");
 
     private final String csp;

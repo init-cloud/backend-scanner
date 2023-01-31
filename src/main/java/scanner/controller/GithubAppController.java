@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import scanner.dto.CommonResponse;
+import scanner.security.dto.GithubToken;
 import scanner.service.github.GithubAppService;
 
 
@@ -37,5 +38,21 @@ public class GithubAppController {
 
         return ResponseEntity.ok()
                 .body(new CommonResponse<>(response));
+    }
+
+    @ApiOperation(value = "Parse OAuth Token",
+            notes = "Parse Token from callback.")
+    @GetMapping("/token")
+    public ResponseEntity<CommonResponse<GithubToken>> getToken(
+            @RequestParam(value = "access_token") String accessToken,
+            @RequestParam(value = "refresh_token") String refreshToken,
+            @RequestParam(value = "expires_in") Long expiresIn,
+            @RequestParam(value = "refresh_token_expires_in") Long refreshTokenExpiresIn,
+            @RequestParam(value = "scope") String scope,
+            @RequestParam(value = "token_type") String tokenType){
+
+        return ResponseEntity.ok()
+                .body(new CommonResponse<>(new GithubToken(accessToken, refreshToken,
+                                expiresIn, refreshTokenExpiresIn, scope, tokenType)));
     }
 }

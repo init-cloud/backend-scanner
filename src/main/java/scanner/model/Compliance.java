@@ -32,6 +32,7 @@ public class Compliance extends BaseEntity{
 
     @Column(name = "COMPLIANCE_NAME")
     @NotNull
+    @Size(max = 16)
     private String complianceName;
 
     @Column(name = "COMPLIANCE_NUMBER")
@@ -54,7 +55,6 @@ public class Compliance extends BaseEntity{
 
     @Column(name = "DETAIL")
     private String detail;
-
 
     @Builder
     public Compliance(CustomRule ruleSeq,

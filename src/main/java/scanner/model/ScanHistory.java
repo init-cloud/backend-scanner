@@ -11,6 +11,7 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 import lombok.*;
 
@@ -40,6 +41,7 @@ public class ScanHistory extends BaseEntity {
 
     @Column(name = "CSP")
     @NotNull
+    @Size(max = 16)
     private String csp;
 
     @Column(name = "PASSED")

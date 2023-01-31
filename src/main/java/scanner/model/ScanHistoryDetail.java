@@ -9,6 +9,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 import lombok.*;
 import scanner.dto.scan.ScanDto;
@@ -35,14 +36,17 @@ public class ScanHistoryDetail extends BaseEntity {
 
     @Column(name = "RESOURCE")
     @NotNull
+    @Size(max = 16)
     private String resource;
 
     @Column(name = "RESOURCE_NAME")
     @NotNull
+    @Size(max = 32)
     private String resourceName;
 
     @Column(name = "SCAN_RESULT")
     @NotNull
+    @Size(max = 8)
     private String scanResult;
 
     @Column(name = "TARGET_FILE")
@@ -51,6 +55,7 @@ public class ScanHistoryDetail extends BaseEntity {
 
     @Column(name = "LINE")
     @NotNull
+    @Size(max = 8)
     private String line;
 
     @Column(name = "CODE")

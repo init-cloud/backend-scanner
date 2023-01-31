@@ -9,6 +9,7 @@ import scanner.dto.TagDto;
 import scanner.model.CustomRule;
 import scanner.model.enums.SecurityType;
 
+
 public class CheckListDetail {
 
     @Getter
@@ -34,8 +35,8 @@ public class CheckListDetail {
         private Solution solution;
         private String state;
         private String customDetail;
-        private String isModifiable;
-        private String isModified;
+        private Character isModifiable;
+        private Character isModified;
 
         @Builder
         public Detail(
@@ -87,7 +88,7 @@ public class CheckListDetail {
         return CustomRule.builder()
                 .ruleId(dto.getRuleId())
                 .ruleOnOff(dto.getState())
-                .isModified("y")
+                .isModified('y')
                 .customDetail(dto.getCustomDetail())
                 .build();
     }

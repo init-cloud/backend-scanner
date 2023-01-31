@@ -47,21 +47,30 @@ public class CustomRule extends BaseEntity{
     @Size(max = 1)
     private String ruleOnOff;
 
-    @Column(name = "PROVIDER", length = 8)
+    @Column(name = "PROVIDER")
     @Enumerated(EnumType.STRING)
     @NotNull
+    @Size(max = 16)
     private Provider provider;
 
-    @Column(name = "RULE_TYPE", length = 16)
+    @Column(name = "RULE_TYPE")
     @NotNull
+    @Size(max = 16)
     private String ruleType;
 
     @Column(name = "SEVERITY")
     @NotNull
     private String level;
 
-    @Column(name = "CUSTOM_DETAIL")
-    private String customDetail;
+    @Column(name = "IS_MODIFIED")
+    @NotNull
+    @Size(max = 1)
+    private Character isModified;
+
+    @Column(name = "IS_MODIFIABLE")
+    @NotNull
+    @Size(max = 1)
+    private Character isModifiable;
 
     @Column(name = "DESCRIPTION")
     private String description;
@@ -84,11 +93,8 @@ public class CustomRule extends BaseEntity{
     @Column(name = "CODE") 
     private String code;
 
-    @Column(name = "IS_MODIFIED")
-    private String isModified;
-
-    @Column(name = "IS_MODIFIABLE")
-    private String isModifiable;
+    @Column(name = "CUSTOM_DETAIL")
+    private String customDetail;
 
     @Column(name = "CUSTOM_DEFAULT", updatable=false)
     private String customDefault;
@@ -101,7 +107,8 @@ public class CustomRule extends BaseEntity{
                       Provider provider,
                       String ruleType,
                       String level,
-                      String customDetail,
+                      Character isModified,
+                      Character isModifiable,
                       String description,
                       String explanation,
                       String possibleImpact,
@@ -109,8 +116,7 @@ public class CustomRule extends BaseEntity{
                       String secureExample,
                       String sol,
                       String code,
-                      String isModified,
-                      String isModifiable,
+                      String customDetail,
                       String customDefault
     ) {
         this.ruleId = ruleId;

@@ -8,12 +8,12 @@ import javax.persistence.*;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Table(name = "USER_TOKEN")
-public class UserToken extends BaseEntity{
+@Table(name = "USER_REFRESH_TOKEN")
+public class UserRefreshToken extends BaseEntity{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "USER_TOKEN_ID")
+    @Column(name = "USER_REFRESH_TOKEN_ID")
     private Long id;
 
     @Getter
@@ -27,7 +27,7 @@ public class UserToken extends BaseEntity{
     private String refreshToken;
 
     @Builder
-    public UserToken(User user, String refreshToken){
+    public UserRefreshToken(User user, String refreshToken){
         this.userId = user;
         this.refreshToken = refreshToken;
     }
