@@ -12,6 +12,7 @@ import javax.validation.constraints.Size;
 
 @Getter
 @Entity
+@Table(name = "USER_OAUTH_TOKEN")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class UserOAuthToken extends BaseEntity{
 

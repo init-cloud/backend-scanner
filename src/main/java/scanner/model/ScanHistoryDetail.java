@@ -36,12 +36,10 @@ public class ScanHistoryDetail extends BaseEntity {
 
     @Column(name = "RESOURCE")
     @NotNull
-    @Size(max = 16)
     private String resource;
 
     @Column(name = "RESOURCE_NAME")
     @NotNull
-    @Size(max = 32)
     private String resourceName;
 
     @Column(name = "SCAN_RESULT")

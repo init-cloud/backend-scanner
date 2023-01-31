@@ -94,7 +94,7 @@ public class ScanService {
 
             for(ScanDto.Result detail : scanDetails){
                 CustomRule saveRule = checkListRepository.findByRuleId(detail.getRuleId())
-                        .orElseThrow(() -> new ApiException(ResponseCode.STATUS_4007));
+                        .orElse(null);
 
                 if(saveRule == null || saveRule.getId() == null)
                     continue;

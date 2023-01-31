@@ -50,7 +50,6 @@ public class CustomRule extends BaseEntity{
     @Column(name = "PROVIDER")
     @Enumerated(EnumType.STRING)
     @NotNull
-    @Size(max = 16)
     private Provider provider;
 
     @Column(name = "RULE_TYPE")
@@ -64,12 +63,10 @@ public class CustomRule extends BaseEntity{
 
     @Column(name = "IS_MODIFIED")
     @NotNull
-    @Size(max = 1)
     private Character isModified;
 
     @Column(name = "IS_MODIFIABLE")
     @NotNull
-    @Size(max = 1)
     private Character isModifiable;
 
     @Column(name = "DESCRIPTION")

@@ -33,11 +33,10 @@ public class User implements UserDetails {
     private Long id;
 
     @Column(name = "IS_OAUTHED")
-    @Size(max = 1)
     private Character isOAuthed;
 
     @Column(name = "OAUTH_PROVIDER")
-    @Size(max = 16)
+    @Enumerated(EnumType.STRING)
     private OAuthProvider oAuthProvider;
 
     @CreatedDate
@@ -67,12 +66,10 @@ public class User implements UserDetails {
     @Column(name = "ROLE_TYPE")
     @Enumerated(EnumType.STRING)
     @Setter
-    @Size(max = 8)
     private RoleType roleType;
 
     @Column(name = "USER_STATE")
     @Enumerated(EnumType.STRING)
-    @Size(max = 8)
     private UserState userState;
 
     @Setter
