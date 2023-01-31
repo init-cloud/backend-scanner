@@ -34,6 +34,7 @@ public enum ResponseCode {
     STATUS_5006(5006, HttpStatus.INTERNAL_SERVER_ERROR,"Could not load file."),
     STATUS_5007(5007, HttpStatus.INTERNAL_SERVER_ERROR,"Could not load Visualize data."),
     STATUS_5008(5008, HttpStatus.INTERNAL_SERVER_ERROR,"Could not update User."),
+    STATUS_5009(5009, HttpStatus.INTERNAL_SERVER_ERROR,"Could not change password."),
     STATUS_5100(5100, HttpStatus.INTERNAL_SERVER_ERROR,"Unknown error.");
 
     private final int code;

@@ -65,4 +65,14 @@ public class UserController {
         return ResponseEntity.ok()
                 .body(new CommonResponse<>(response));
     }
+
+    @ApiOperation(value = "Change Password",
+            response = ResponseEntity.class)
+    @PostMapping("/auth")
+    public ResponseEntity<CommonResponse<Boolean>> managePassword(@RequestBody UserAuthenticationDto dto){
+        Boolean response = userService.updatePassword(dto);
+
+        return ResponseEntity.ok()
+                .body(new CommonResponse<>(response));
+    }
 }

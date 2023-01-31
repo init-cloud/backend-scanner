@@ -22,8 +22,8 @@ class UserTokenUnitTest {
         PasswordEncoder passwordEncoder = new Pbkdf2PasswordEncoder();
         String origin = "password";
 
-        registerDto.setHash(passwordEncoder);
+        String result = registerDto.setHash(passwordEncoder, origin);
 
-        Assertions.assertNotEquals(registerDto.getPassword(), origin);
+        Assertions.assertNotEquals(result, origin);
     }
 }

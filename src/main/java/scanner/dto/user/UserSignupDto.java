@@ -3,10 +3,6 @@ package scanner.dto.user;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import scanner.exception.ApiException;
-import scanner.dto.enums.ResponseCode;
-
 import java.time.LocalDateTime;
 
 
@@ -24,13 +20,5 @@ public class UserSignupDto extends UserProfileDto{
     ){
         super(username, email, contact, lastLogin);
         this.password = password;
-    }
-
-    public void setHash(PasswordEncoder encoder){
-
-        if(password.length() < 8 || password.length() > 32)
-            throw new ApiException(ResponseCode.STATUS_4009);
-
-        this.password = encoder.encode(this.password);
     }
 }

@@ -33,14 +33,12 @@ public class UsernameService implements UserService{
 
     @Override
     public Token signup(UserSignupDto dto){
-
-        dto.setHash(passwordEncoder);
-
         userRepository.findByUsername(dto.getUsername()).ifPresent(user -> {
                 throw new ApiException(ResponseCode.STATUS_4011);
             });
 
-        User user = userRepository.save(User.toEntity(dto));
+        String password = dto.setHash(passwordEncoder, dto.getPassword());
+        User user = userRepository.save(User.toEntity(dto, password));
         return jwtTokenProvider.create(user.getUsername(), RoleType.GUEST);
     }
 
@@ -88,5 +86,21 @@ public class UsernameService implements UserService{
         userRepository.save(user);
 
         return dto;
+    }
+
+    @Transactional
+    public Boolean updatePassword(UserAuthenticationDto dto){
+        try{
+            User user = userRepository.findByUsername(dto.getUsername())
+                    .orElseThrow(() -> new ApiException(ResponseCode.STATUS_4008));
+
+            user.setPassword(dto.setHash(passwordEncoder, dto.getPassword()));
+
+            userRepository.save(user);
+
+            return true;
+        } catch (Exception e){
+            throw new ApiException(ResponseCode.STATUS_5009);
+        }
     }
 }

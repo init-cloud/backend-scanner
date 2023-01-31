@@ -57,6 +57,7 @@ public class User implements UserDetails {
     private String username;
 
     @Column(name = "PASSWORD")
+    @Setter
     private String password;
 
     @Column(name = "AUTHORITIES")
@@ -113,10 +114,10 @@ public class User implements UserDetails {
         this.usedRules = usedRules;
     }
 
-    public static User toEntity(UserSignupDto dto){
+    public static User toEntity(UserSignupDto dto, String password){
         return User.builder()
                 .username(dto.getUsername())
-                .password(dto.getPassword())
+                .password(password)
                 .isOAuthed('n')
                 .oAuthProvider(OAuthProvider.NONE)
                 .roleType(RoleType.GUEST)
@@ -127,6 +128,15 @@ public class User implements UserDetails {
                 .build();
     }
 
+    public static String getAuthorities(Collection<? extends GrantedAuthority> authorities) {
+        StringBuilder sb = new StringBuilder();
+
+        for(GrantedAuthority authority : authorities)
+            sb.append(authority.getAuthority());
+
+        return sb.toString();
+    }
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         Collection<GrantedAuthority> authorityList = new ArrayList<>();
@@ -135,15 +145,6 @@ public class User implements UserDetails {
             authorityList.add(new SimpleGrantedAuthority(authority));
 
         return authorityList;
-    }
-
-    public static String getAuthorities(Collection<? extends GrantedAuthority> authorities) {
-        StringBuilder sb = new StringBuilder();
-
-        for(GrantedAuthority authority : authorities)
-            sb.append(authority.getAuthority());
-
-        return sb.toString();
     }
 
     @Override
