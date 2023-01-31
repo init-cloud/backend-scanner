@@ -30,10 +30,10 @@ public class GithubAppService {
         request.HttpGetRequestBuffer(URL_GITHUB_ID_GET, uri);
     }
 
-    public Object requestAfterRedirect(String code, String state){
+    public String requestAfterRedirect(String code, String state){
         Object token = requestGithubAccessToken(code);
 
-        return token;
+        return (String)token;
     }
 
     private Object requestGithubAccessToken(String code){

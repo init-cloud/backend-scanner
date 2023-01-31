@@ -30,11 +30,11 @@ public class GithubAppController {
     @ApiOperation(value = "Callback for Github auth",
     notes = "Callback is implicit.")
     @GetMapping("/callback")
-    public ResponseEntity<CommonResponse> callback(
+    public ResponseEntity<CommonResponse<String>> callback(
             @RequestParam String code,
             @RequestParam String state){
 
-            Object response = githubAppService.requestAfterRedirect(code, state);
+            String response = githubAppService.requestAfterRedirect(code, state);
 
         return ResponseEntity.ok()
                 .body(new CommonResponse<>(response));
@@ -42,7 +42,7 @@ public class GithubAppController {
 
     @ApiOperation(value = "Parse OAuth Token",
             notes = "Parse Token from callback.")
-    @GetMapping("/token")
+    @GetMapping("/github")
     public ResponseEntity<CommonResponse<GithubToken>> getToken(
             @RequestParam(value = "access_token") String accessToken,
             @RequestParam(value = "refresh_token") String refreshToken,
