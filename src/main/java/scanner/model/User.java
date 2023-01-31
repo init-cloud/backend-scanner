@@ -1,27 +1,30 @@
 package scanner.model;
 
 
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import scanner.dto.user.UserSignupDto;
+import scanner.model.enums.OAuthProvider;
 import scanner.model.enums.RoleType;
+import scanner.model.enums.UserAuthority;
 import scanner.model.enums.UserState;
 
 import javax.persistence.*;
+import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 
 @Getter
 @Entity
 @Table(name = "USER")
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class User implements UserDetails {
 
     @Id
@@ -29,11 +32,19 @@ public class User implements UserDetails {
     @Column(name = "USER_ID")
     private Long id;
 
+    @Column(name = "IS_OAUTHED")
+    private Character isOAuthed;
+
+    @Column(name = "OAUTH_PROVIDER")
+    @Enumerated(EnumType.STRING)
+    private OAuthProvider oAuthProvider;
+
+    @CreatedDate
     @Column(name = "CREATED_AT")
     private LocalDateTime createdAt;
 
+    @LastModifiedDate
     @Column(name = "MODIFIED_AT")
-    @Setter
     private LocalDateTime modifiedAt;
 
     @Column(name = "LAST_LOGIN")
@@ -41,12 +52,14 @@ public class User implements UserDetails {
     private LocalDateTime lastLogin;
 
     @Column(name = "USERNAME")
+    @Size(max = 32)
     private String username;
 
     @Column(name = "PASSWORD")
+    @Setter
     private String password;
 
-    @Column
+    @Column(name = "AUTHORITIES")
     @Setter
     private String authorities;
 
@@ -61,71 +74,64 @@ public class User implements UserDetails {
 
     @Setter
     @Column(name = "EMAIL")
+    @Size(max = 128)
     private String email;
 
     @Setter
     @Column(name = "contact")
+    @Size(max = 16)
     private String contact;
 
-    @Builder
-    public User(Long id,
-                LocalDateTime modifiedAt,
-                LocalDateTime lastLogin,
-                String username,
-                String password,
-                RoleType roleType,
-                UserState userState,
-                String email,
-                String contact){
-        this.id = id;
-        this.modifiedAt = modifiedAt;
-        this.lastLogin = lastLogin;
-        this.username = username;
-        this.password = password;
-        this.roleType = roleType;
-        this.userState = userState;
-        this.email = email;
-        this.contact = contact;
-    }
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
+    private List<UsedRule> usedRules = new ArrayList<>();
 
     @Builder
-    public User(LocalDateTime modifiedAt,
+    public User(LocalDateTime lastLogin,
                 String username,
                 String password,
+                Character isOAuthed,
+                OAuthProvider oAuthProvider,
                 RoleType roleType,
-                UserState userState,
-                String email,
-                String contact){
-        this.modifiedAt = modifiedAt;
-        this.username = username;
-        this.password = password;
-        this.roleType = roleType;
-        this.userState = userState;
-        this.email = email;
-        this.contact = contact;
-    }
-
-    @Builder
-    public User(LocalDateTime modifiedAt,
-                String username,
                 String authorities,
-                RoleType roleType) {
-        this.modifiedAt = modifiedAt;
+                UserState userState,
+                String email,
+                String contact,
+                List<UsedRule> usedRules
+    ){
+        this.lastLogin = lastLogin;
+        this.isOAuthed = isOAuthed;
+        this.oAuthProvider = oAuthProvider;
         this.username = username;
-        this.authorities = authorities;
+        this.password = password;
         this.roleType = roleType;
+        this.authorities = authorities;
+        this.userState = userState;
+        this.email = email;
+        this.contact = contact;
+        this.usedRules = usedRules;
     }
 
-    public static User toEntity(UserSignupDto dto){
+    public static User toEntity(UserSignupDto dto, String password){
         return User.builder()
-                .modifiedAt(LocalDateTime.now())
                 .username(dto.getUsername())
-                .password(dto.getPassword())
+                .password(password)
+                .isOAuthed('n')
+                .oAuthProvider(OAuthProvider.NONE)
                 .roleType(RoleType.GUEST)
+                .authorities(UserAuthority.GUEST.toString())
                 .userState(UserState.ACTIVATE)
                 .email(dto.getEmail())
                 .contact(dto.getContact())
                 .build();
+    }
+
+    public static String getAuthorities(Collection<? extends GrantedAuthority> authorities) {
+        StringBuilder sb = new StringBuilder();
+
+        for(GrantedAuthority authority : authorities)
+            sb.append(authority.getAuthority());
+
+        return sb.toString();
     }
 
     @Override
@@ -136,15 +142,6 @@ public class User implements UserDetails {
             authorityList.add(new SimpleGrantedAuthority(authority));
 
         return authorityList;
-    }
-
-    public static String getAuthorities(Collection<? extends GrantedAuthority> authorities) {
-        StringBuilder sb = new StringBuilder();
-
-        for(GrantedAuthority authority : authorities)
-            sb.append(authority.getAuthority());
-
-        return sb.toString();
     }
 
     @Override

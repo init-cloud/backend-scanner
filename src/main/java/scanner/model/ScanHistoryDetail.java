@@ -9,20 +9,17 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import scanner.dto.ScanResultDto;
+import lombok.*;
+import scanner.dto.scan.ScanDto;
 
-@Builder
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
+
+@Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 @Table(name = "SCAN_HISTORY_DETAIL")
-public class ScanHistoryDetail {
+public class ScanHistoryDetail extends BaseEntity {
     
     @Id
     @Column(name = "ID", updatable=false)
@@ -47,6 +44,7 @@ public class ScanHistoryDetail {
 
     @Column(name = "SCAN_RESULT")
     @NotNull
+    @Size(max = 8)
     private String scanResult;
 
     @Column(name = "TARGET_FILE")
@@ -55,13 +53,35 @@ public class ScanHistoryDetail {
 
     @Column(name = "LINE")
     @NotNull
+    @Size(max = 8)
     private String line;
 
     @Column(name = "CODE")
     @NotNull
     private String code;
 
-    public static ScanHistoryDetail toEntity(final ScanResultDto dto, CustomRule rule, ScanHistory history){
+
+    @Builder
+    public ScanHistoryDetail(CustomRule ruleSeq,
+                             ScanHistory historySeq,
+                             String resource,
+                             String resourceName,
+                             String scanResult,
+                             String targetFile,
+                             String line,
+                             String code
+    ) {
+        this.ruleSeq = ruleSeq;
+        this.historySeq = historySeq;
+        this.resource = resource;
+        this.resourceName = resourceName;
+        this.scanResult = scanResult;
+        this.targetFile = targetFile;
+        this.line = line;
+        this.code = code;
+    }
+
+    public static ScanHistoryDetail toEntity(final ScanDto.Result dto, CustomRule rule, ScanHistory history){
         return ScanHistoryDetail.builder()
                                 .ruleSeq(rule)
                                 .historySeq(history)

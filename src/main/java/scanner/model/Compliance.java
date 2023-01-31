@@ -1,8 +1,6 @@
 package scanner.model;
 
 
-import java.time.LocalDateTime;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -14,19 +12,14 @@ import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 
-@Builder
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
 @Entity
+@Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "COMPLIANCE")
-public class Compliance {
+public class Compliance extends BaseEntity{
 
     @Id
     @Column(name = "COMP_ID", updatable=false)
@@ -37,16 +30,9 @@ public class Compliance {
     @JoinColumn(name = "rule_seq", updatable=false)
     private CustomRule ruleSeq;
 
-    @Column(name = "CREATED_AT")
-    @NotNull
-    private LocalDateTime createdAt;
-
-    @Column(name = "MODIFIED_AT")
-    @NotNull
-    private LocalDateTime modifiedAt;
-
     @Column(name = "COMPLIANCE_NAME")
     @NotNull
+    @Size(max = 16)
     private String complianceName;
 
     @Column(name = "COMPLIANCE_NUMBER")
@@ -69,4 +55,22 @@ public class Compliance {
 
     @Column(name = "DETAIL")
     private String detail;
+
+    @Builder
+    public Compliance(CustomRule ruleSeq,
+                      String complianceName,
+                      String complianceNumber,
+                      String category,
+                      String article,
+                      String description,
+                      String detail
+    ) {
+        this.ruleSeq = ruleSeq;
+        this.complianceName = complianceName;
+        this.complianceNumber = complianceNumber;
+        this.category = category;
+        this.article = article;
+        this.description = description;
+        this.detail = detail;
+    }
 }

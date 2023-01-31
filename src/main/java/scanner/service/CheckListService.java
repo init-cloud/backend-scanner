@@ -10,13 +10,11 @@ import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
 import scanner.exception.ApiException;
-import scanner.exception.CheckListException;
-import scanner.dto.CheckListDetailDto;
-import scanner.dto.CheckListSimpleDto;
+import scanner.dto.checklist.CheckListDetail;
+import scanner.dto.checklist.CheckListSimple;
 import scanner.model.CustomRule;
 import scanner.repository.CheckListRepository;
-import scanner.response.checklist.CheckListDetailResponse;
-import scanner.response.enums.ResponseCode;
+import scanner.dto.enums.ResponseCode;
 
 
 @Service
@@ -25,97 +23,94 @@ public class CheckListService {
     
     private final CheckListRepository checkListRepository;
 
+
     @Transactional
-    public CheckListDetailResponse retrieve(){
+    public CheckListDetail retrieve(){
 
         List<CustomRule> ruleList = checkListRepository.findAll();
-        List<CheckListDetailDto> ruleDtos = ruleList.stream()
-                                            .map(CheckListDetailDto::new)
+        List<CheckListDetail.Detail> ruleDtos = ruleList.stream()
+                                            .map(CheckListDetail.Detail::new)
                                             .collect(Collectors.toList());
 
-        return new CheckListDetailResponse(ruleDtos);
+        return new CheckListDetail(ruleDtos);
     }
 
+
     @Transactional
-    public CheckListDetailResponse retrieveOff(){
+    public CheckListDetail retrieveOff(){
 
         List<CustomRule> ruleList = checkListRepository.findByRuleOnOff("n");
-        List<CheckListDetailDto> ruleDtos = ruleList.stream()
-                                            .map(CheckListDetailDto::new)
+        List<CheckListDetail.Detail> ruleDtos = ruleList.stream()
+                                            .map(CheckListDetail.Detail::new)
                                             .collect(Collectors.toList());
 
-        return new CheckListDetailResponse(ruleDtos);
+        return new CheckListDetail(ruleDtos);
     }
 
     public List<CustomRule> retrieveOffEntity(){
         return checkListRepository.findByRuleOnOff("n");
     }
 
+
     @Transactional
-    public CheckListDetailResponse create(
-        CheckListDetailDto data
+    public CheckListDetail.Detail create(
+        CheckListDetail.Detail data
     ){
-        CustomRule rule = CheckListDetailDto.toEntity(data);
+        CustomRule rule = CheckListDetail.toEntity(data);
         rule = checkListRepository.save(rule);
 
-        return new CheckListDetailResponse(CheckListDetailDto.toDto(rule));
+        return CheckListDetail.toDto(rule);
     }
 
+
     @Transactional
-    public List<CheckListSimpleDto> modify(
-        List<CheckListSimpleDto> data
+    public List<CheckListSimple.Simple> modify(
+        List<CheckListSimple.Simple> data
     ){
         if(data == null)
             throw new ApiException(ResponseCode.STATUS_4005);
 
-        List<Long> ruleIds = new ArrayList<>();
-                                        
-        for(int i = 0 ; i < data.size() ; i++){
-            CheckListSimpleDto target = data.get(i);
+        List<String> ruleIds = new ArrayList<>();
+
+        for(CheckListSimple.Simple target : data){
             
             if(target == null)
                 continue;
 
-            if(target.getCustom() == null || target.getCustom().getCustomDetail() == null){
-                checkListRepository.updateRuleOnOff(target.getId(), target.getRuleOnOff());
-                ruleIds.add(target.getId());  
-            } 
-            else{
-                checkListRepository.updateRule(target.getId(), target.getRuleOnOff(), target.getCustom().getCustomDetail());
-                ruleIds.add(target.getId());  
-            }
+            if(target.getCustom() == null || target.getCustom().getCustomDetail() == null)
+                checkListRepository.updateRuleOnOff(target.getRuleId(), target.getRuleOnOff());
+
+            else
+                checkListRepository.updateRule(target.getRuleId(), target.getRuleOnOff(), target.getCustom().getCustomDetail());
+
+            ruleIds.add(target.getRuleId());
         }
 
-        List<CustomRule> ruleList = checkListRepository.findByIdIn(ruleIds);
+        List<CustomRule> ruleList = checkListRepository.findByRuleIdIn(ruleIds);
 
-        List<CheckListSimpleDto> ruleDtos = ruleList.stream()
-                                    .map(CheckListSimpleDto::new)
+        List<CheckListSimple.Simple> ruleDtos = ruleList.stream()
+                                    .map(CheckListSimple.Simple::new)
                                     .collect(Collectors.toList());
 
-        if(ruleDtos == null || ruleDtos.isEmpty())
+        if(ruleDtos.isEmpty())
             throw new ApiException(ResponseCode.STATUS_4005);
 
         return ruleDtos;
     }
 
     @Transactional
-    public CheckListSimpleDto reset(
-        CheckListSimpleDto data
+    public CheckListSimple.Simple reset(
+        CheckListSimple.Simple data
     ){
-        try{
-            CustomRule target = CheckListSimpleDto.toEntity(data);
+        CustomRule target = CheckListSimple.toEntity(data);
 
-            if(target.getId() == null)
-                throw new ApiException(ResponseCode.STATUS_4005);
-            
-            checkListRepository.resetRule(target.getId());
-            CustomRule rule = checkListRepository.findById(target.getId())
-                    .orElseThrow(() -> new ApiException(ResponseCode.STATUS_4005));
-
-            return new CheckListSimpleDto(rule);
-        }
-        catch(CheckListException e){
+        if(target.getId() == null)
             throw new ApiException(ResponseCode.STATUS_4005);
-        }
+
+        checkListRepository.resetRule(target.getRuleId());
+        CustomRule rule = checkListRepository.findByRuleId(target.getRuleId())
+                .orElseThrow(() -> new ApiException(ResponseCode.STATUS_4005));
+
+        return new CheckListSimple.Simple(rule);
     }
 }

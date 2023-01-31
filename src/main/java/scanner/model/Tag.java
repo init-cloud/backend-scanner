@@ -1,8 +1,6 @@
 package scanner.model;
 
 
-import java.time.LocalDateTime;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -15,19 +13,14 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 
-@Builder
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
+@Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 @Table(name = "TAG")
-public class Tag {
+public class Tag extends BaseEntity{
 
     @Id
     @Column(name = "TAG_ID")
@@ -43,11 +36,10 @@ public class Tag {
     @Size(max = 64)
     private String tagName;
 
-    @Column(name = "CREATED_AT")
-    @NotNull
-    private LocalDateTime createdAt;
 
-    @Column(name = "MODIFIED_AT")
-    @NotNull
-    private LocalDateTime modifiedAt;
+    @Builder
+    public Tag(CustomRule ruleSeq, String tagName) {
+        this.ruleSeq = ruleSeq;
+        this.tagName = tagName;
+    }
 }

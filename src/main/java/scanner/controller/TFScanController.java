@@ -9,13 +9,12 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import scanner.response.CommonResponse;
-import scanner.response.ScanResponse;
+import scanner.dto.CommonResponse;
+import scanner.dto.scan.ScanDto;
 import scanner.service.ScanService;
 import scanner.service.StorageServiceImpl;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 
 @ApiOperation("Terraform Scan API")
@@ -47,14 +46,12 @@ public class TFScanController {
             notes = "Uploads .tf or .zip file to scan.",
             response = ResponseEntity.class)
     @PostMapping("/file/{provider}")
-    public ResponseEntity<CommonResponse<ScanResponse>> uploadFile(
-            HttpServletRequest request,
-            HttpServletResponse response,
+    public ResponseEntity<CommonResponse<ScanDto.Response>> uploadFile(
             @PathVariable("provider") String provider,
             @RequestPart("file") MultipartFile file) {
 
         String[] result = storageService.store(file);
-        ScanResponse dtos = scanService.scanTerraform(result, provider);
+        ScanDto.Response dtos = scanService.scanTerraform(result, provider);
 
         return ResponseEntity.ok()
                 .body(new CommonResponse<>(dtos));

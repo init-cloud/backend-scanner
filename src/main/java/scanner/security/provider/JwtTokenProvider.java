@@ -11,9 +11,10 @@ import org.springframework.stereotype.Component;
 
 import scanner.exception.ApiException;
 import scanner.model.enums.RoleType;
-import scanner.response.enums.ResponseCode;
-import scanner.security.config.JwtProperties;
+import scanner.dto.enums.ResponseCode;
+import scanner.security.config.Properties;
 import scanner.security.dto.Token;
+import scanner.security.dto.UsernameToken;
 import scanner.security.service.CustomUserDetailService;
 
 import javax.servlet.http.HttpServletRequest;
@@ -27,7 +28,7 @@ public class JwtTokenProvider {
 
     private static final long EXPIREDTIME = 3 * 24 * 60 * 60 * 1000L;
 
-    private final JwtProperties jwt;
+    private final Properties jwt;
     private final CustomUserDetailService userDetailsService;
 
     public Token create(String username, RoleType role) {
@@ -42,7 +43,7 @@ public class JwtTokenProvider {
                 .signWith(SignatureAlgorithm.HS256, jwt.getSecret())
                 .compact();
 
-        return new Token(username, accessToken, null);
+        return new UsernameToken(username, accessToken, null);
     }
 
     public Claims getClaims(String token){

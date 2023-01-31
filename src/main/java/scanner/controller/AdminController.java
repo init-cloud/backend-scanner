@@ -7,7 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import scanner.dto.user.UserManagingDto;
 import scanner.dto.user.UserRetrieveDto;
-import scanner.response.CommonResponse;
+import scanner.dto.CommonResponse;
 import scanner.security.service.CustomUserDetailService;
 
 import java.util.List;

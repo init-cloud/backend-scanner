@@ -7,10 +7,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import scanner.dto.history.HistoryDto;
+import scanner.dto.history.HistoryResponse;
 import scanner.model.ScanHistory;
-import scanner.response.CommonResponse;
-import scanner.response.ReportResponse;
+import scanner.dto.CommonResponse;
+import scanner.dto.report.ReportResponse;
 import scanner.service.ScanHistoryService;
 
 import java.util.List;
@@ -29,11 +29,11 @@ public class ScanHistoryController {
             notes = "Retrieve scan histories for reports.",
             response = ResponseEntity.class)
     @GetMapping("/history")
-    public ResponseEntity<CommonResponse<List<HistoryDto>>> retrieveHistory() {
+    public ResponseEntity<CommonResponse<List<HistoryResponse.History>>> retrieveHistory() {
         List<ScanHistory> history = scanHistoryService.retrieveHistoryList();
 
-        List<HistoryDto> dtos = history.stream()
-                .map(HistoryDto::new)
+        List<HistoryResponse.History> dtos = history.stream()
+                .map(HistoryResponse.History::new)
                 .collect(Collectors.toList());
 
         return ResponseEntity.ok()

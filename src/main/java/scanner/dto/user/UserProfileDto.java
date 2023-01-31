@@ -1,10 +1,13 @@
 package scanner.dto.user;
 
+import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import java.time.LocalDateTime;
 
 @Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class UserProfileDto extends UserDto{
 
     @Setter

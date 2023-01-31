@@ -2,7 +2,6 @@ package scanner.service;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
@@ -13,13 +12,13 @@ import javax.transaction.Transactional;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.tomcat.util.http.fileupload.FileUtils;
-import org.json.simple.parser.ParseException;
 import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
-import scanner.dto.ScanResultDto;
+import scanner.common.dto.HttpRequestUrlParam;
+import scanner.common.utils.CommonHttpRequest;
 import scanner.exception.ApiException;
-import scanner.dto.CheckListDetailDto;
+import scanner.dto.checklist.CheckListDetail;
 import scanner.common.enums.Env;
 import scanner.model.CustomRule;
 import scanner.model.ScanHistory;
@@ -27,18 +26,14 @@ import scanner.model.ScanHistoryDetail;
 import scanner.repository.CheckListRepository;
 import scanner.repository.ScanHistoryDetailsRepository;
 import scanner.repository.ScanHistoryRepository;
-import scanner.dto.CheckResultDto;
-import scanner.dto.ParseResultDto;
-import scanner.response.ScanResponse;
-import scanner.common.utils.ParserRequest;
-import scanner.response.enums.ResponseCode;
+import scanner.dto.scan.ScanDto;
+import scanner.dto.enums.ResponseCode;
 
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class ScanService {
-    private final ParserRequest parserReq;
     private final CheckListService checkListService;
     private final ScanHistoryRepository scanHistoryRepository;
     private final ScanHistoryDetailsRepository scanHistoryDetailsRepository;
@@ -55,7 +50,7 @@ public class ScanService {
     private static final String SPLITCOLON = ":";
 
     @Transactional
-    public ScanResponse scanTerraform(String[] args, String provider) {
+    public ScanDto.Response scanTerraform(String[] args, String provider) {
         try {
             List<CustomRule> offRules = checkListService.retrieveOffEntity();
             String offStr = getSkipCheckCmd(offRules);
@@ -66,7 +61,7 @@ public class ScanService {
 
             Process p = Runtime.getRuntime().exec(cmd);
             BufferedReader br = new BufferedReader(new InputStreamReader(p.getInputStream()));
-            ScanResponse scanResult = resultToJson(br, args[1], provider);
+            ScanDto.Response scanResult = resultToJson(br, args[1], provider);
 
             p.waitFor();
             p.destroy();
@@ -80,54 +75,54 @@ public class ScanService {
             Thread.currentThread().interrupt();
         } catch (IOException e){
             throw new ApiException(ResponseCode.STATUS_5006);
-        } catch (ParseException e){
-            throw new ApiException(ResponseCode.STATUS_5007);
         }
         return null;
     }
 
     @Transactional
-    public boolean save(CheckResultDto scanResult, List<ScanResultDto> scanDetail, String[] args, String provider, double[] total)
-    {
+    public void save(ScanDto.Check scanResult,
+                        List<ScanDto.Result> scanDetails,
+                        String[] args, String provider,
+                        double[] total
+    ) {
         try {
-            ScanHistory scan = ScanHistory.toEntity(args, provider, scanResult.getPassed(), scanResult.getSkipped(), scanResult.getFailed(), total, provider);
+            ScanHistory scan = ScanHistory.toEntity(args, scanResult.getPassed(), scanResult.getSkipped(), scanResult.getFailed(), total, provider);
 
             scan = scanHistoryRepository.save(scan);
 
             List<ScanHistoryDetail> details = new ArrayList<>();
 
-            for(int i = 0 ; i < scanDetail.size() ; i++){
-                CustomRule saveRule = checkListRepository.findByRuleId(scanDetail.get(i).getRuleId());
+            for(ScanDto.Result detail : scanDetails){
+                CustomRule saveRule = checkListRepository.findByRuleId(detail.getRuleId())
+                        .orElse(null);
 
                 if(saveRule == null || saveRule.getId() == null)
                     continue;
                     
-                details.add(ScanHistoryDetail.toEntity(scanDetail.get(i), saveRule, scan));
+                details.add(ScanHistoryDetail.toEntity(detail, saveRule, scan));
             }
             scanHistoryDetailsRepository.saveAll(details);
-
-            return true;
         } catch (Exception e) {
-            return false;
+            throw new ApiException(ResponseCode.STATUS_5003);
         }
     }
 
-    public CheckResultDto parseScanCheck(String scan){
+    public ScanDto.Check parseScanCheck(String scan){
         String[] lines = scan.strip().split(", ");
         String[] passed = lines[0].split(CHECK);
         String[] failed = lines[1].split(CHECK);
         String[] skipped = lines[2].split(CHECK);
 
-        return new CheckResultDto(
+        return new ScanDto.Check(
             Integer.parseInt(passed[1].strip()), 
             Integer.parseInt(failed[1].strip()), 
             Integer.parseInt(skipped[1].strip())
         );
     }
 
-    public ScanResultDto parseScanResult(
+    public ScanDto.Result parseScanResult(
         String rawResult,
-        ScanResultDto result,
+        ScanDto.Result result,
         Map<String, String> rulesMap
     ){
         String[] lines;
@@ -163,21 +158,27 @@ public class ScanService {
         return result;
     }
 
-    public ScanResponse resultToJson(BufferedReader br, String path, String provider)
-    throws IOException, ParseException
+    public ScanDto.Response resultToJson(BufferedReader br, String path, String provider)
+    throws IOException
     {
-        String rawResult;
-        StringBuilder sb = new StringBuilder();
-        CheckResultDto check = new CheckResultDto();
-        ScanResultDto result = new ScanResultDto();
-        List<ScanResultDto> resultLists = new ArrayList<>();
-        ParseResultDto parse = parserReq.getTerraformParsingData(path, provider);
-        List<CheckListDetailDto> rulesInfo = checkListService.retrieve().getDocs();
-        Map<String, String> rulesMap = new HashMap<>();
-        
-        for(int i = 0 ; i < rulesInfo.size(); i++)
-            rulesMap.put(rulesInfo.get(i).getId(), rulesInfo.get(i).getLevel());
+        CommonHttpRequest commonHttpRequest = new CommonHttpRequest();
 
+        StringBuilder sb = new StringBuilder();
+
+        List<ScanDto.Result> resultLists = new ArrayList<>();
+        ScanDto.Check check = new ScanDto.Check();
+        ScanDto.Result result = new ScanDto.Result();
+
+        HttpRequestUrlParam get = new HttpRequestUrlParam();
+        get.setUrlParam(provider + "/" + path);
+        Object parse = commonHttpRequest.HttpGetRequestBuffer(Env.PARSE_API.getValue(), get);
+
+        Map<String, String> rulesMap = new HashMap<>();
+        List<CheckListDetail.Detail> rulesInfo = checkListService.retrieve().getDocs();
+        for(CheckListDetail.Detail info : rulesInfo)
+            rulesMap.put(info.getRuleId(), info.getLevel());
+
+        String rawResult;
         while((rawResult = br.readLine()) != null){
             if(rawResult.contains("Passed checks")){
                 check = parseScanCheck(rawResult);
@@ -189,7 +190,7 @@ public class ScanService {
             if(result.getTargetFile() != null){
                 if(result.getStatus().equals(PASSED)){
                     resultLists.add(result);
-                    result = new ScanResultDto();
+                    result = new ScanDto.Result();
                     sb = new StringBuilder();
                 }
                 else{
@@ -199,19 +200,18 @@ public class ScanService {
                     if(rawResult.contains(result.getLines().split("-")[1] + " |")){
                         result.setDetail(sb.toString());
                         resultLists.add(result);
-                        result = new ScanResultDto();
+                        result = new ScanDto.Result();
                         sb = new StringBuilder();
                     }
                 }
             } 
         }
 
-        return new ScanResponse(check, resultLists, parse);
+        return new ScanDto.Response(check, resultLists, parse);
     }
 
     private String getSkipCheckCmd(List<CustomRule> offRules){
         StringBuilder offStr = new StringBuilder();
-        offStr.append("");
 
         if(!offRules.isEmpty()){
             offStr.append(" --skip-check ");
@@ -229,7 +229,7 @@ public class ScanService {
         return offStr.toString();
     }
 
-    private double[] calc(List<ScanResultDto> results){
+    private double[] calc(List<ScanDto.Result> results){
         /* score, high, medium, low, unknown */
         double[] count = new double[]{0.0, 0.0, 0.0, 0.0, 0.0};
         int success = 0;
@@ -237,7 +237,7 @@ public class ScanService {
         int severity = 0;
         int totalSeverity = 0;
 
-        for(ScanResultDto result: results){
+        for(ScanDto.Result result: results){
 
             try {
                 total += 1;

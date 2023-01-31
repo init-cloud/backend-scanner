@@ -1,6 +1,8 @@
 package scanner.dto.user;
 
+import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import scanner.model.User;
 import scanner.model.enums.RoleType;
 import scanner.model.enums.UserState;
@@ -9,6 +11,7 @@ import java.time.LocalDateTime;
 
 
 @Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class UserRetrieveDto extends UserDto{
 
     private UserState userState;

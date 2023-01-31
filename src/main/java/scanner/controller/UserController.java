@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import scanner.dto.user.UserAuthenticationDto;
 import scanner.dto.user.UserProfileDto;
 import scanner.dto.user.UserSignupDto;
-import scanner.response.CommonResponse;
+import scanner.dto.CommonResponse;
 import scanner.security.dto.Token;
 import scanner.service.user.UsernameService;
 
@@ -61,6 +61,16 @@ public class UserController {
     @PostMapping("/profile")
     public ResponseEntity<CommonResponse<UserProfileDto>> manageProfile(@RequestBody UserProfileDto dto){
         UserProfileDto response = userService.manageProfile(dto);
+
+        return ResponseEntity.ok()
+                .body(new CommonResponse<>(response));
+    }
+
+    @ApiOperation(value = "Change Password",
+            response = ResponseEntity.class)
+    @PostMapping("/auth")
+    public ResponseEntity<CommonResponse<Boolean>> managePassword(@RequestBody UserAuthenticationDto dto){
+        Boolean response = userService.updatePassword(dto);
 
         return ResponseEntity.ok()
                 .body(new CommonResponse<>(response));

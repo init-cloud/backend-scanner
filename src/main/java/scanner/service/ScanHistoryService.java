@@ -9,13 +9,13 @@ import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
 
-import scanner.dto.history.report.ScanHistoryDetailDto;
-import scanner.dto.history.report.ScanSummaryDto;
+import scanner.dto.report.ScanHistoryDetailDto;
+import scanner.dto.report.ScanSummaryDto;
 import scanner.model.ScanHistory;
 import scanner.model.ScanHistoryDetail;
 import scanner.repository.ScanHistoryDetailsRepository;
 import scanner.repository.ScanHistoryRepository;
-import scanner.response.ReportResponse;
+import scanner.dto.report.ReportResponse;
 
 @Service
 @RequiredArgsConstructor
