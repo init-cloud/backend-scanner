@@ -99,6 +99,9 @@ public class CustomRule extends BaseEntity{
     @Column(name = "CUSTOM_DEFAULT", updatable=false)
     private String customDefault;
 
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "customRule")
+    private List<UsedRule> usedRules = new ArrayList<>();
+
 
     @Builder
     public CustomRule(String ruleId,
@@ -117,7 +120,8 @@ public class CustomRule extends BaseEntity{
                       String sol,
                       String code,
                       String customDetail,
-                      String customDefault
+                      String customDefault,
+                      List<UsedRule> usedRules
     ) {
         this.ruleId = ruleId;
         this.defaultRuleId = defaultRuleId;
@@ -136,6 +140,7 @@ public class CustomRule extends BaseEntity{
         this.isModified = isModified;
         this.isModifiable = isModifiable;
         this.customDefault = customDefault;
+        this.usedRules = usedRules;
     }
 
     public List<TagDto> getTagDto(){

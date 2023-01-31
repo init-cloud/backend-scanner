@@ -18,6 +18,7 @@ import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 
 @Getter
@@ -42,7 +43,6 @@ public class User implements UserDetails {
     @CreatedDate
     @Column(name = "CREATED_AT")
     private LocalDateTime createdAt;
-
 
     @LastModifiedDate
     @Column(name = "MODIFIED_AT")
@@ -84,6 +84,9 @@ public class User implements UserDetails {
     @Size(max = 16)
     private String contact;
 
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
+    private List<UsedRule> usedRules = new ArrayList<>();
+
     @Builder
     public User(LocalDateTime lastLogin,
                 String username,
@@ -94,7 +97,9 @@ public class User implements UserDetails {
                 String authorities,
                 UserState userState,
                 String email,
-                String contact){
+                String contact,
+                List<UsedRule> usedRules
+    ){
         this.lastLogin = lastLogin;
         this.isOAuthed = isOAuthed;
         this.oAuthProvider = oAuthProvider;
@@ -105,6 +110,7 @@ public class User implements UserDetails {
         this.userState = userState;
         this.email = email;
         this.contact = contact;
+        this.usedRules = usedRules;
     }
 
     public static User toEntity(UserSignupDto dto){
