@@ -35,9 +35,9 @@ public class ScanSummaryDto {
         
         List<ScanHistoryDetail> details = entity.getDetails();
 
-        Map<String, Integer> resource = FailedResourceDto.toMapDto(details);
-        Map<String, Integer> compliance = FailedComplianceDto.toMapDto(details);
-        Map<String, Integer> threat = FailedThreatDto.toMapDto(details);
+        Map<String, Integer> resource = FailedDto.toResourceMap(details);
+        Map<String, Integer> compliance = FailedDto.toComplianceMap(details);
+        Map<String, Integer> threat = FailedDto.toThreatMap(details);
 
         return ScanSummaryDto.builder()
                         .historySeq(entity.getHistorySeq())
@@ -54,9 +54,9 @@ public class ScanSummaryDto {
                         .low(entity.getLow())
                         .unknown(entity.getUnknown())
                         .score(entity.getScore())
-                        .failedResource(FailedDto.mapToDtp(resource))
-                        .failedCompliance(FailedDto.mapToDtp(compliance))
-                        .failedSecurityThreat(FailedDto.mapToDtp(threat))
+                        .failedResource(FailedDto.mapToDto(resource))
+                        .failedCompliance(FailedDto.mapToDto(compliance))
+                        .failedSecurityThreat(FailedDto.mapToDto(threat))
                         .build();
     }
 }

@@ -14,10 +14,6 @@ public class CheckListDetail {
     @Getter
     List<CheckListDetail.Detail> docs;
 
-    public CheckListDetail(CheckListDetail.Detail dto){
-        this.docs.add(dto);
-    }
-
     public CheckListDetail(List<CheckListDetail.Detail> dto){
         this.docs = dto;
     }
@@ -35,7 +31,7 @@ public class CheckListDetail {
         private String possibleImpact;
         private String insecureExample;
         private String secureExample;
-        private SolutionDto solution;
+        private Solution solution;
         private String state;
         private String customDetail;
         private String isModifiable;
@@ -54,7 +50,7 @@ public class CheckListDetail {
             this.possibleImpact = rule.getPossibleImpact();
             this.insecureExample = rule.getInsecureExample();
             this.secureExample = rule.getSecureExample();
-            this.solution = new SolutionDto(rule.getSol(), rule.getCode());
+            this.solution = new Solution(rule.getSol(), rule.getCode());
             this.state = rule.getRuleOnOff();
             this.isModifiable = rule.getIsModifiable();
             this.isModified = rule.getIsModified();
@@ -64,7 +60,7 @@ public class CheckListDetail {
 
     @Getter
     @AllArgsConstructor
-    static class SolutionDto{
+    public static class Solution{
         private String sol;
         private String code;
     }
@@ -79,7 +75,7 @@ public class CheckListDetail {
                 .possibleImpact(rule.getPossibleImpact())
                 .insecureExample(rule.getInsecureExample())
                 .secureExample(rule.getSecureExample())
-                .solution(new SolutionDto(rule.getSol(), rule.getCode()))
+                .solution(new Solution(rule.getSol(), rule.getCode()))
                 .state(rule.getRuleOnOff())
                 .isModifiable(rule.getIsModifiable())
                 .isModified(rule.getIsModified())

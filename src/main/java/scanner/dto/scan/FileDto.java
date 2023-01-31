@@ -7,9 +7,8 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class FileDto {
-    private Integer id;
     private String originalName;
     private String uniqName;
-    private Integer size;
+    private Long size;
     private String type;
 }

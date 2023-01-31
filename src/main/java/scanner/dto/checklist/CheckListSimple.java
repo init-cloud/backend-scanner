@@ -14,7 +14,6 @@ public class CheckListSimple {
 
     List<CheckListSimple> data;
 
-
     @AllArgsConstructor
     @Builder
     @Getter
