@@ -6,6 +6,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import scanner.common.utils.HeaderParse;
 import scanner.dto.user.UserAuthenticationDto;
 import scanner.dto.user.UserDto;
 import scanner.dto.user.UserProfileDto;
@@ -68,8 +69,10 @@ public class UsernameService implements UserService{
         userRepository.save(user);
     }
 
-    public UserProfileDto retrieveProfile(UserProfileDto dto){
-        User user = userRepository.findByUsername(dto.getUsername())
+    public UserProfileDto retrieveProfile(String header){
+        String token = HeaderParse.getAccessToken(header);
+
+        User user = userRepository.findByUsername(jwtTokenProvider.getUsername(token))
                 .orElseThrow(() -> new ApiException(ResponseCode.STATUS_4008));
 
         return new UserProfileDto(user.getUsername(), user.getEmail(), user.getContact(), user.getLastLogin());

@@ -69,7 +69,7 @@ public class JwtTokenProvider {
         return null;
     }
 
-    private String getUsername(String token) {
+    public String getUsername(String token) {
         return Jwts.parser()
                 .setSigningKey(jwt.getSecret())
                 .parseClaimsJws(token)
@@ -105,17 +105,6 @@ public class JwtTokenProvider {
         }
 
         return false;
-    }
-    private Claims parseClaims(String token) {
-        try {
-            return Jwts.parser()
-                    .setSigningKey(jwt.getSecret())
-                    .parseClaimsJws(token)
-                    .getBody();
-
-        } catch (ExpiredJwtException e) {
-            return e.getClaims();
-        }
     }
 
     public String resolve(HttpServletRequest request) {

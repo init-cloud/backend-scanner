@@ -12,6 +12,8 @@ import scanner.dto.CommonResponse;
 import scanner.security.dto.Token;
 import scanner.service.user.UsernameService;
 
+import javax.servlet.http.HttpServletRequest;
+
 
 @ApiOperation("User and IAM API")
 @RestController
@@ -48,8 +50,8 @@ public class UserController {
             notes = "Retrieve personal profile.",
             response = ResponseEntity.class)
     @GetMapping("/profile")
-    public ResponseEntity<CommonResponse<UserProfileDto>> retrieveProfile(@RequestBody UserProfileDto dto){
-        UserProfileDto response = userService.retrieveProfile(dto);
+    public ResponseEntity<CommonResponse<UserProfileDto>> retrieveProfile(HttpServletRequest request){
+        UserProfileDto response = userService.retrieveProfile(request.getHeader("Authorization"));
 
         return ResponseEntity.ok()
                 .body(new CommonResponse<>(response));

@@ -44,9 +44,8 @@ public class AdminController {
     }
 
 
-    @ApiOperation(value = "DEPRECATED",
-            notes = "DEPRECATED. Use manageUser",
-            response = ResponseEntity.class)
+
+    @Deprecated(since = "DEPRECATED. Use manageUser.")
     @PostMapping("/role")
     public ResponseEntity<CommonResponse<UserManagingDto>> updateUserRole(@RequestBody UserManagingDto dto){
         UserManagingDto response = userDetailService.updateRole(dto);
@@ -55,9 +54,7 @@ public class AdminController {
                 .body(new CommonResponse<>(response));
     }
 
-    @ApiOperation(value = "DEPRECATED",
-            notes = "DEPRECATED. Use manageUser",
-            response = ResponseEntity.class)
+    @Deprecated(since = "DEPRECATED. Use manageUser.")
     @PostMapping("/authority")
     public ResponseEntity<CommonResponse<UserManagingDto>> updateUserAuthority(@RequestBody UserManagingDto dto){
         UserManagingDto response = userDetailService.updateAuthority(dto);
