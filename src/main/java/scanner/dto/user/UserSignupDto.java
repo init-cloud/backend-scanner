@@ -3,6 +3,8 @@ package scanner.dto.user;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import scanner.model.enums.RoleType;
+
 import java.time.LocalDateTime;
 
 
@@ -18,7 +20,7 @@ public class UserSignupDto extends UserProfileDto{
                          String contact,
                          LocalDateTime lastLogin
     ){
-        super(username, email, contact, lastLogin);
+        super(username, email, contact, RoleType.GUEST, lastLogin);
         this.password = password;
     }
 }

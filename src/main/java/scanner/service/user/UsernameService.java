@@ -75,7 +75,7 @@ public class UsernameService implements UserService{
         User user = userRepository.findByUsername(jwtTokenProvider.getUsername(token))
                 .orElseThrow(() -> new ApiException(ResponseCode.STATUS_4008));
 
-        return new UserProfileDto(user.getUsername(), user.getEmail(), user.getContact(), user.getLastLogin());
+        return new UserProfileDto(user.getUsername(), user.getEmail(), user.getContact(), user.getRoleType(), user.getLastLogin());
     }
 
     @Transactional

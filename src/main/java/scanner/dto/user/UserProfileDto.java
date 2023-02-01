@@ -4,6 +4,8 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import scanner.model.enums.RoleType;
+
 import java.time.LocalDateTime;
 
 @Getter
@@ -16,12 +18,16 @@ public class UserProfileDto extends UserDto{
     @Setter
     private String contact;
 
+    private RoleType role;
+
     public UserProfileDto(String username,
                           String email,
                           String contact,
+                          RoleType role,
                           LocalDateTime lastLogin
     ){
         super(username, lastLogin);
+        this.role = role;
         this.email = email;
         this.contact = contact;
     }
