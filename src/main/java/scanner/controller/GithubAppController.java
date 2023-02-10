@@ -21,25 +21,6 @@ public class GithubAppController {
 
     private final GithubAppService githubAppService;
 
-    @ApiOperation(value = "OAuth for Github")
-    @GetMapping("/auth")
-    public void authorizeGithub(){
-        githubAppService.requestGithubId();
-    }
-
-    @ApiOperation(value = "Callback for Github auth",
-    notes = "Callback is implicit.")
-    @GetMapping("/callback")
-    public ResponseEntity<CommonResponse<String>> callback(
-            @RequestParam String code,
-            @RequestParam String state){
-
-            String response = githubAppService.requestAfterRedirect(code, state);
-
-        return ResponseEntity.ok()
-                .body(new CommonResponse<>(response));
-    }
-
     @ApiOperation(value = "Parse OAuth Token",
             notes = "Parse Token from callback.")
     @GetMapping("/github")

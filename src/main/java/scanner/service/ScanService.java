@@ -15,7 +15,7 @@ import org.apache.tomcat.util.http.fileupload.FileUtils;
 import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
-import scanner.common.dto.HttpRequestUrlParam;
+import scanner.common.dto.HttpParam;
 import scanner.common.utils.CommonHttpRequest;
 import scanner.exception.ApiException;
 import scanner.dto.checklist.CheckListDetail;
@@ -161,17 +161,16 @@ public class ScanService {
     public ScanDto.Response resultToJson(BufferedReader br, String path, String provider)
     throws IOException
     {
-        CommonHttpRequest commonHttpRequest = new CommonHttpRequest();
-
         StringBuilder sb = new StringBuilder();
 
         List<ScanDto.Result> resultLists = new ArrayList<>();
         ScanDto.Check check = new ScanDto.Check();
         ScanDto.Result result = new ScanDto.Result();
 
-        HttpRequestUrlParam get = new HttpRequestUrlParam();
-        get.setUrlParam(provider + "/" + path);
-        Object parse = commonHttpRequest.HttpGetRequestBuffer(Env.PARSE_API.getValue(), get);
+        HttpParam.Path get = new HttpParam.Path();
+        get.add(provider);
+        get.add(path);
+        Object parse = CommonHttpRequest.requestHttpGet(Env.PARSE_API.getValue(), get, null, null);
 
         Map<String, String> rulesMap = new HashMap<>();
         List<CheckListDetail.Detail> rulesInfo = checkListService.retrieve().getDocs();

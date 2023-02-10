@@ -3,7 +3,7 @@ package scanner.service.github;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import scanner.common.dto.HttpRequestUrlParam;
+import scanner.common.dto.HttpParam;
 import scanner.common.utils.CommonHttpRequest;
 import scanner.security.config.Properties;
 
@@ -14,37 +14,20 @@ public class GithubAppService {
 
     private final Properties properties;
 
-    private static String URL_GITHUB_ID_GET = "https://github.com/login/oauth/authorize";
-    private static String CALLBACK = "http://localhost:9090/api/v1/app/callback";
-    private static String URL_REDIRECT_POST = "https://github.com/login/oauth/access_token";
-    private static String URL_API_ACCESS_GET = "https://api.github.com/user";
+    private static String URL_GITHUB_REPOS  = "https://api.github.com/users/{USER}/repos";
+    private static String URL_GITHUB_REPO_DETAIL = "https://api.github.com/repos/{USER}/{REPO}/contents/?ref={BRANCH}";
 
-    public void requestGithubId(){
-        CommonHttpRequest request = new CommonHttpRequest();
-        HttpRequestUrlParam uri = new HttpRequestUrlParam();
-
-        uri.setUrlQuery("client_id=" + properties.getAppClientId());
-        uri.setUrlQuery("&redirect_uri=" + CALLBACK);
-        uri.setUrlQuery("&state=" + properties.TMP_RANDOM);
-
-        request.HttpGetRequestBuffer(URL_GITHUB_ID_GET, uri);
+    public void getRepos(String token){
+        CommonHttpRequest.requestHttpGet(URL_GITHUB_REPOS,
+                null,
+                null,
+                new HttpParam.Header("Authorization", "token " + token));
     }
 
-    public String requestAfterRedirect(String code, String state){
-        Object token = requestGithubAccessToken(code);
-
-        return (String)token;
-    }
-
-    private Object requestGithubAccessToken(String code){
-        CommonHttpRequest request = new CommonHttpRequest();
-        HttpRequestUrlParam uri = new HttpRequestUrlParam();
-
-        uri.setUrlQuery("client_id=" + properties.getAppClientId());
-        uri.setUrlQuery("&client_secret=" + properties.getAppClientSecret());
-        uri.setUrlQuery("&redirect_uri=" + CALLBACK);
-        uri.setUrlQuery("&code=" + code);
-
-        return request.HttpPostRequestBuffer(URL_REDIRECT_POST, uri,  null);
+    public void getFileTrees(String token, String repo, String branch){
+        CommonHttpRequest.requestHttpGet(URL_GITHUB_REPO_DETAIL,
+                new HttpParam.Path(repo),
+                new HttpParam.Query("ref", branch),
+                new HttpParam.Header("Authorization", "token " + token));
     }
 }
