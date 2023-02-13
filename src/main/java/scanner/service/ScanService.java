@@ -166,11 +166,8 @@ public class ScanService {
         List<ScanDto.Result> resultLists = new ArrayList<>();
         ScanDto.Check check = new ScanDto.Check();
         ScanDto.Result result = new ScanDto.Result();
-
-        HttpParam.Path get = new HttpParam.Path();
-        get.add(provider);
-        get.add(path);
-        Object parse = CommonHttpRequest.requestHttpGet(Env.PARSE_API.getValue(), get, null, null);
+        String uri = "/" + provider + "/" + path;
+        Object parse = CommonHttpRequest.requestHttpGet(Env.PARSE_API.getValue(), uri, null);
 
         Map<String, String> rulesMap = new HashMap<>();
         List<CheckListDetail.Detail> rulesInfo = checkListService.retrieve().getDocs();

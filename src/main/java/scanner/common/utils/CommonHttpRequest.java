@@ -17,9 +17,9 @@ import java.util.List;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class CommonHttpRequest {
 
-    public static Object requestHttpGet(String baseUrl, HttpParam.Path path, HttpParam.Query query, HttpParam.Header header) {
+    public static Object requestHttpGet(String baseUrl, String uri, HttpParam.Header header) {
         try{
-            URL url = new URL(baseUrl + path.getPath() + query.getQuery());
+            URL url = new URL(baseUrl + uri);
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod("GET");
             conn.setUseCaches(false);
