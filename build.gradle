@@ -25,7 +25,12 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-data-rest'
 	implementation 'org.springframework.boot:spring-boot-starter-validation'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
+	implementation 'org.springframework.boot:spring-boot-starter-webflux'
 	implementation 'org.springframework.boot:spring-boot-starter-security'
+
+	implementation 'org.springframework.cloud:spring-cloud-dependencies:2022.0.1'
+	implementation 'org.springframework.cloud:spring-cloud-starter-openfeign:3.1.5'
+	implementation group: 'io.github.openfeign', name: 'feign-gson', version: '11.0'
 
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
@@ -80,6 +85,7 @@ dependencies {
 
 ext { 
 	set('snippetsDir', file("build/generated-snippets"))
+	set('springCloudVersion', "2021.0.1")
 }
 
 test {
@@ -100,7 +106,7 @@ bootJar {
 	}
 	archivesBaseName = 'scanner'
 	archiveFileName = 'scanner-2.0.0.jar'
-	archiveVersion = "2.0.0"
+	archiveVersion = '2.0.0'
 }
 
 task copyDocument(type: Copy) { 
