@@ -24,8 +24,7 @@ public class GithubAppController {
 
     private final GithubAppService githubAppService;
 
-    @ApiOperation(value = "Parse OAuth Token",
-            notes = "Parse Token from callback.")
+    @ApiOperation(value = "Parse OAuth Token", notes = "Parse Token from callback.")
     @GetMapping("/token")
     public ResponseEntity<CommonResponse<GithubToken>> apiAccessToken(
             @NonNull @RequestParam(value = "access_token") String accessToken,
@@ -42,11 +41,10 @@ public class GithubAppController {
     }
 
 
-    @ApiOperation(value = "Get Repository List",
-            notes = "Get Repository List from Github.")
+    @ApiOperation(value = "Get Repository List", notes = "Get Repository List from Github.")
     @ApiImplicitParams({
-        @ApiImplicitParam(name = "Authorization", paramType = "header", value = "Access Token", required = true),
-        @ApiImplicitParam(name = "user", value = "Github user or organization", required = true)
+        @ApiImplicitParam(name = "Authorization", paramType = "header", value = "Access Token", required = true, dataTypeClass = String.class),
+        @ApiImplicitParam(name = "user", value = "Github user or organization", required = true, dataTypeClass = String.class)
     })
     @GetMapping("/repos/{user}")
     public ResponseEntity<CommonResponse<List<?>>> repositoryList(
@@ -59,12 +57,12 @@ public class GithubAppController {
                 .body(new CommonResponse<>(dtos));
     }
 
-    @ApiOperation(value = "Get Repository Details",
-            notes = "Get Repository Details from Github.")
+    @ApiOperation(value = "Get Repository Details", notes = "Get Repository Details from Github.")
     @ApiImplicitParams({
-        @ApiImplicitParam(name = "Authorization", paramType = "header", value = "Access Token", required = true),
-        @ApiImplicitParam(name = "user", value = "Github user or organization", required = true),
-        @ApiImplicitParam(name = "repo", value = "Github repository", required = true)
+        @ApiImplicitParam(name = "Authorization", paramType = "header", value = "Access Token", required = true, dataTypeClass = String.class),
+        @ApiImplicitParam(name = "user", value = "Github user or organization", required = true, dataTypeClass = String.class),
+        @ApiImplicitParam(name = "repo", value = "Github repository", required = true, dataTypeClass = String.class),
+        @ApiImplicitParam(name = "ref", paramType = "query", value = "Branch", required = false, dataTypeClass = String.class)
     })
     @GetMapping("/repos/{user}/{repo}")
     public ResponseEntity<CommonResponse<?>> repositoryDetails(
@@ -79,13 +77,12 @@ public class GithubAppController {
                 .body(new CommonResponse<>(dtos));
     }
 
-    @ApiOperation(value = "Get Commit List",
-            notes = "Get Commit List from Github repository, branch.")
+    @ApiOperation(value = "Get Commit List", notes = "Get Commit List from Github repository, branch.")
     @ApiImplicitParams({
-        @ApiImplicitParam(name = "Authorization", paramType = "header", value = "Access Token", required = true),
-        @ApiImplicitParam(name = "user", paramType = "path", value = "Github user or organization", required = true),
-        @ApiImplicitParam(name = "repo", paramType = "path", value = "Github repository", required = true),
-        @ApiImplicitParam(name = "ref", paramType = "query", value = "Branch", required = false)
+        @ApiImplicitParam(name = "Authorization", paramType = "header", value = "Access Token", required = true, dataTypeClass = String.class),
+        @ApiImplicitParam(name = "user", paramType = "path", value = "Github user or organization", required = true, dataTypeClass = String.class),
+        @ApiImplicitParam(name = "repo", paramType = "path", value = "Github repository", required = true, dataTypeClass = String.class),
+        @ApiImplicitParam(name = "ref", paramType = "query", value = "Branch", required = false, dataTypeClass = String.class)
     })
     @GetMapping("/repos/{user}/{repo}/commits")
     public ResponseEntity<CommonResponse<?>> commitList(
@@ -100,14 +97,13 @@ public class GithubAppController {
                 .body(new CommonResponse<>(dtos));
     }
 
-    @ApiOperation(value = "Get Commit Details",
-            notes = "Get Commit Details from Github repository, branch.")
+    @ApiOperation(value = "Get Commit Details", notes = "Get Commit Details from Github repository, branch.")
     @ApiImplicitParams({
-        @ApiImplicitParam(name = "Authorization", paramType = "header", value = "Access Token", required = true),
-        @ApiImplicitParam(name = "user", paramType = "path", value = "Github user or organization", required = true),
-        @ApiImplicitParam(name = "repo", paramType = "path", value = "Github repository", required = true),
-        @ApiImplicitParam(name = "hash", paramType = "path", value = "Commit Hash", required = true),
-        @ApiImplicitParam(name = "ref", paramType = "query", value = "Branch", required = false)
+        @ApiImplicitParam(name = "Authorization", paramType = "header", value = "Access Token", required = true, dataTypeClass = String.class),
+        @ApiImplicitParam(name = "user", paramType = "path", value = "Github user or organization", required = true, dataTypeClass = String.class),
+        @ApiImplicitParam(name = "repo", paramType = "path", value = "Github repository", required = true, dataTypeClass = String.class),
+        @ApiImplicitParam(name = "hash", paramType = "path", value = "Commit Hash", required = true, dataTypeClass = String.class),
+        @ApiImplicitParam(name = "ref", paramType = "query", value = "Branch", required = false, dataTypeClass = String.class)
     })
     @GetMapping("/repos/{user}/{repo}/commits/{hash}")
     public ResponseEntity<CommonResponse<?>> commitDetails(
@@ -125,14 +121,13 @@ public class GithubAppController {
 
 
     @Deprecated(forRemoval = false)
-    @ApiOperation(value = "Download Blobs",
-            notes = "Download zip files from Github repository, branch.")
+    @ApiOperation(value = "Download Blobs", notes = "Download zip files from Github repository, branch.")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "Authorization", paramType = "header", value = "Access Token", required = true),
-            @ApiImplicitParam(name = "user", paramType = "path", value = "Github user or organization", required = true),
-            @ApiImplicitParam(name = "repo", paramType = "path", value = "Github repository", required = true),
-            @ApiImplicitParam(name = "hash", paramType = "path", value = "Commit Hash", required = true),
-            @ApiImplicitParam(name = "ref", paramType = "query", value = "Branch", required = false)
+            @ApiImplicitParam(name = "Authorization", paramType = "header", value = "Access Token", required = true, dataTypeClass = String.class),
+            @ApiImplicitParam(name = "user", paramType = "path", value = "Github user or organization", required = true, dataTypeClass = String.class),
+            @ApiImplicitParam(name = "repo", paramType = "path", value = "Github repository", required = true, dataTypeClass = String.class),
+            @ApiImplicitParam(name = "hash", paramType = "path", value = "Commit Hash", required = true, dataTypeClass = String.class),
+            @ApiImplicitParam(name = "ref", paramType = "query", value = "Branch", required = false, dataTypeClass = String.class)
     })
     @GetMapping("/repos/{user}/{repo}/git/blobs/{hash}")
     public ResponseEntity<CommonResponse> gitFiles(
