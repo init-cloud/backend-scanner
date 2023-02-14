@@ -14,6 +14,10 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.List;
 
+/**
+ * @deprecated
+ */
+@Deprecated
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class CommonHttpRequest {
 
@@ -45,10 +49,10 @@ public class CommonHttpRequest {
         }
     }
 
-    public static Object requestHttpPost(String baseUrl, HttpParam.Path path, Object body) {
+    public static Object requestHttpPost(String baseUrl, String uri, Object body) {
         try{
             JSONParser jsonParser = new JSONParser();
-            URL url = new URL(baseUrl + path.getPath());
+            URL url = new URL(baseUrl + uri);
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod("POST");
             conn.setUseCaches(false);

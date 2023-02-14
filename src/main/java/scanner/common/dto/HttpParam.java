@@ -6,7 +6,10 @@ import lombok.*;
 import java.util.ArrayList;
 import java.util.List;
 
-
+/**
+ * @deprecated (for remove)
+ */
+@Deprecated
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class HttpParam {
 

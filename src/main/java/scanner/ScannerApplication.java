@@ -7,7 +7,7 @@ import org.springframework.cloud.openfeign.EnableFeignClients;
 
 
 @EnableJpaAuditing
-@EnableFeignClients
+@EnableFeignClients(basePackages = {"scanner.configuration.client"})
 @SpringBootApplication
 public class ScannerApplication {
 

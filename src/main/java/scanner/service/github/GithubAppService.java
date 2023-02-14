@@ -1,24 +1,37 @@
 package scanner.service.github;
 
 
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import scanner.common.dto.HttpParam;
-import scanner.common.utils.CommonHttpRequest;
-import scanner.security.config.Properties;
+import scanner.configuration.client.GithubFeignClient;
+
+import java.util.List;
 
 
 @Service
 @RequiredArgsConstructor
 public class GithubAppService {
 
-    private final Properties properties;
+    private final GithubFeignClient githubFeignClient;
 
-    public void getRepos(String token){
-
+    public List<?> getRepositories(@NonNull String token, @NonNull String user){
+        return githubFeignClient.getRepositoryList(token, user);
     }
 
-    public void getFileTrees(String token, String repo, String branch){
+    public Object getRepository(@NonNull String token, String user, String repo, String branch){
+        return githubFeignClient.getRepositoryDetails(token, user, repo, branch);
+    }
 
+    public List<?> getCommits(@NonNull String token, String user, String repo, String branch){
+        return githubFeignClient.getCommitList(token, user, repo, branch);
+    }
+
+    public Object getCommit(@NonNull String token, String user, String repo, String hash, String branch){
+        return githubFeignClient.getCommitDetails(token, user, repo, hash, branch);
+    }
+
+    public void getBlobsFromGit(@NonNull String token, String user, String repo, String hash, String branch){
+        githubFeignClient.getFiles(token, user, repo, hash, branch);
     }
 }
