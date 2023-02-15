@@ -114,9 +114,12 @@ public class JwtTokenProvider {
         if(authorization == null)
             return null;
 
-        if(!authorization.startsWith("Bearer "))
-            throw new ApiException(ResponseCode.STATUS_4002);
+        if(authorization.startsWith("Bearer "))
+            return authorization.substring(7);
 
-        return authorization.substring(7);
+        if(authorization.startsWith("token "))
+            return authorization.substring(6);
+
+        throw new ApiException(ResponseCode.STATUS_4002);
     }
 }

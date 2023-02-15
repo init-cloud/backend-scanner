@@ -1,9 +1,9 @@
 package scanner.common.utils;
 
+import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
-import scanner.common.dto.HttpRequestUrlParam;
+import scanner.common.dto.HttpParam;
 import scanner.exception.ApiException;
 import scanner.dto.enums.ResponseCode;
 
@@ -12,18 +12,27 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.List;
 
-@NoArgsConstructor
+/**
+ * @deprecated
+ */
+@Deprecated
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class CommonHttpRequest {
 
-    public Object HttpGetRequestBuffer(String baseUrl, HttpRequestUrlParam param) {
+    public static Object requestHttpGet(String baseUrl, String uri, HttpParam.Header header) {
         try{
-            JSONParser jsonParser = new JSONParser();
-            URL url = new URL(baseUrl + param.getUri());
+            URL url = new URL(baseUrl + uri);
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod("GET");
             conn.setUseCaches(false);
             conn.setDoOutput(true);
+
+            List<String> keys = header.getKeys();
+            List<String> values = header.getValues();
+            for(int i = 0 ; i < keys.size() ; i++)
+                conn.setRequestProperty(keys.get(i), values.get(i));
 
             BufferedReader in = new BufferedReader(
                     new InputStreamReader(conn.getInputStream()));
@@ -34,18 +43,16 @@ public class CommonHttpRequest {
             }
             in.close();
 
-            return jsonParser.parse(response.toString());
+            return response.toString();
         } catch (IOException e){
-            throw new ApiException(ResponseCode.STATUS_4014);
-        } catch(ParseException e){
             throw new ApiException(ResponseCode.STATUS_4014);
         }
     }
 
-    public Object HttpPostRequestBuffer(String baseUrl, HttpRequestUrlParam param, Object body) {
+    public static Object requestHttpPost(String baseUrl, String uri, Object body) {
         try{
             JSONParser jsonParser = new JSONParser();
-            URL url = new URL(baseUrl + param.getUri());
+            URL url = new URL(baseUrl + uri);
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod("POST");
             conn.setUseCaches(false);
@@ -57,21 +64,14 @@ public class CommonHttpRequest {
             String inputLine = inputLine = in.readLine();
             StringBuffer response = new StringBuffer();
 
-            if(inputLine.startsWith("{")){
+            response.append(inputLine);
+            while ((inputLine = in.readLine()) != null )
                 response.append(inputLine);
-                while ((inputLine = in.readLine()) != null )
-                    response.append(inputLine);
 
-                in.close();
-                return jsonParser.parse(response.toString());
-            } else{
-                response.append(inputLine);
-                in.close();
-                return response.toString();
-            }
+            in.close();
+            return response.toString();
+
         } catch (IOException e){
-            throw new ApiException(ResponseCode.STATUS_4014);
-        } catch (ParseException e) {
             throw new ApiException(ResponseCode.STATUS_4014);
         }
     }

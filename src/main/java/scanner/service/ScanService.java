@@ -15,8 +15,7 @@ import org.apache.tomcat.util.http.fileupload.FileUtils;
 import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
-import scanner.common.dto.HttpRequestUrlParam;
-import scanner.common.utils.CommonHttpRequest;
+import scanner.configuration.client.ApiFeignClient;
 import scanner.exception.ApiException;
 import scanner.dto.checklist.CheckListDetail;
 import scanner.common.enums.Env;
@@ -38,6 +37,7 @@ public class ScanService {
     private final ScanHistoryRepository scanHistoryRepository;
     private final ScanHistoryDetailsRepository scanHistoryDetailsRepository;
     private final CheckListRepository checkListRepository;
+    private final ApiFeignClient apiFeignClient;
 
     private static final String CHECK = "checks:";
     private static final String PASSED = "passed";
@@ -161,17 +161,12 @@ public class ScanService {
     public ScanDto.Response resultToJson(BufferedReader br, String path, String provider)
     throws IOException
     {
-        CommonHttpRequest commonHttpRequest = new CommonHttpRequest();
-
         StringBuilder sb = new StringBuilder();
 
         List<ScanDto.Result> resultLists = new ArrayList<>();
         ScanDto.Check check = new ScanDto.Check();
         ScanDto.Result result = new ScanDto.Result();
-
-        HttpRequestUrlParam get = new HttpRequestUrlParam();
-        get.setUrlParam(provider + "/" + path);
-        Object parse = commonHttpRequest.HttpGetRequestBuffer(Env.PARSE_API.getValue(), get);
+        Object parse = apiFeignClient.getVisualization(provider, path);
 
         Map<String, String> rulesMap = new HashMap<>();
         List<CheckListDetail.Detail> rulesInfo = checkListService.retrieve().getDocs();
