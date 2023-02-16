@@ -12,6 +12,7 @@ public class HistoryDto {
 	private Long id;
 	private String fileName;
 	private String fileHash;
+	private String provider;
 	private LocalDateTime scanDateTime;
 	private Double score;
 
@@ -20,6 +21,7 @@ public class HistoryDto {
 		this.fileName = entity.getFileName();
 		this.fileHash = entity.getFileHash();
 		this.scanDateTime = entity.getCreatedAt();
+		this.provider = entity.getCsp();
 		this.score = entity.getScore();
 	}
 }

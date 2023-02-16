@@ -24,12 +24,12 @@ public class ScanHistoryService {
 	private final ScanHistoryRepository scanHistoryRepository;
 	private final ScanHistoryDetailsRepository scanHistoryDetailsRepository;
 
-	public List<ScanHistory> retrieveHistoryList() {
+	public List<ScanHistory> getHistoryList() {
 		return scanHistoryRepository.findTop10ByOrderByHistorySeqDesc();
 	}
 
 	@Transactional
-	public ReportResponse retrieveReport(Long reportId) {
+	public ReportResponse getReportDetails(Long reportId) {
 
 		ScanHistory history = scanHistoryRepository.findByHistorySeq(reportId);
 

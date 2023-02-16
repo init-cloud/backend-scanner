@@ -30,8 +30,8 @@ public class ScanHistoryController {
 		notes = "Retrieve scan histories for reports.",
 		response = ResponseEntity.class)
 	@GetMapping("/history")
-	public ResponseEntity<CommonResponse<List<HistoryDto>>> retrieveHistory() {
-		List<ScanHistory> history = scanHistoryService.retrieveHistoryList();
+	public ResponseEntity<CommonResponse<List<HistoryDto>>> historyList() {
+		List<ScanHistory> history = scanHistoryService.getHistoryList();
 
 		List<HistoryDto> dtos = history.stream()
 			.map(HistoryDto::new)
@@ -45,10 +45,10 @@ public class ScanHistoryController {
 		notes = "Retrieve report from Scan histories.",
 		response = ResponseEntity.class)
 	@GetMapping("/report/{reportId}")
-	public ResponseEntity<CommonResponse<ReportResponse>> retrieveReport(
+	public ResponseEntity<CommonResponse<ReportResponse>> reportDetails(
 		@PathVariable Long reportId
 	) {
-		ReportResponse dtos = scanHistoryService.retrieveReport(reportId);
+		ReportResponse dtos = scanHistoryService.getReportDetails(reportId);
 
 		return ResponseEntity.ok()
 			.body(new CommonResponse<>(dtos));
