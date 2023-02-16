@@ -25,8 +25,8 @@ public class AdminController {
 		notes = "Retrieve User List.",
 		response = ResponseEntity.class)
 	@GetMapping("/user")
-	public ResponseEntity<CommonResponse<List<UserRetrieveDto>>> retrieveUser() {
-		List<UserRetrieveDto> response = userDetailService.retrieve();
+	public ResponseEntity<CommonResponse<List<UserRetrieveDto>>> userListForAdmin() {
+		List<UserRetrieveDto> response = userDetailService.getUserList();
 
 		return ResponseEntity.ok()
 			.body(new CommonResponse<>(response));
@@ -36,8 +36,8 @@ public class AdminController {
 		notes = "Managing User Authority, Role and State.",
 		response = ResponseEntity.class)
 	@PostMapping("/user")
-	public ResponseEntity<CommonResponse<UserManagingDto>> manageUser(@RequestBody UserManagingDto dto) {
-		UserManagingDto response = userDetailService.update(dto);
+	public ResponseEntity<CommonResponse<UserManagingDto>> managingUserDetails(@RequestBody UserManagingDto dto) {
+		UserManagingDto response = userDetailService.modifyUserDetails(dto);
 
 		return ResponseEntity.ok()
 			.body(new CommonResponse<>(response));

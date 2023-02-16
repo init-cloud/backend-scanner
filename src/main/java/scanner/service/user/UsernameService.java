@@ -72,7 +72,7 @@ public class UsernameService implements UserService {
 		userRepository.save(user);
 	}
 
-	public UserProfileDto retrieveProfile(String header) {
+	public UserProfileDto getUserProfile(String header) {
 		String token = HeaderParse.getAccessToken(header);
 
 		User user = userRepository.findByUsername(jwtTokenProvider.getUsername(token))
@@ -83,7 +83,7 @@ public class UsernameService implements UserService {
 	}
 
 	@Transactional
-	public UserProfileDto manageProfile(UserProfileDto dto) {
+	public UserProfileDto manageUserProfile(UserProfileDto dto) {
 		User user = userRepository.findByUsername(dto.getUsername())
 			.orElseThrow(() -> new ApiException(ResponseCode.STATUS_4008));
 
@@ -96,7 +96,7 @@ public class UsernameService implements UserService {
 	}
 
 	@Transactional
-	public Boolean updatePassword(UserAuthenticationDto dto) {
+	public Boolean modifyUserPassword(UserAuthenticationDto dto) {
 		try {
 			User user = userRepository.findByUsername(dto.getUsername())
 				.orElseThrow(() -> new ApiException(ResponseCode.STATUS_4008));

@@ -25,8 +25,8 @@ public class CheckListController {
 		notes = "Retrieve all checklists.",
 		response = ResponseEntity.class)
 	@GetMapping
-	public ResponseEntity<CommonResponse<CheckListDetail>> retrieveCheckList() {
-		CheckListDetail dtos = checkListService.retrieve();
+	public ResponseEntity<CommonResponse<CheckListDetail>> getCheckLists() {
+		CheckListDetail dtos = checkListService.getOffedCheckLists();
 
 		return ResponseEntity.ok()
 			.body(new CommonResponse<>(dtos));
@@ -36,10 +36,10 @@ public class CheckListController {
 		notes = "Create custom new checklist from origin.",
 		response = ResponseEntity.class)
 	@PostMapping
-	public ResponseEntity<CommonResponse<CheckListDetail.Detail>> createCheckList(
+	public ResponseEntity<CommonResponse<CheckListDetail.Detail>> addCheckList(
 		CheckListDetail.Detail data
 	) {
-		CheckListDetail.Detail dtos = checkListService.create(data);
+		CheckListDetail.Detail dtos = checkListService.addCheckListDetails(data);
 
 		return ResponseEntity.ok()
 			.body(new CommonResponse<>(dtos));
@@ -52,7 +52,7 @@ public class CheckListController {
 	public ResponseEntity<CommonResponse<CheckListSimple.Simple>> resetCheckList(
 		@RequestBody CheckListSimple.Simple data
 	) {
-		CheckListSimple.Simple dtos = checkListService.reset(data);
+		CheckListSimple.Simple dtos = checkListService.resetCheckList(data);
 
 		return ResponseEntity.ok()
 			.body(new CommonResponse<>(dtos));
@@ -62,10 +62,10 @@ public class CheckListController {
 		notes = "Make Custom checklist by modifying origin.",
 		response = ResponseEntity.class)
 	@PostMapping("/state")
-	public ResponseEntity<CommonResponse<List<CheckListSimple.Simple>>> modifyCheckList(
+	public ResponseEntity<CommonResponse<List<CheckListSimple.Simple>>> modifyCheckListDetails(
 		@RequestBody List<CheckListSimple.Simple> data
 	) {
-		List<CheckListSimple.Simple> dtos = checkListService.modify(data);
+		List<CheckListSimple.Simple> dtos = checkListService.modifyCheckList(data);
 
 		return ResponseEntity.ok()
 			.body(new CommonResponse<>(dtos));

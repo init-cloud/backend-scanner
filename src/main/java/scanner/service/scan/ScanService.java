@@ -54,7 +54,7 @@ public class ScanService {
 	@Transactional
 	public ScanDto.Response scanTerraform(String[] args, String provider) {
 		try {
-			List<CustomRule> offRules = checkListService.retrieveOffEntity();
+			List<CustomRule> offRules = checkListService.getOffedCheckList();
 			String offStr = getSkipCheckCmd(offRules);
 			String fileUploadPath = Env.UPLOAD_PATH.getValue();
 			File file = new File(fileUploadPath + File.separator + args[1]);
@@ -159,7 +159,7 @@ public class ScanService {
 		Object parse = apiFeignClient.getVisualization(provider, path);
 
 		Map<String, String> rulesMap = new HashMap<>();
-		List<CheckListDetail.Detail> rulesInfo = checkListService.retrieve().getDocs();
+		List<CheckListDetail.Detail> rulesInfo = checkListService.getOffedCheckLists().getDocs();
 		for (CheckListDetail.Detail info : rulesInfo)
 			rulesMap.put(info.getRuleId(), info.getLevel());
 

@@ -23,7 +23,7 @@ public class CheckListService {
 	private final CheckListRepository checkListRepository;
 
 	@Transactional
-	public CheckListDetail retrieve() {
+	public CheckListDetail getCheckListDetails() {
 
 		List<CustomRule> ruleList = checkListRepository.findAll();
 		List<CheckListDetail.Detail> ruleDtos = ruleList.stream()
@@ -34,7 +34,7 @@ public class CheckListService {
 	}
 
 	@Transactional
-	public CheckListDetail retrieveOff() {
+	public CheckListDetail getOffedCheckLists() {
 
 		List<CustomRule> ruleList = checkListRepository.findByRuleOnOff("n");
 		List<CheckListDetail.Detail> ruleDtos = ruleList.stream()
@@ -44,12 +44,12 @@ public class CheckListService {
 		return new CheckListDetail(ruleDtos);
 	}
 
-	public List<CustomRule> retrieveOffEntity() {
+	public List<CustomRule> getOffedCheckList() {
 		return checkListRepository.findByRuleOnOff("n");
 	}
 
 	@Transactional
-	public CheckListDetail.Detail create(
+	public CheckListDetail.Detail addCheckListDetails(
 		CheckListDetail.Detail data
 	) {
 		CustomRule rule = CheckListDetail.toEntity(data);
@@ -59,7 +59,7 @@ public class CheckListService {
 	}
 
 	@Transactional
-	public List<CheckListSimple.Simple> modify(
+	public List<CheckListSimple.Simple> modifyCheckList(
 		List<CheckListSimple.Simple> data
 	) {
 		if (data == null)
@@ -95,7 +95,7 @@ public class CheckListService {
 	}
 
 	@Transactional
-	public CheckListSimple.Simple reset(
+	public CheckListSimple.Simple resetCheckList(
 		CheckListSimple.Simple data
 	) {
 		CustomRule target = CheckListSimple.toEntity(data);

@@ -36,7 +36,7 @@ public class CustomUserDetailService implements UserDetailsService {
 	}
 
 	@Transactional
-	public UserManagingDto updateRole(UserManagingDto dto) {
+	public UserManagingDto modifyUserRole(UserManagingDto dto) {
 
 		User user = userRepository.findByUsername(dto.getUsername())
 			.orElseThrow(() -> new ApiException(ResponseCode.STATUS_4008));
@@ -49,7 +49,7 @@ public class CustomUserDetailService implements UserDetailsService {
 	}
 
 	@Transactional
-	public UserManagingDto updateAuthority(UserManagingDto dto) {
+	public UserManagingDto modifyUserAuthority(UserManagingDto dto) {
 
 		User user = userRepository.findByUsername(dto.getUsername())
 			.orElseThrow(() -> new ApiException(ResponseCode.STATUS_4008));
@@ -62,7 +62,7 @@ public class CustomUserDetailService implements UserDetailsService {
 	}
 
 	@Transactional
-	public UserManagingDto update(UserManagingDto dto) {
+	public UserManagingDto modifyUserDetails(UserManagingDto dto) {
 
 		EntityManager manager = emf.createEntityManager();
 		EntityTransaction transaction = manager.getTransaction();
@@ -88,7 +88,7 @@ public class CustomUserDetailService implements UserDetailsService {
 	}
 
 	@Transactional
-	public List<UserRetrieveDto> retrieve() {
+	public List<UserRetrieveDto> getUserList() {
 
 		List<User> user = userRepository.findAll();
 

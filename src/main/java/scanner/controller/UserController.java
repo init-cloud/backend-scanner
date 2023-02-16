@@ -50,8 +50,8 @@ public class UserController {
 		notes = "Retrieve personal profile.",
 		response = ResponseEntity.class)
 	@GetMapping("/profile")
-	public ResponseEntity<CommonResponse<UserProfileDto>> retrieveProfile(HttpServletRequest request) {
-		UserProfileDto response = userService.retrieveProfile(request.getHeader("Authorization"));
+	public ResponseEntity<CommonResponse<UserProfileDto>> userProfileDetails(HttpServletRequest request) {
+		UserProfileDto response = userService.getUserProfile(request.getHeader("Authorization"));
 
 		return ResponseEntity.ok()
 			.body(new CommonResponse<>(response));
@@ -61,8 +61,8 @@ public class UserController {
 		notes = "Manage personal profile.",
 		response = ResponseEntity.class)
 	@PostMapping("/profile")
-	public ResponseEntity<CommonResponse<UserProfileDto>> manageProfile(@RequestBody UserProfileDto dto) {
-		UserProfileDto response = userService.manageProfile(dto);
+	public ResponseEntity<CommonResponse<UserProfileDto>> managingUserProfileDetails(@RequestBody UserProfileDto dto) {
+		UserProfileDto response = userService.manageUserProfile(dto);
 
 		return ResponseEntity.ok()
 			.body(new CommonResponse<>(response));
@@ -71,8 +71,8 @@ public class UserController {
 	@ApiOperation(value = "Change Password",
 		response = ResponseEntity.class)
 	@PostMapping("/auth")
-	public ResponseEntity<CommonResponse<Boolean>> managePassword(@RequestBody UserAuthenticationDto dto) {
-		Boolean response = userService.updatePassword(dto);
+	public ResponseEntity<CommonResponse<Boolean>> managingUserPassword(@RequestBody UserAuthenticationDto dto) {
+		Boolean response = userService.modifyUserPassword(dto);
 
 		return ResponseEntity.ok()
 			.body(new CommonResponse<>(response));
