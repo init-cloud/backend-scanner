@@ -3,7 +3,7 @@ package scanner.dto.user;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import scanner.model.User;
+import scanner.model.user.User;
 import scanner.model.enums.RoleType;
 import scanner.model.enums.UserState;
 

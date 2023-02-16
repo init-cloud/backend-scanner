@@ -1,11 +1,9 @@
 package scanner.security.util;
 
+public class GithubOAuthUtils implements OAuthUtils {
 
-
-public class GithubOAuthUtils implements OAuthUtils{
-
-    @Override
-    public void authRequest() {
-
-    }
+	@Override
+	public void authRequest() {
+		//
+	}
 }

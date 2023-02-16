@@ -1,4 +1,4 @@
-package scanner.model;
+package scanner.model.rule;
 
 
 import javax.persistence.Column;
@@ -14,13 +14,13 @@ import javax.validation.constraints.Size;
 
 
 import lombok.*;
-
+import scanner.model.BaseEntity;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 @Table(name = "TAG")
-public class Tag extends BaseEntity{
+public class Tag extends BaseEntity {
 
     @Id
     @Column(name = "TAG_ID")

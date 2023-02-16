@@ -1,4 +1,4 @@
-package scanner.model;
+package scanner.model.rule;
 
 
 import java.util.ArrayList;
@@ -10,15 +10,18 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 import lombok.*;
+import scanner.model.BaseEntity;
+import scanner.model.user.UsedRule;
 import scanner.model.enums.Provider;
-import scanner.dto.TagDto;
+import scanner.dto.rule.TagDto;
+import scanner.model.history.ScanHistoryDetail;
 
 @Getter
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @ToString(exclude = "compliance")
 @Table(name = "CUSTOM_RULE")
-public class CustomRule extends BaseEntity{
+public class CustomRule extends BaseEntity {
     @Id
     @Column(name = "RULE_SEQ", updatable=false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)

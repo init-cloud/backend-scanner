@@ -8,12 +8,12 @@ import scanner.dto.enums.ResponseCode;
 @AllArgsConstructor
 @Getter
 public class ExceptionDto {
-    private final int code;
-    private final String message;
+	private final int code;
+	private final String message;
 
-    @Builder
-    public ExceptionDto(ResponseCode res){
-        this.code = res.getCode();
-        this.message = res.getMessage();
-    }
+	@Builder
+	public ExceptionDto(ResponseCode res) {
+		this.code = res.getCode();
+		this.message = res.getMessage();
+	}
 }

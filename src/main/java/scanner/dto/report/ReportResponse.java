@@ -9,11 +9,11 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class ReportResponse {
-    ScanSummaryDto summary;
-    List<ScanHistoryDetailDto> details;
+	ScanSummaryDto summary;
+	List<ScanHistoryDetailDto> details;
 
-    public ReportResponse(ScanSummaryDto summary, List<ScanHistoryDetailDto> details) {
-        this.summary = summary;
-        this.details = details;
-    }
+	public ReportResponse(ScanSummaryDto summary, List<ScanHistoryDetailDto> details) {
+		this.summary = summary;
+		this.details = details;
+	}
 }
