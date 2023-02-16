@@ -29,7 +29,7 @@ public interface CheckListRepository extends JpaRepository<CustomRule, Long> {
 	@Query(value = "UPDATE custom_rule SET modified_at = now(), is_modified='n', custom_detail = (SELECT custom_default FROM custom_rule WHERE rule_id = :rule_id) WHERE rule_id = :rule_id", nativeQuery = true)
 	Integer resetRule(@Param("rule_id") String ruleId);
 
-	// on 또는 off된 룰만 검색
+	// on 또는 off 된 룰만 검색
 	List<CustomRule> findByRuleOnOff(String string);
 
 	// 특정 id 룰만 검색

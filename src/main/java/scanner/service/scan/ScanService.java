@@ -28,7 +28,7 @@ import scanner.repository.CheckListRepository;
 import scanner.repository.ScanHistoryDetailsRepository;
 import scanner.repository.ScanHistoryRepository;
 import scanner.dto.scan.ScanDto;
-import scanner.dto.enums.ResponseCode;
+import scanner.common.enums.ResponseCode;
 import scanner.service.rule.CheckListService;
 
 @Slf4j

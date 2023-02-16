@@ -14,7 +14,7 @@ import scanner.dto.rule.CheckListDetail;
 import scanner.dto.rule.CheckListSimple;
 import scanner.model.rule.CustomRule;
 import scanner.repository.CheckListRepository;
-import scanner.dto.enums.ResponseCode;
+import scanner.common.enums.ResponseCode;
 
 @Service
 @RequiredArgsConstructor

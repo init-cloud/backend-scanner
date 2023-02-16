@@ -9,7 +9,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import scanner.dto.enums.ResponseCode;
+import scanner.common.enums.ResponseCode;
 import scanner.exception.ApiException;
 
 @Service

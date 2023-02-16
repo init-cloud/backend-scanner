@@ -5,7 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import scanner.dto.enums.ResponseCode;
+import scanner.common.enums.ResponseCode;
 import scanner.exception.ApiException;
 
 import java.time.LocalDateTime;

@@ -1,4 +1,4 @@
-package scanner.dto.enums;
+package scanner.common.enums;
 
 import org.springframework.http.HttpStatus;
 

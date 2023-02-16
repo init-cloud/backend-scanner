@@ -12,7 +12,7 @@ import scanner.dto.user.UserRetrieveDto;
 import scanner.exception.ApiException;
 import scanner.model.user.User;
 import scanner.repository.UserRepository;
-import scanner.dto.enums.ResponseCode;
+import scanner.common.enums.ResponseCode;
 
 import javax.persistence.*;
 import javax.transaction.Transactional;

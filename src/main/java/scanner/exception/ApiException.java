@@ -3,7 +3,7 @@ package scanner.exception;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import scanner.dto.enums.ResponseCode;
+import scanner.common.enums.ResponseCode;
 
 @AllArgsConstructor
 @RequiredArgsConstructor

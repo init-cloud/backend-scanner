@@ -25,7 +25,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import scanner.common.utils.FileDigest;
 import scanner.exception.ApiException;
-import scanner.dto.enums.ResponseCode;
+import scanner.common.enums.ResponseCode;
 
 import javax.servlet.http.HttpServletRequest;
 
