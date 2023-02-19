@@ -19,7 +19,7 @@ import org.springframework.stereotype.Service;
 import lombok.RequiredArgsConstructor;
 import scanner.common.client.ApiFeignClient;
 import scanner.exception.ApiException;
-import scanner.dto.rule.CheckListDetail;
+import scanner.dto.rule.CheckListDetailDto;
 import scanner.common.enums.Env;
 import scanner.model.rule.CustomRule;
 import scanner.model.history.ScanHistory;
@@ -70,7 +70,7 @@ public class ScanService {
 			p.destroy();
 			double[] totalCount = calc(scanResult.getResult());
 
-			save(scanResult.getCheck(), scanResult.getResult(), args, provider, totalCount);
+			save(scanResult, args, provider, totalCount);
 			FileUtils.deleteDirectory(file);
 
 			return scanResult;
@@ -83,17 +83,18 @@ public class ScanService {
 	}
 
 	@Transactional
-	public void save(ScanDto.Check scanResult, List<ScanDto.Result> scanDetails, String[] args, String provider,
+	public void save(ScanDto.Response scanResult, String[] args, String provider,
 		double[] total) {
 		try {
-			ScanHistory scan = ScanHistory.toEntity(args, scanResult.getPassed(), scanResult.getSkipped(),
-				scanResult.getFailed(), total, provider);
+			ScanHistory scan = ScanHistory.toEntity(args, scanResult.getCheck().getPassed(),
+				scanResult.getCheck().getSkipped(),
+				scanResult.getCheck().getFailed(), total, provider, scanResult.getParse().toString());
 
 			scan = scanHistoryRepository.save(scan);
 
 			List<ScanHistoryDetail> details = new ArrayList<>();
 
-			for (ScanDto.Result detail : scanDetails) {
+			for (ScanDto.Result detail : scanResult.getResult()) {
 				CustomRule saveRule = checkListRepository.findByRuleId(detail.getRuleId()).orElse(null);
 
 				if (saveRule == null || saveRule.getId() == null)
@@ -159,8 +160,8 @@ public class ScanService {
 		Object parse = apiFeignClient.getVisualization(provider, path);
 
 		Map<String, String> rulesMap = new HashMap<>();
-		List<CheckListDetail.Detail> rulesInfo = checkListService.getOffedCheckLists().getDocs();
-		for (CheckListDetail.Detail info : rulesInfo)
+		List<CheckListDetailDto.Detail> rulesInfo = checkListService.getCheckListDetailsList();
+		for (CheckListDetailDto.Detail info : rulesInfo)
 			rulesMap.put(info.getRuleId(), info.getLevel());
 
 		String rawResult;

@@ -7,14 +7,8 @@ import lombok.*;
 import scanner.model.rule.CustomRule;
 import scanner.model.enums.SecurityType;
 
-public class CheckListDetail {
-
-	@Getter
-	List<CheckListDetail.Detail> docs;
-
-	public CheckListDetail(List<CheckListDetail.Detail> dto) {
-		this.docs = dto;
-	}
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+public class CheckListDetailDto {
 
 	@AllArgsConstructor
 	@Builder

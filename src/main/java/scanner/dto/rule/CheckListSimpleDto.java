@@ -5,13 +5,18 @@ import scanner.model.rule.CustomRule;
 
 import java.util.List;
 
-@Getter
-@Builder
-@AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class CheckListSimple {
+public class CheckListSimpleDto {
 
-	List<CheckListSimple> data;
+	@Getter
+	public static class Response {
+		List<CheckListSimpleDto.Simple> data;
+
+		@Builder
+		public Response(List<CheckListSimpleDto.Simple> data) {
+			this.data = data;
+		}
+	}
 
 	@AllArgsConstructor
 	@Builder
@@ -19,11 +24,13 @@ public class CheckListSimple {
 	public static class Simple {
 		private String ruleId;
 		private String ruleOnOff;
+		private String level;
 		private Custom custom;
 
 		public Simple(final CustomRule rule) {
 			this.ruleId = rule.getRuleId();
 			this.ruleOnOff = rule.getRuleOnOff();
+			this.level = rule.getLevel();
 			this.custom = new Custom(rule.getCustomDetail());
 		}
 	}
@@ -42,7 +49,7 @@ public class CheckListSimple {
 			.build();
 	}
 
-	public static CustomRule toEntity(final CheckListSimple.Simple dto) {
+	public static CustomRule toEntity(final CheckListSimpleDto.Simple dto) {
 		if (dto.getCustom() == null)
 			return CustomRule.builder()
 				.ruleOnOff(dto.getRuleOnOff())
