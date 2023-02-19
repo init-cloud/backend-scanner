@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
 
+import scanner.dto.history.VisualDto;
 import scanner.dto.report.ScanHistoryDetailDto;
 import scanner.dto.report.ScanSummaryDto;
 import scanner.model.history.ScanHistory;
@@ -42,5 +43,12 @@ public class ScanHistoryService {
 			.collect(Collectors.toList());
 
 		return new ReportResponse(summaryDto, detailsDto);
+	}
+
+	public VisualDto.Response getVisualization(Long reportId) {
+
+		ScanHistory history = scanHistoryRepository.findByHistorySeq(reportId);
+
+		return new VisualDto.Response(history.getHistorySeq(), history.getCreatedAt(), history.getVisual());
 	}
 }

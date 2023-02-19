@@ -77,6 +77,10 @@ public class ScanHistory extends BaseEntity {
 	@NotNull
 	private Double score;
 
+	@Column(name = "VISUAL")
+	@NotNull
+	private String visual;
+
 	@Builder
 	public ScanHistory(Long historySeq,
 		String fileName,
@@ -89,7 +93,8 @@ public class ScanHistory extends BaseEntity {
 		Integer medium,
 		Integer low,
 		Integer unknown,
-		Double score
+		Double score,
+		String visual
 	) {
 		this.historySeq = historySeq;
 		this.fileName = fileName;
@@ -103,6 +108,7 @@ public class ScanHistory extends BaseEntity {
 		this.low = low;
 		this.unknown = unknown;
 		this.score = score;
+		this.visual = visual;
 	}
 
 	public static ScanHistory toEntity(
@@ -111,7 +117,8 @@ public class ScanHistory extends BaseEntity {
 		Integer skipped,
 		Integer failed,
 		double[] total,
-		String provider
+		String provider,
+		String visual
 	) {
 		return ScanHistory.builder()
 			.passed(passed)
@@ -125,6 +132,7 @@ public class ScanHistory extends BaseEntity {
 			.low((int)total[3])
 			.unknown((int)total[4])
 			.csp(Env.getCSP(provider))
+			.visual(visual)
 			.build();
 	}
 }
