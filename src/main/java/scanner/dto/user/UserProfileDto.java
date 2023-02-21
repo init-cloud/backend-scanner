@@ -1,25 +1,29 @@
 package scanner.dto.user;
 
+import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
+import scanner.model.enums.RoleType;
+
 import java.time.LocalDateTime;
 
 @Getter
-public class UserProfileDto extends UserDto{
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+public class UserProfileDto extends UserDto {
 
-    @Setter
-    private String email;
+	@Setter
+	private String email;
 
-    @Setter
-    private String contact;
+	@Setter
+	private String contact;
 
-    public UserProfileDto(String username,
-                          String email,
-                          String contact,
-                          LocalDateTime lastLogin
-    ){
-        super(username, lastLogin);
-        this.email = email;
-        this.contact = contact;
-    }
+	private RoleType role;
+
+	public UserProfileDto(String username, String email, String contact, RoleType role, LocalDateTime lastLogin) {
+		super(username, lastLogin);
+		this.role = role;
+		this.email = email;
+		this.contact = contact;
+	}
 }

@@ -1,13 +1,12 @@
 package scanner.security.dto;
 
-
-import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.*;
 
 @Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-public class Token {
-    private String username;
-    private String accessToken;
-    private String refreshToken;
+public abstract class Token {
+
+	private String accessToken;
+	private String refreshToken;
 }

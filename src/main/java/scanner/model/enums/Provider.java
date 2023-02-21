@@ -3,12 +3,12 @@ package scanner.model.enums;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
-
 @AllArgsConstructor
 @Getter
 public enum Provider {
-    AWS("AWS"),
-    NCP("NCP");
+	AWS("AWS"),
+	OPENSTACK("OPENSTACK"),
+	NCP("NCP");
 
-    private final String csp;
+	private final String csp;
 }

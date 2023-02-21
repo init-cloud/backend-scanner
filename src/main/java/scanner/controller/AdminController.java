@@ -1,17 +1,18 @@
 package scanner.controller;
 
-
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
+
 import org.springframework.web.bind.annotation.*;
+
 import scanner.dto.user.UserManagingDto;
 import scanner.dto.user.UserRetrieveDto;
-import scanner.response.CommonResponse;
+import scanner.dto.CommonResponse;
 import scanner.security.service.CustomUserDetailService;
 
 import java.util.List;
-
 
 @ApiOperation("Admin for managing.")
 @RequestMapping("/api/v1/admin")
@@ -19,50 +20,25 @@ import java.util.List;
 @RequiredArgsConstructor
 public class AdminController {
 
-    private final CustomUserDetailService userDetailService;
+	private final CustomUserDetailService userDetailService;
 
-    @ApiOperation(value = "Retrieve Users",
-            notes = "Retrieve User List.",
-            response = ResponseEntity.class)
-    @GetMapping("/user")
-    public ResponseEntity<CommonResponse<List<UserRetrieveDto>>> retrieveUser(){
-        List<UserRetrieveDto> response = userDetailService.retrieve();
+	@ApiOperation(value = "Retrieve Users", notes = "Retrieve User List.", response = CommonResponse.class)
+	@ApiImplicitParams({
+		@ApiImplicitParam(name = "Authorization", paramType = "header", value = "Access Token", required = true, dataTypeClass = String.class),})
+	@GetMapping("/user")
+	public CommonResponse<List<UserRetrieveDto>> userListForAdmin() {
+		List<UserRetrieveDto> response = userDetailService.getUserList();
 
-        return ResponseEntity.ok()
-                .body(new CommonResponse<>(response));
-    }
+		return new CommonResponse<>(response);
+	}
 
-    @ApiOperation(value = "Manage User",
-            notes = "Managing User Authority, Role and State.",
-            response = ResponseEntity.class)
-    @PostMapping("/user")
-    public ResponseEntity<CommonResponse<UserManagingDto>> manageUser(@RequestBody UserManagingDto dto){
-        UserManagingDto response = userDetailService.update(dto);
+	@ApiOperation(value = "Manage User", notes = "Managing User Authority, Role and State.", response = CommonResponse.class)
+	@ApiImplicitParams({
+		@ApiImplicitParam(name = "Authorization", paramType = "header", value = "Access Token", required = true, dataTypeClass = String.class),})
+	@PostMapping("/user")
+	public CommonResponse<UserManagingDto> managingUserDetails(@RequestBody UserManagingDto dto) {
+		UserManagingDto response = userDetailService.modifyUserDetails(dto);
 
-        return ResponseEntity.ok()
-                .body(new CommonResponse<>(response));
-    }
-
-
-    @ApiOperation(value = "DEPRECATED",
-            notes = "DEPRECATED. Use manageUser",
-            response = ResponseEntity.class)
-    @PostMapping("/role")
-    public ResponseEntity<CommonResponse<UserManagingDto>> updateUserRole(@RequestBody UserManagingDto dto){
-        UserManagingDto response = userDetailService.updateRole(dto);
-
-        return ResponseEntity.ok()
-                .body(new CommonResponse<>(response));
-    }
-
-    @ApiOperation(value = "DEPRECATED",
-            notes = "DEPRECATED. Use manageUser",
-            response = ResponseEntity.class)
-    @PostMapping("/authority")
-    public ResponseEntity<CommonResponse<UserManagingDto>> updateUserAuthority(@RequestBody UserManagingDto dto){
-        UserManagingDto response = userDetailService.updateAuthority(dto);
-
-        return ResponseEntity.ok()
-                .body(new CommonResponse<>(response));
-    }
+		return new CommonResponse<>(response);
+	}
 }

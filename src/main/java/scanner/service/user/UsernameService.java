@@ -1,92 +1,113 @@
 package scanner.service.user;
 
 import lombok.RequiredArgsConstructor;
+
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import scanner.common.utils.HeaderParse;
 import scanner.dto.user.UserAuthenticationDto;
 import scanner.dto.user.UserDto;
 import scanner.dto.user.UserProfileDto;
 import scanner.dto.user.UserSignupDto;
 import scanner.exception.ApiException;
-import scanner.model.User;
+import scanner.model.user.User;
 import scanner.model.enums.RoleType;
 import scanner.repository.UserRepository;
-import scanner.response.enums.ResponseCode;
+import scanner.common.enums.ResponseCode;
 import scanner.security.dto.Token;
 import scanner.security.provider.JwtTokenProvider;
 import scanner.security.provider.UsernamePasswordAuthenticationProvider;
 
 import javax.transaction.Transactional;
+
 import java.time.LocalDateTime;
 
 @Service
 @RequiredArgsConstructor
-public class UsernameService implements UserService{
-    private final UserRepository userRepository;
-    private final JwtTokenProvider jwtTokenProvider;
-    private final UsernamePasswordAuthenticationProvider usernamePasswordAuthenticationProvider;
+public class UsernameService implements UserService {
+	private final UserRepository userRepository;
+	private final JwtTokenProvider jwtTokenProvider;
+	private final UsernamePasswordAuthenticationProvider usernamePasswordAuthenticationProvider;
 
-    private final PasswordEncoder passwordEncoder;
+	private final PasswordEncoder passwordEncoder;
 
-    @Override
-    public Token signup(UserSignupDto dto){
+	@Override
+	public Token signup(UserSignupDto dto) {
+		userRepository.findByUsername(dto.getUsername()).ifPresent(user -> {
+			throw new ApiException(ResponseCode.EXISTED_USER);
+		});
 
-        dto.setHash(passwordEncoder);
+		String password = dto.setHash(passwordEncoder, dto.getPassword());
+		User user = userRepository.save(User.toEntity(dto, password));
+		return jwtTokenProvider.create(user.getUsername(), RoleType.GUEST);
+	}
 
-        userRepository.findByUsername(dto.getUsername()).ifPresent(user -> {
-                throw new ApiException(ResponseCode.STATUS_4011);
-            });
+	@Transactional
+	@Override
+	public Token signin(UserAuthenticationDto dto) {
 
-        User user = userRepository.save(User.toEntity(dto));
-        return jwtTokenProvider.create(user.getUsername(), RoleType.GUEST);
-    }
+		Authentication authentication = usernamePasswordAuthenticationProvider.authenticate(
+			new UsernamePasswordAuthenticationToken(dto.getUsername(), dto.getPassword()));
 
-    @Transactional
-    @Override
-    public Token signin(UserAuthenticationDto dto){
+		SecurityContextHolder.getContext().setAuthentication(authentication);
 
-        Authentication authentication = usernamePasswordAuthenticationProvider.authenticate(
-                new UsernamePasswordAuthenticationToken(dto.getUsername(), dto.getPassword()));
+		updateLastLogin(dto);
 
-        SecurityContextHolder.getContext().setAuthentication(authentication);
+		return jwtTokenProvider.create(
+			dto.getUsername(),
+			((User)authentication.getPrincipal()).getRoleType());
+	}
 
-        updateLastLogin(dto);
+	@Override
+	public void updateLastLogin(UserDto dto) {
+		User user = userRepository.findByUsername(dto.getUsername())
+			.orElseThrow(() -> new ApiException(ResponseCode.INVALID_USER));
 
-        return jwtTokenProvider.create(
-            dto.getUsername(),
-            ((User) authentication.getPrincipal()).getRoleType());
-    }
+		user.setLastLogin(LocalDateTime.now());
 
-    @Override
-    public void updateLastLogin(UserDto dto){
-        User user = userRepository.findByUsername(dto.getUsername())
-                .orElseThrow(() -> new ApiException(ResponseCode.STATUS_4008));
+		userRepository.save(user);
+	}
 
-        user.setLastLogin(LocalDateTime.now());
+	public UserProfileDto getUserProfile(String header) {
+		String token = HeaderParse.getAccessToken(header);
 
-        userRepository.save(user);
-    }
+		User user = userRepository.findByUsername(jwtTokenProvider.getUsername(token))
+			.orElseThrow(() -> new ApiException(ResponseCode.INVALID_USER));
 
-    public UserProfileDto retrieveProfile(UserProfileDto dto){
-        User user = userRepository.findByUsername(dto.getUsername())
-                .orElseThrow(() -> new ApiException(ResponseCode.STATUS_4008));
+		return new UserProfileDto(user.getUsername(), user.getEmail(), user.getContact(), user.getRoleType(),
+			user.getLastLogin());
+	}
 
-        return new UserProfileDto(user.getUsername(), user.getEmail(), user.getContact(), user.getLastLogin());
-    }
+	@Transactional
+	public UserProfileDto manageUserProfile(UserProfileDto dto) {
+		User user = userRepository.findByUsername(dto.getUsername())
+			.orElseThrow(() -> new ApiException(ResponseCode.INVALID_USER));
 
-    @Transactional
-    public UserProfileDto manageProfile(UserProfileDto dto){
-        User user = userRepository.findByUsername(dto.getUsername())
-                .orElseThrow(() -> new ApiException(ResponseCode.STATUS_4008));
+		user.setEmail(dto.getEmail());
+		user.setContact(dto.getContact());
 
-        user.setEmail(dto.getEmail());
-        user.setContact(dto.getContact());
+		userRepository.save(user);
 
-        userRepository.save(user);
+		return dto;
+	}
 
-        return dto;
-    }
+	@Transactional
+	public Boolean modifyUserPassword(UserAuthenticationDto dto) {
+		try {
+			User user = userRepository.findByUsername(dto.getUsername())
+				.orElseThrow(() -> new ApiException(ResponseCode.INVALID_USER));
+
+			user.setPassword(dto.setHash(passwordEncoder, dto.getPassword()));
+
+			userRepository.save(user);
+
+			return true;
+		} catch (Exception e) {
+			throw new ApiException(ResponseCode.SERVER_PASSWORD_ERROR);
+		}
+	}
 }
