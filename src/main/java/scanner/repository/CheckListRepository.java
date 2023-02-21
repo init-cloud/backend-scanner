@@ -14,10 +14,10 @@ import scanner.model.rule.CustomRule;
 @Repository
 public interface CheckListRepository extends JpaRepository<CustomRule, Long> {
 
-	// 룰 on/off, 커스텀 수정
+	// 커스텀 수정
 	@Modifying
-	@Query(value = "UPDATE custom_rule SET modified_at = now(),  is_modified='y', rule_onoff = :state, custom_detail = :detail WHERE rule_id = :rule_id", nativeQuery = true)
-	Integer updateRule(@Param("rule_id") String ruleId, @Param("state") String state, @Param("detail") String detail);
+	@Query(value = "UPDATE custom_rule SET modified_at = now(),  is_modified='y', custom_detail = :detail WHERE rule_id = :rule_id", nativeQuery = true)
+	Integer updateRule(@Param("rule_id") String ruleId, @Param("detail") String detail);
 
 	// 룰 on/off
 	@Modifying
@@ -34,6 +34,9 @@ public interface CheckListRepository extends JpaRepository<CustomRule, Long> {
 
 	// 특정 id 룰만 검색
 	List<CustomRule> findByRuleIdIn(List<String> ruleId);
+
+	// 문자열이 포함된 id 룰 검색
+	List<CustomRule> findByRuleIdContains(String ruleId);
 
 	Optional<CustomRule> findByRuleId(String ruleId);
 

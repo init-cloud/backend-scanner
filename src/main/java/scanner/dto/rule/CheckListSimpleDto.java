@@ -9,56 +9,28 @@ import java.util.List;
 public class CheckListSimpleDto {
 
 	@Getter
+	@NoArgsConstructor(access = AccessLevel.PROTECTED)
 	public static class Response {
 		List<CheckListSimpleDto.Simple> data;
 
-		@Builder
 		public Response(List<CheckListSimpleDto.Simple> data) {
 			this.data = data;
 		}
 	}
 
-	@AllArgsConstructor
-	@Builder
 	@Getter
+	@NoArgsConstructor(access = AccessLevel.PROTECTED)
 	public static class Simple {
 		private String ruleId;
 		private String ruleOnOff;
 		private String level;
-		private Custom custom;
+		private String custom;
 
 		public Simple(final CustomRule rule) {
 			this.ruleId = rule.getRuleId();
 			this.ruleOnOff = rule.getRuleOnOff();
 			this.level = rule.getLevel();
-			this.custom = new Custom(rule.getCustomDetail());
+			this.custom = rule.getCustomDetail();
 		}
-	}
-
-	@AllArgsConstructor
-	@Getter
-	public static class Custom {
-		private String customDetail;
-	}
-
-	public static Simple toDto(CustomRule rule) {
-		return Simple.builder()
-			.ruleId(rule.getRuleId())
-			.ruleOnOff(rule.getRuleOnOff())
-			.custom(new Custom(rule.getCustomDetail()))
-			.build();
-	}
-
-	public static CustomRule toEntity(final CheckListSimpleDto.Simple dto) {
-		if (dto.getCustom() == null)
-			return CustomRule.builder()
-				.ruleOnOff(dto.getRuleOnOff())
-				.customDetail(null)
-				.build();
-
-		return CustomRule.builder()
-			.ruleOnOff(dto.getRuleOnOff())
-			.customDetail(dto.getCustom().getCustomDetail())
-			.build();
 	}
 }
