@@ -6,12 +6,12 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class UsernameToken extends Token{
+public class UsernameToken extends Token {
 
-    private String username;
+	private String username;
 
-    public UsernameToken(String username, String accessToken, String refreshToken){
-        super(accessToken, refreshToken);
-        this.username = username;
-    }
+	public UsernameToken(String username, String accessToken, String refreshToken) {
+		super(accessToken, refreshToken);
+		this.username = username;
+	}
 }

@@ -1,6 +1,5 @@
 package scanner.security.dto;
 
-
 import lombok.*;
 
 @Getter
@@ -8,6 +7,6 @@ import lombok.*;
 @AllArgsConstructor
 public abstract class Token {
 
-    private String accessToken;
-    private String refreshToken;
+	private String accessToken;
+	private String refreshToken;
 }

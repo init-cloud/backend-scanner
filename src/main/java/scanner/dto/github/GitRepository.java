@@ -1,6 +1,5 @@
 package scanner.dto.github;
 
-
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

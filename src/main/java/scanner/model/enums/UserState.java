@@ -1,10 +1,8 @@
 package scanner.model.enums;
 
-
 import lombok.Getter;
-
 
 @Getter
 public enum UserState {
-    ACTIVATE, DEACTIVATE, DELETED
+	ACTIVATE, DEACTIVATE, DELETED
 }
