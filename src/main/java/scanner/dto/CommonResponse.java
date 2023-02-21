@@ -39,7 +39,7 @@ public class CommonResponse<T> {
 			.body(CommonResponse.builder()
 				.success(false)
 				.data(null)
-				.error(new ExceptionDto(ResponseCode.STATUS_5100))
+				.error(new ExceptionDto(ResponseCode.SERVER_ERROR))
 				.build());
 	}
 }

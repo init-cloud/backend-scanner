@@ -31,7 +31,7 @@ public class LocalFileService implements FileService {
 		try {
 			file.transferTo(new File(location + filename));
 		} catch (IOException e) {
-			throw new ApiException(e, ResponseCode.STATUS_5003);
+			throw new ApiException(e, ResponseCode.SERVER_STORE_ERROR);
 		}
 	}
 

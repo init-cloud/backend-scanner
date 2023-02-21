@@ -32,14 +32,14 @@ public class CustomUserDetailService implements UserDetailsService {
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 		return userRepository.findByUsername(username)
-			.orElseThrow(() -> new ApiException(ResponseCode.STATUS_4008));
+			.orElseThrow(() -> new ApiException(ResponseCode.INVALID_USER));
 	}
 
 	@Transactional
 	public UserManagingDto modifyUserRole(UserManagingDto dto) {
 
 		User user = userRepository.findByUsername(dto.getUsername())
-			.orElseThrow(() -> new ApiException(ResponseCode.STATUS_4008));
+			.orElseThrow(() -> new ApiException(ResponseCode.INVALID_USER));
 
 		user.setRoleType(dto.getRole());
 
@@ -52,7 +52,7 @@ public class CustomUserDetailService implements UserDetailsService {
 	public UserManagingDto modifyUserAuthority(UserManagingDto dto) {
 
 		User user = userRepository.findByUsername(dto.getUsername())
-			.orElseThrow(() -> new ApiException(ResponseCode.STATUS_4008));
+			.orElseThrow(() -> new ApiException(ResponseCode.INVALID_USER));
 
 		user.setAuthorities(User.getAuthorities(dto.getAuthorities()));
 
@@ -70,7 +70,7 @@ public class CustomUserDetailService implements UserDetailsService {
 
 		try {
 			User user = userRepository.findByUsername(dto.getUsername())
-				.orElseThrow(() -> new ApiException(ResponseCode.STATUS_4008));
+				.orElseThrow(() -> new ApiException(ResponseCode.INVALID_USER));
 
 			user.setRoleType(dto.getRole());
 			user.setAuthorities(User.getAuthorities(dto.getAuthorities()));
@@ -79,7 +79,7 @@ public class CustomUserDetailService implements UserDetailsService {
 			transaction.commit();
 		} catch (Exception e) {
 			transaction.rollback();
-			throw new ApiException(e, ResponseCode.STATUS_5008);
+			throw new ApiException(e, ResponseCode.INVALID_USER);
 		} finally {
 			manager.close();
 		}

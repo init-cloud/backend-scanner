@@ -77,7 +77,7 @@ public class ScanService {
 		} catch (InterruptedException e) {
 			Thread.currentThread().interrupt();
 		} catch (IOException e) {
-			throw new ApiException(ResponseCode.STATUS_5006);
+			throw new ApiException(ResponseCode.SERVER_LOAD_FILE_ERROR);
 		}
 		return null;
 	}
@@ -104,7 +104,7 @@ public class ScanService {
 			}
 			scanHistoryDetailsRepository.saveAll(details);
 		} catch (Exception e) {
-			throw new ApiException(ResponseCode.STATUS_5003);
+			throw new ApiException(ResponseCode.SERVER_STORE_ERROR);
 		}
 	}
 

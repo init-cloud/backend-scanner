@@ -82,20 +82,8 @@ public class ScanHistory extends BaseEntity {
 	private String visual;
 
 	@Builder
-	public ScanHistory(Long historySeq,
-		String fileName,
-		String fileHash,
-		String csp,
-		Integer passed,
-		Integer skipped,
-		Integer failed,
-		Integer high,
-		Integer medium,
-		Integer low,
-		Integer unknown,
-		Double score,
-		String visual
-	) {
+	public ScanHistory(Long historySeq, String fileName, String fileHash, String csp, Integer passed, Integer skipped,
+		Integer failed, Integer high, Integer medium, Integer low, Integer unknown, Double score, String visual) {
 		this.historySeq = historySeq;
 		this.fileName = fileName;
 		this.fileHash = fileHash;
@@ -111,15 +99,8 @@ public class ScanHistory extends BaseEntity {
 		this.visual = visual;
 	}
 
-	public static ScanHistory toEntity(
-		String[] args,
-		Integer passed,
-		Integer skipped,
-		Integer failed,
-		double[] total,
-		String provider,
-		String visual
-	) {
+	public static ScanHistory toEntity(String[] args, Integer passed, Integer skipped, Integer failed, double[] total,
+		String provider, String visual) {
 		return ScanHistory.builder()
 			.passed(passed)
 			.skipped(skipped)

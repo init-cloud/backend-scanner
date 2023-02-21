@@ -43,7 +43,7 @@ public class StorageServiceImpl implements StorageService {
 		try {
 			Files.createDirectories(Paths.get(uploadPath));
 		} catch (IOException e) {
-			throw new ApiException(ResponseCode.STATUS_5005);
+			throw new ApiException(ResponseCode.SERVER_CREATE_DIR_ERROR);
 		}
 	}
 
@@ -61,7 +61,7 @@ public class StorageServiceImpl implements StorageService {
 			}
 
 			if (file.isEmpty()) {
-				throw new ApiException(ResponseCode.STATUS_4005);
+				throw new ApiException(ResponseCode.DATA_MISSING);
 			}
 
 			if (!Files.exists(root)) {
@@ -70,7 +70,7 @@ public class StorageServiceImpl implements StorageService {
 
 			try (InputStream inputStream = file.getInputStream()) {
 				if (isNotValidExt(file.getOriginalFilename()))
-					throw new ApiException(ResponseCode.STATUS_5003);
+					throw new ApiException(ResponseCode.SERVER_STORE_ERROR);
 
 				Files.copy(
 					inputStream, root.resolve(file.getOriginalFilename()), StandardCopyOption.REPLACE_EXISTING);
@@ -87,9 +87,9 @@ public class StorageServiceImpl implements StorageService {
 				return result;
 			}
 		} catch (Exception e) {
-			throw new ApiException(ResponseCode.STATUS_5003);
+			throw new ApiException(ResponseCode.SERVER_STORE_ERROR);
 		} catch (Throwable e) {
-			throw new ApiException(ResponseCode.STATUS_5004);
+			throw new ApiException(ResponseCode.SERVER_DECOMPRESS_ERROR);
 		}
 	}
 
@@ -115,7 +115,7 @@ public class StorageServiceImpl implements StorageService {
 				}
 			}
 		} catch (Throwable e) {
-			throw new ApiException(ResponseCode.STATUS_5004);
+			throw new ApiException(ResponseCode.SERVER_DECOMPRESS_ERROR);
 		} finally {
 			if (zis != null)
 				zis.close();
@@ -137,7 +137,7 @@ public class StorageServiceImpl implements StorageService {
 				fos.write(buffer, 0, size);
 			}
 		} catch (Throwable e) {
-			throw new ApiException(ResponseCode.STATUS_5003);
+			throw new ApiException(ResponseCode.SERVER_STORE_ERROR);
 		}
 	}
 
@@ -171,14 +171,15 @@ public class StorageServiceImpl implements StorageService {
 			if (rsc.exists() || rsc.isReadable())
 				return rsc;
 			else
-				throw new ApiException(ResponseCode.STATUS_5100);
+				throw new ApiException(ResponseCode.SERVER_ERROR);
 		} catch (MalformedURLException e) {
-			throw new ApiException(ResponseCode.STATUS_5100);
+			throw new ApiException(ResponseCode.SERVER_ERROR);
 		}
 	}
 
 	@Override
 	public void deleteAll() throws UnsupportedOperationException {
+		//
 	}
 
 	public String getContentType(HttpServletRequest request, Resource resource) {
@@ -188,7 +189,7 @@ public class StorageServiceImpl implements StorageService {
 			contentType = request.getServletContext()
 				.getMimeType(resource.getFile().getAbsolutePath());
 		} catch (IOException ex) {
-			throw new ApiException(ResponseCode.STATUS_5100);
+			throw new ApiException(ResponseCode.SERVER_ERROR);
 		}
 
 		if (contentType == null) {

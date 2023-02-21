@@ -106,6 +106,7 @@ public class CustomRule extends BaseEntity {
 		String level, Character isModified, Character isModifiable, String description, String explanation,
 		String possibleImpact, String insecureExample, String secureExample, String sol, String code,
 		String customDetail, String customDefault, List<UsedRule> usedRules) {
+
 		this.ruleId = ruleId;
 		this.defaultRuleId = defaultRuleId;
 		this.ruleOnOff = ruleOnOff;

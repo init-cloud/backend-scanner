@@ -120,6 +120,6 @@ public class JwtTokenProvider {
 		if (authorization.startsWith("token "))
 			return authorization.substring(6);
 
-		throw new ApiException(ResponseCode.STATUS_4002);
+		throw new ApiException(ResponseCode.INVALID_TOKEN);
 	}
 }

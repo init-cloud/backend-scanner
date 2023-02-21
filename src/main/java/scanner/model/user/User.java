@@ -83,22 +83,14 @@ public class User implements UserDetails {
 	@Size(max = 16)
 	private String contact;
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
+	@OneToMany(mappedBy = "user")
 	private List<UsedRule> usedRules = new ArrayList<>();
 
 	@Builder
-	public User(LocalDateTime lastLogin,
-		String username,
-		String password,
-		Character isOAuthed,
-		OAuthProvider oAuthProvider,
-		RoleType roleType,
-		String authorities,
-		UserState userState,
-		String email,
-		String contact,
-		List<UsedRule> usedRules
-	) {
+	public User(LocalDateTime lastLogin, String username, String password, Character isOAuthed,
+		OAuthProvider oAuthProvider, RoleType roleType, String authorities, UserState userState, String email,
+		String contact, List<UsedRule> usedRules) {
+
 		this.lastLogin = lastLogin;
 		this.isOAuthed = isOAuthed;
 		this.oAuthProvider = oAuthProvider;

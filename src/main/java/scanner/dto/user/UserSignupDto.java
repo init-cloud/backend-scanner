@@ -7,20 +7,14 @@ import scanner.model.enums.RoleType;
 
 import java.time.LocalDateTime;
 
-
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class UserSignupDto extends UserProfileDto{
+public class UserSignupDto extends UserProfileDto {
 
-    private String password;
+	private String password;
 
-    public UserSignupDto(String username,
-                         String password,
-                         String email,
-                         String contact,
-                         LocalDateTime lastLogin
-    ){
-        super(username, email, contact, RoleType.GUEST, lastLogin);
-        this.password = password;
-    }
+	public UserSignupDto(String username, String password, String email, String contact, LocalDateTime lastLogin) {
+		super(username, email, contact, RoleType.GUEST, lastLogin);
+		this.password = password;
+	}
 }

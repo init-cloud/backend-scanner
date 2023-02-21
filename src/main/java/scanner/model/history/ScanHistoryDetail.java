@@ -62,15 +62,8 @@ public class ScanHistoryDetail extends BaseEntity {
 	private String code;
 
 	@Builder
-	public ScanHistoryDetail(CustomRule ruleSeq,
-		ScanHistory historySeq,
-		String resource,
-		String resourceName,
-		String scanResult,
-		String targetFile,
-		String line,
-		String code
-	) {
+	public ScanHistoryDetail(CustomRule ruleSeq, ScanHistory historySeq, String resource, String resourceName,
+		String scanResult, String targetFile, String line, String code) {
 		this.ruleSeq = ruleSeq;
 		this.historySeq = historySeq;
 		this.resource = resource;

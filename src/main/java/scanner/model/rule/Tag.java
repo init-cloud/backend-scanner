@@ -1,6 +1,5 @@
 package scanner.model.rule;
 
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -12,7 +11,6 @@ import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
-
 import lombok.*;
 import scanner.model.BaseEntity;
 
@@ -22,24 +20,23 @@ import scanner.model.BaseEntity;
 @Table(name = "TAG")
 public class Tag extends BaseEntity {
 
-    @Id
-    @Column(name = "TAG_ID")
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+	@Id
+	@Column(name = "TAG_ID")
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "rule_seq")
-    private CustomRule ruleSeq;
+	@ManyToOne
+	@JoinColumn(name = "rule_seq")
+	private CustomRule ruleSeq;
 
-    @Column(name = "TAG")
-    @NotNull
-    @Size(max = 64)
-    private String tagName;
+	@Column(name = "TAG")
+	@NotNull
+	@Size(max = 64)
+	private String tagName;
 
-
-    @Builder
-    public Tag(CustomRule ruleSeq, String tagName) {
-        this.ruleSeq = ruleSeq;
-        this.tagName = tagName;
-    }
+	@Builder
+	public Tag(CustomRule ruleSeq, String tagName) {
+		this.ruleSeq = ruleSeq;
+		this.tagName = tagName;
+	}
 }

@@ -38,7 +38,7 @@ public class UsernameService implements UserService {
 	@Override
 	public Token signup(UserSignupDto dto) {
 		userRepository.findByUsername(dto.getUsername()).ifPresent(user -> {
-			throw new ApiException(ResponseCode.STATUS_4011);
+			throw new ApiException(ResponseCode.EXISTED_USER);
 		});
 
 		String password = dto.setHash(passwordEncoder, dto.getPassword());
@@ -65,7 +65,7 @@ public class UsernameService implements UserService {
 	@Override
 	public void updateLastLogin(UserDto dto) {
 		User user = userRepository.findByUsername(dto.getUsername())
-			.orElseThrow(() -> new ApiException(ResponseCode.STATUS_4008));
+			.orElseThrow(() -> new ApiException(ResponseCode.INVALID_USER));
 
 		user.setLastLogin(LocalDateTime.now());
 
@@ -76,7 +76,7 @@ public class UsernameService implements UserService {
 		String token = HeaderParse.getAccessToken(header);
 
 		User user = userRepository.findByUsername(jwtTokenProvider.getUsername(token))
-			.orElseThrow(() -> new ApiException(ResponseCode.STATUS_4008));
+			.orElseThrow(() -> new ApiException(ResponseCode.INVALID_USER));
 
 		return new UserProfileDto(user.getUsername(), user.getEmail(), user.getContact(), user.getRoleType(),
 			user.getLastLogin());
@@ -85,7 +85,7 @@ public class UsernameService implements UserService {
 	@Transactional
 	public UserProfileDto manageUserProfile(UserProfileDto dto) {
 		User user = userRepository.findByUsername(dto.getUsername())
-			.orElseThrow(() -> new ApiException(ResponseCode.STATUS_4008));
+			.orElseThrow(() -> new ApiException(ResponseCode.INVALID_USER));
 
 		user.setEmail(dto.getEmail());
 		user.setContact(dto.getContact());
@@ -99,7 +99,7 @@ public class UsernameService implements UserService {
 	public Boolean modifyUserPassword(UserAuthenticationDto dto) {
 		try {
 			User user = userRepository.findByUsername(dto.getUsername())
-				.orElseThrow(() -> new ApiException(ResponseCode.STATUS_4008));
+				.orElseThrow(() -> new ApiException(ResponseCode.INVALID_USER));
 
 			user.setPassword(dto.setHash(passwordEncoder, dto.getPassword()));
 
@@ -107,7 +107,7 @@ public class UsernameService implements UserService {
 
 			return true;
 		} catch (Exception e) {
-			throw new ApiException(ResponseCode.STATUS_5009);
+			throw new ApiException(ResponseCode.SERVER_PASSWORD_ERROR);
 		}
 	}
 }

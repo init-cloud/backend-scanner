@@ -10,25 +10,20 @@ import java.time.LocalDateTime;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class UserProfileDto extends UserDto{
+public class UserProfileDto extends UserDto {
 
-    @Setter
-    private String email;
+	@Setter
+	private String email;
 
-    @Setter
-    private String contact;
+	@Setter
+	private String contact;
 
-    private RoleType role;
+	private RoleType role;
 
-    public UserProfileDto(String username,
-                          String email,
-                          String contact,
-                          RoleType role,
-                          LocalDateTime lastLogin
-    ){
-        super(username, lastLogin);
-        this.role = role;
-        this.email = email;
-        this.contact = contact;
-    }
+	public UserProfileDto(String username, String email, String contact, RoleType role, LocalDateTime lastLogin) {
+		super(username, lastLogin);
+		this.role = role;
+		this.email = email;
+		this.contact = contact;
+	}
 }

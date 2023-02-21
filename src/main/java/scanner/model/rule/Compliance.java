@@ -56,14 +56,8 @@ public class Compliance extends BaseEntity {
 	private String detail;
 
 	@Builder
-	public Compliance(CustomRule ruleSeq,
-		String complianceName,
-		String complianceNumber,
-		String category,
-		String article,
-		String description,
-		String detail
-	) {
+	public Compliance(CustomRule ruleSeq, String complianceName, String complianceNumber, String category,
+		String article, String description, String detail) {
 		this.ruleSeq = ruleSeq;
 		this.complianceName = complianceName;
 		this.complianceNumber = complianceNumber;
