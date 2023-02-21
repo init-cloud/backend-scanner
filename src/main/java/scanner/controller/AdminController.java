@@ -1,9 +1,10 @@
 package scanner.controller;
 
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import scanner.dto.user.UserManagingDto;
@@ -21,25 +22,23 @@ public class AdminController {
 
 	private final CustomUserDetailService userDetailService;
 
-	@ApiOperation(value = "Retrieve Users",
-		notes = "Retrieve User List.",
-		response = ResponseEntity.class)
+	@ApiOperation(value = "Retrieve Users", notes = "Retrieve User List.", response = CommonResponse.class)
+	@ApiImplicitParams({
+		@ApiImplicitParam(name = "Authorization", paramType = "header", value = "Access Token", required = true, dataTypeClass = String.class),})
 	@GetMapping("/user")
-	public ResponseEntity<CommonResponse<List<UserRetrieveDto>>> userListForAdmin() {
+	public CommonResponse<List<UserRetrieveDto>> userListForAdmin() {
 		List<UserRetrieveDto> response = userDetailService.getUserList();
 
-		return ResponseEntity.ok()
-			.body(new CommonResponse<>(response));
+		return new CommonResponse<>(response);
 	}
 
-	@ApiOperation(value = "Manage User",
-		notes = "Managing User Authority, Role and State.",
-		response = ResponseEntity.class)
+	@ApiOperation(value = "Manage User", notes = "Managing User Authority, Role and State.", response = CommonResponse.class)
+	@ApiImplicitParams({
+		@ApiImplicitParam(name = "Authorization", paramType = "header", value = "Access Token", required = true, dataTypeClass = String.class),})
 	@PostMapping("/user")
-	public ResponseEntity<CommonResponse<UserManagingDto>> managingUserDetails(@RequestBody UserManagingDto dto) {
+	public CommonResponse<UserManagingDto> managingUserDetails(@RequestBody UserManagingDto dto) {
 		UserManagingDto response = userDetailService.modifyUserDetails(dto);
 
-		return ResponseEntity.ok()
-			.body(new CommonResponse<>(response));
+		return new CommonResponse<>(response);
 	}
 }

@@ -1,17 +1,17 @@
 package scanner.controller;
 
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import scanner.dto.rule.CheckListDetailDto;
+import scanner.dto.rule.CheckListModifyDto;
 import scanner.dto.rule.CheckListSimpleDto;
 import scanner.dto.CommonResponse;
 import scanner.service.rule.CheckListService;
-
-import java.util.List;
 
 @ApiOperation("Checklist API. Checklist is same as Rule.")
 @RestController
@@ -21,64 +21,82 @@ public class CheckListController {
 
 	private final CheckListService checkListService;
 
-	@ApiOperation(value = "Retrieve Checklist",
-		notes = "Retrieve all checklists.",
-		response = ResponseEntity.class)
+	@ApiOperation(value = "Retrieve Checklist", notes = "Retrieve all checklists.", response = CommonResponse.class)
+	@ApiImplicitParams({
+		@ApiImplicitParam(name = "Authorization", paramType = "header", value = "Access Token", required = true, dataTypeClass = String.class)})
 	@GetMapping
-	public ResponseEntity<CommonResponse<CheckListSimpleDto.Response>> checkLists() {
-		CheckListSimpleDto.Response dtos = checkListService.getCheckLists();
+	public CommonResponse<CheckListSimpleDto.Response> checkLists() {
+		CheckListSimpleDto.Response dto = checkListService.getCheckLists();
 
-		return ResponseEntity.ok()
-			.body(new CommonResponse<>(dtos));
+		return new CommonResponse<>(dto);
 	}
 
-	@ApiOperation(value = "Retrieve Checklist Details",
-		notes = "Retrieve checklists.",
-		response = ResponseEntity.class)
+	@ApiOperation(value = "Retrieve Checklist by keyword.", notes = "Search some checklists.", response = CommonResponse.class)
+	@ApiImplicitParams({
+		@ApiImplicitParam(name = "Authorization", paramType = "header", value = "Access Token", required = true, dataTypeClass = String.class),
+		@ApiImplicitParam(name = "ruleId", paramType = "path", value = "Checklist(rule) ID", required = true, dataTypeClass = String.class, example = "CKV_NCP_1")})
 	@GetMapping("/{ruleId}")
-	public ResponseEntity<CommonResponse<CheckListDetailDto.Detail>> checkListDetails(@PathVariable String ruleId) {
-		CheckListDetailDto.Detail dtos = checkListService.getCheckListDetails(ruleId);
+	public CommonResponse<CheckListSimpleDto.Response> checkListsSearch(@PathVariable String ruleId) {
+		CheckListSimpleDto.Response dto = checkListService.getCheckListsBySearch(ruleId);
 
-		return ResponseEntity.ok()
-			.body(new CommonResponse<>(dtos));
+		return new CommonResponse<>(dto);
 	}
 
-	@ApiOperation(value = "Create Custom Checklist",
-		notes = "Create custom new checklist from origin.",
-		response = ResponseEntity.class)
+	@ApiOperation(value = "Create Custom Checklist", notes = "Create custom new checklist from origin.", response = CommonResponse.class)
+	@ApiImplicitParams({
+		@ApiImplicitParam(name = "Authorization", paramType = "header", value = "Access Token", required = true, dataTypeClass = String.class),})
 	@PostMapping
-	public ResponseEntity<CommonResponse<CheckListDetailDto.Detail>> addCheckList(
-		CheckListDetailDto.Detail data
-	) {
-		CheckListDetailDto.Detail dtos = checkListService.addCheckListDetails(data);
+	public CommonResponse<CheckListDetailDto.Detail> addCheckList(CheckListDetailDto.Detail data) {
+		CheckListDetailDto.Detail dto = checkListService.addCheckListDetails(data);
 
-		return ResponseEntity.ok()
-			.body(new CommonResponse<>(dtos));
+		return new CommonResponse<>(dto);
 	}
 
-	@ApiOperation(value = "Reset Checklist",
-		notes = "Reset custom checklist to origin.",
-		response = ResponseEntity.class)
-	@PostMapping("/reset")
-	public ResponseEntity<CommonResponse<CheckListSimpleDto.Simple>> resetCheckList(
-		@RequestBody CheckListSimpleDto.Simple data
-	) {
-		CheckListSimpleDto.Simple dtos = checkListService.resetCheckList(data);
+	@ApiOperation(value = "Retrieve Checklist Details", notes = "Retrieve checklists.", response = CommonResponse.class)
+	@ApiImplicitParams({
+		@ApiImplicitParam(name = "Authorization", paramType = "header", value = "Access Token", required = true, dataTypeClass = String.class),
+		@ApiImplicitParam(name = "ruleId", paramType = "path", value = "Checklist(rule) ID", required = true, dataTypeClass = String.class, example = "CKV_NCP_1")})
+	@GetMapping("/{ruleId}")
+	public CommonResponse<CheckListDetailDto.Detail> checkListDetails(@PathVariable String ruleId) {
+		CheckListDetailDto.Detail dto = checkListService.getCheckListDetails(ruleId);
 
-		return ResponseEntity.ok()
-			.body(new CommonResponse<>(dtos));
+		return new CommonResponse<>(dto);
 	}
 
-	@ApiOperation(value = "Modify Checklist",
-		notes = "Make Custom checklist by modifying origin.",
-		response = ResponseEntity.class)
+	@ApiOperation(value = "Modify Checklist", notes = "Make Custom checklist by modifying origin.", response = CommonResponse.class)
+	@ApiImplicitParams({
+		@ApiImplicitParam(name = "Authorization", paramType = "header", value = "Access Token", required = true, dataTypeClass = String.class),
+		@ApiImplicitParam(name = "ruleId", paramType = "path", value = "ruleId.", required = true, dataTypeClass = String.class),
+		@ApiImplicitParam(paramType = "body", value = "Modify ruleOnOff n to y, y to n", required = true, dataTypeClass = CheckListModifyDto.Modifying.class)})
+	@PatchMapping("/{ruleId}")
+	public CommonResponse<CheckListSimpleDto.Simple> modifyCheckListDetails(@PathVariable String ruleId,
+		@RequestBody CheckListModifyDto.Modifying data) {
+		CheckListSimpleDto.Simple dto = checkListService.modifyCheckList(ruleId, data);
+
+		return new CommonResponse<>(dto);
+	}
+
+	@ApiOperation(value = "Modify Checklist On/Off State", notes = "Make Checklist State On/Off.", response = CommonResponse.class)
+	@ApiImplicitParams({
+		@ApiImplicitParam(name = "Authorization", paramType = "header", value = "Access Token", required = true, dataTypeClass = String.class),
+		@ApiImplicitParam(name = "ruleId", paramType = "path", value = "ruleId.", required = true, dataTypeClass = String.class),
+		@ApiImplicitParam(paramType = "body", value = "Modify ruleOnOff n to y, y to n", required = true, dataTypeClass = CheckListModifyDto.State.class)})
+	@PatchMapping("/state/{ruleId}")
+	public CommonResponse<CheckListSimpleDto.Simple> modifyCheckListOnOff(@PathVariable String ruleId,
+		@RequestBody CheckListSimpleDto.Simple data) {
+		CheckListSimpleDto.Simple dto = checkListService.modifyCheckListAsOnOff(ruleId, data);
+
+		return new CommonResponse<>(dto);
+	}
+
+	@ApiOperation(value = "Reset Checklist", notes = "Reset custom checklist to origin.", response = CommonResponse.class)
+	@ApiImplicitParams({
+		@ApiImplicitParam(name = "Authorization", paramType = "header", value = "Access Token", required = true, dataTypeClass = String.class),
+		@ApiImplicitParam(paramType = "body", value = "Body need ruleId.", required = true, dataTypeClass = CheckListSimpleDto.Simple.class)})
 	@PostMapping("/state")
-	public ResponseEntity<CommonResponse<List<CheckListSimpleDto.Simple>>> modifyCheckListDetails(
-		@RequestBody List<CheckListSimpleDto.Simple> data
-	) {
-		List<CheckListSimpleDto.Simple> dtos = checkListService.modifyCheckList(data);
+	public CommonResponse<CheckListSimpleDto.Simple> resetCheckList(@RequestBody CheckListSimpleDto.Simple data) {
+		CheckListSimpleDto.Simple dto = checkListService.resetCheckList(data);
 
-		return ResponseEntity.ok()
-			.body(new CommonResponse<>(dtos));
+		return new CommonResponse<>(dto);
 	}
 }

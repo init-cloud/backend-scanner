@@ -1,9 +1,10 @@
 package scanner.controller;
 
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -26,31 +27,26 @@ public class ScanHistoryController {
 
 	private final ScanHistoryService scanHistoryService;
 
-	@ApiOperation(value = "Retrieve Scan History",
-		notes = "Retrieve scan histories for reports.",
-		response = ResponseEntity.class)
+	@ApiOperation(value = "Retrieve Scan History", notes = "Retrieve scan histories for reports.", response = CommonResponse.class)
+	@ApiImplicitParams({
+		@ApiImplicitParam(name = "Authorization", paramType = "header", value = "Access Token", required = true, dataTypeClass = String.class),})
 	@GetMapping("/history")
-	public ResponseEntity<CommonResponse<List<HistoryDto>>> historyList() {
+	public CommonResponse<List<HistoryDto>> historyList() {
 		List<ScanHistory> history = scanHistoryService.getHistoryList();
 
-		List<HistoryDto> dtos = history.stream()
-			.map(HistoryDto::new)
-			.collect(Collectors.toList());
+		List<HistoryDto> dtos = history.stream().map(HistoryDto::new).collect(Collectors.toList());
 
-		return ResponseEntity.ok()
-			.body(new CommonResponse<>(dtos));
+		return new CommonResponse<>(dtos);
 	}
 
-	@ApiOperation(value = "Retrieve Scan Report",
-		notes = "Retrieve report from Scan histories.",
-		response = ResponseEntity.class)
+	@ApiOperation(value = "Retrieve Scan Report", notes = "Retrieve report from Scan histories.", response = CommonResponse.class)
+	@ApiImplicitParams({
+		@ApiImplicitParam(name = "Authorization", paramType = "header", value = "Access Token", required = true, dataTypeClass = String.class),
+		@ApiImplicitParam(name = "reportId", paramType = "path", value = "History(Report) ID", required = true, dataTypeClass = Long.class)})
 	@GetMapping("/report/{reportId}")
-	public ResponseEntity<CommonResponse<ReportResponse>> reportDetails(
-		@PathVariable Long reportId
-	) {
+	public CommonResponse<ReportResponse> reportDetails(@PathVariable Long reportId) {
 		ReportResponse dtos = scanHistoryService.getReportDetails(reportId);
 
-		return ResponseEntity.ok()
-			.body(new CommonResponse<>(dtos));
+		return new CommonResponse<>(dtos);
 	}
 }

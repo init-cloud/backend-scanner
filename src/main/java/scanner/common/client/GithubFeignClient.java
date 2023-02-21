@@ -12,34 +12,23 @@ import java.util.List;
 public interface GithubFeignClient {
 
 	@GetMapping(value = "/users/{USER}/repos")
-	List<?> getRepositoryList(@RequestHeader("Authorization") String token,
-		@PathVariable("USER") String user);
+	List<Object> getRepositoryList(@RequestHeader("Authorization") String token, @PathVariable("USER") String user);
 
 	/* Contents in Repository */
 	@GetMapping(value = "/repos/{USER}/{REPO}/contents")
-	Object getRepositoryDetails(@RequestHeader("Authorization") String token,
-		@PathVariable("USER") String user,
-		@PathVariable("REPO") String repo,
-		@RequestParam("ref") String branch);
+	Object getRepositoryDetails(@RequestHeader("Authorization") String token, @PathVariable("USER") String user,
+		@PathVariable("REPO") String repo, @RequestParam("ref") String branch);
 
 	@GetMapping(value = "/repos/{USER}/{REPO}/commits")
-	List<?> getCommitList(@RequestHeader("Authorization") String token,
-		@PathVariable("USER") String user,
-		@PathVariable("REPO") String repo,
-		@RequestParam("ref") String branch);
+	List<Object> getCommitList(@RequestHeader("Authorization") String token, @PathVariable("USER") String user,
+		@PathVariable("REPO") String repo, @RequestParam("ref") String branch);
 
 	@GetMapping(value = "/repos/{USER}/{REPO}/commits/{HASH}")
-	Object getCommitDetails(@RequestHeader("Authorization") String token,
-		@PathVariable("USER") String user,
-		@PathVariable("REPO") String repo,
-		@PathVariable("HASH") String hash,
-		@RequestParam("ref") String branch);
+	Object getCommitDetails(@RequestHeader("Authorization") String token, @PathVariable("USER") String user,
+		@PathVariable("REPO") String repo, @PathVariable("HASH") String hash, @RequestParam("ref") String branch);
 
 	/* Blobs from Repository */
 	@GetMapping(value = "/repos/{USER}/{REPO}/git/blobs/{HASH}")
-	void getFiles(@RequestHeader("Authorization") String token,
-		@PathVariable("USER") String user,
-		@PathVariable("REPO") String repo,
-		@PathVariable("HASH") String hash,
-		@RequestParam("ref") String branch);
+	void getFiles(@RequestHeader("Authorization") String token, @PathVariable("USER") String user,
+		@PathVariable("REPO") String repo, @PathVariable("HASH") String hash, @RequestParam("ref") String branch);
 }

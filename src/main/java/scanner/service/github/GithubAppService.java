@@ -15,7 +15,7 @@ public class GithubAppService {
 
 	private final GithubFeignClient githubFeignClient;
 
-	public List<?> getRepositories(@NonNull String token, @NonNull String user) {
+	public List<Object> getRepositories(@NonNull String token, @NonNull String user) {
 		return githubFeignClient.getRepositoryList(token, user);
 	}
 
@@ -23,7 +23,7 @@ public class GithubAppService {
 		return githubFeignClient.getRepositoryDetails(token, user, repo, branch);
 	}
 
-	public List<?> getCommits(@NonNull String token, String user, String repo, String branch) {
+	public List<Object> getCommits(@NonNull String token, String user, String repo, String branch) {
 		return githubFeignClient.getCommitList(token, user, repo, branch);
 	}
 

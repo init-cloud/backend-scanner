@@ -9,6 +9,9 @@ import lombok.Getter;
 @Getter
 public enum ResponseCode {
 
+	/**
+	 * @Todo STATUS NAME MUST BE CHANGED.
+	 */
 	/* Invalid Request */
 	STATUS_4001(4001, HttpStatus.UNAUTHORIZED, "Expired Token."),
 	STATUS_4002(4002, HttpStatus.UNAUTHORIZED, "Invalid Token."),
