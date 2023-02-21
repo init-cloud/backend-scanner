@@ -21,23 +21,13 @@ public class CheckListController {
 
 	private final CheckListService checkListService;
 
-	@ApiOperation(value = "Retrieve Checklist", notes = "Retrieve all checklists.", response = CommonResponse.class)
-	@ApiImplicitParams({
-		@ApiImplicitParam(name = "Authorization", paramType = "header", value = "Access Token", required = true, dataTypeClass = String.class)})
-	@GetMapping
-	public CommonResponse<CheckListSimpleDto.Response> checkLists() {
-		CheckListSimpleDto.Response dto = checkListService.getCheckLists();
-
-		return new CommonResponse<>(dto);
-	}
-
-	@ApiOperation(value = "Retrieve Checklist by keyword.", notes = "Search some checklists.", response = CommonResponse.class)
+	@ApiOperation(value = "Retrieve Checklist", notes = "Retrieve all checklists. You can use Search", response = CommonResponse.class)
 	@ApiImplicitParams({
 		@ApiImplicitParam(name = "Authorization", paramType = "header", value = "Access Token", required = true, dataTypeClass = String.class),
-		@ApiImplicitParam(name = "ruleId", paramType = "path", value = "Checklist(rule) ID", required = true, dataTypeClass = String.class, example = "CKV_NCP_1")})
-	@GetMapping("/{ruleId}")
-	public CommonResponse<CheckListSimpleDto.Response> checkListsSearch(@PathVariable String ruleId) {
-		CheckListSimpleDto.Response dto = checkListService.getCheckListsBySearch(ruleId);
+		@ApiImplicitParam(name = "rule", paramType = "query", value = "Checklist(rule) ID. It's Option.", required = false, dataTypeClass = String.class, example = "CKV_NCP_1")})
+	@GetMapping
+	public CommonResponse<CheckListSimpleDto.Response> checkLists(@RequestParam("rule") String ruleId) {
+		CheckListSimpleDto.Response dto = checkListService.getCheckLists(ruleId);
 
 		return new CommonResponse<>(dto);
 	}

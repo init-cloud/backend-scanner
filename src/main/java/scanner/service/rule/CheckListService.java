@@ -5,6 +5,7 @@ import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
 
+import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 
 import lombok.NonNull;
@@ -24,23 +25,18 @@ public class CheckListService {
 	private final CheckListRepository checkListRepository;
 
 	@Transactional
-	public CheckListSimpleDto.Response getCheckLists() {
+	public CheckListSimpleDto.Response getCheckLists(@Nullable String ruleId) {
 
-		List<CustomRule> ruleList = checkListRepository.findAll();
-		List<CheckListSimpleDto.Simple> ruleDtos = ruleList.stream()
-			.map(CheckListSimpleDto.Simple::new)
-			.collect(Collectors.toList());
+		List<CustomRule> ruleList;
+		List<CheckListSimpleDto.Simple> ruleDtos;
 
-		return new CheckListSimpleDto.Response(ruleDtos);
-	}
-
-	@Transactional
-	public CheckListSimpleDto.Response getCheckListsBySearch(String ruleId) {
-
-		List<CustomRule> ruleList = checkListRepository.findByRuleIdContains(ruleId);
-		List<CheckListSimpleDto.Simple> ruleDtos = ruleList.stream()
-			.map(CheckListSimpleDto.Simple::new)
-			.collect(Collectors.toList());
+		if (ruleId != null) {
+			ruleList = checkListRepository.findByRuleIdContains(ruleId);
+			ruleDtos = ruleList.stream().map(CheckListSimpleDto.Simple::new).collect(Collectors.toList());
+		} else {
+			ruleList = checkListRepository.findAll();
+			ruleDtos = ruleList.stream().map(CheckListSimpleDto.Simple::new).collect(Collectors.toList());
+		}
 
 		return new CheckListSimpleDto.Response(ruleDtos);
 	}
@@ -75,15 +71,15 @@ public class CheckListService {
 	@Transactional
 	public CheckListSimpleDto.Simple modifyCheckList(@NonNull String ruleId, CheckListModifyDto.Modifying data) {
 		if (data == null)
-			throw new ApiException(ResponseCode.STATUS_4005);
+			throw new ApiException(ResponseCode.DATA_MISSING);
 
 		if (!ruleId.equals(data.getRule_id()))
-			throw new ApiException(ResponseCode.STATUS_4007);
+			throw new ApiException(ResponseCode.INVALID_REQUEST);
 
 		checkListRepository.updateRule(data.getRule_id(), data.getCustom().toString());
 
 		CustomRule rule = checkListRepository.findByRuleId(ruleId)
-			.orElseThrow(() -> new ApiException(ResponseCode.STATUS_4007));
+			.orElseThrow(() -> new ApiException(ResponseCode.INVALID_REQUEST));
 
 		return new CheckListSimpleDto.Simple(rule);
 	}
@@ -91,15 +87,15 @@ public class CheckListService {
 	@Transactional
 	public CheckListSimpleDto.Simple modifyCheckListAsOnOff(@NonNull String ruleId, CheckListSimpleDto.Simple data) {
 		if (data == null)
-			throw new ApiException(ResponseCode.STATUS_4005);
+			throw new ApiException(ResponseCode.DATA_MISSING);
 
 		if (!ruleId.equals(data.getRuleId()))
-			throw new ApiException(ResponseCode.STATUS_4007);
+			throw new ApiException(ResponseCode.INVALID_REQUEST);
 
 		checkListRepository.updateRuleOnOff(ruleId, data.getRuleOnOff());
 
 		CustomRule rule = checkListRepository.findByRuleId(ruleId)
-			.orElseThrow(() -> new ApiException(ResponseCode.STATUS_4002));
+			.orElseThrow(() -> new ApiException(ResponseCode.INVALID_REQUEST));
 
 		return new CheckListSimpleDto.Simple(rule);
 	}
@@ -107,12 +103,12 @@ public class CheckListService {
 	@Transactional
 	public CheckListSimpleDto.Simple resetCheckList(CheckListSimpleDto.Simple data) {
 		if (data.getRuleId() == null)
-			throw new ApiException(ResponseCode.STATUS_4005);
+			throw new ApiException(ResponseCode.DATA_MISSING);
 
 		checkListRepository.resetRule(data.getRuleId());
 
 		CustomRule rule = checkListRepository.findByRuleId(data.getRuleId())
-			.orElseThrow(() -> new ApiException(ResponseCode.STATUS_4005));
+			.orElseThrow(() -> new ApiException(ResponseCode.INVALID_REQUEST));
 
 		return new CheckListSimpleDto.Simple(rule);
 	}
