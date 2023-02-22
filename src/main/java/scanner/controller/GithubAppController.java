@@ -23,7 +23,7 @@ public class GithubAppController {
 
 	private final GithubAppService githubAppService;
 
-	@ApiOperation(value = "Parse OAuth Token", notes = "Parse Token from callback.")
+	@ApiOperation(value = "Parse OAuth Token", notes = "Parse Token from callback.", response = CommonResponse.class)
 	@GetMapping("/token")
 	public CommonResponse<GithubToken> apiAccessToken(@NonNull @RequestParam(value = "access_token") String accessToken,
 		@NonNull @RequestParam(value = "refresh_token") String refreshToken,
@@ -38,7 +38,7 @@ public class GithubAppController {
 		return new CommonResponse<>(dtos);
 	}
 
-	@ApiOperation(value = "Get Repository List", notes = "Get Repository List from Github.")
+	@ApiOperation(value = "Get Repository List", notes = "Get Repository List from Github.", response = CommonResponse.class)
 	@ApiImplicitParams({
 		@ApiImplicitParam(name = "Authorization", paramType = "header", value = "Access Token", required = true, dataTypeClass = String.class),
 		@ApiImplicitParam(name = "user", value = "Github user or organization", required = true, dataTypeClass = String.class)})
@@ -50,7 +50,7 @@ public class GithubAppController {
 		return new CommonResponse<>(dtos);
 	}
 
-	@ApiOperation(value = "Get Repository Details", notes = "Get Repository Details from Github.")
+	@ApiOperation(value = "Get Repository Details", notes = "Get Repository Details from Github.", response = CommonResponse.class)
 	@ApiImplicitParams({
 		@ApiImplicitParam(name = "Authorization", paramType = "header", value = "Access Token", required = true, dataTypeClass = String.class),
 		@ApiImplicitParam(name = "user", value = "Github user or organization", required = true, dataTypeClass = String.class),
@@ -65,7 +65,7 @@ public class GithubAppController {
 		return new CommonResponse<>(dtos);
 	}
 
-	@ApiOperation(value = "Get Commit List", notes = "Get Commit List from Github repository, branch.")
+	@ApiOperation(value = "Get Commit List", notes = "Get Commit List from Github repository, branch.", response = CommonResponse.class)
 	@ApiImplicitParams({
 		@ApiImplicitParam(name = "Authorization", paramType = "header", value = "Access Token", required = true, dataTypeClass = String.class),
 		@ApiImplicitParam(name = "user", paramType = "path", value = "Github user or organization", required = true, dataTypeClass = String.class),
@@ -80,7 +80,7 @@ public class GithubAppController {
 		return new CommonResponse<>(dtos);
 	}
 
-	@ApiOperation(value = "Get Commit Details", notes = "Get Commit Details from Github repository, branch.")
+	@ApiOperation(value = "Get Commit Details", notes = "Get Commit Details from Github repository, branch.", response = CommonResponse.class)
 	@ApiImplicitParams({
 		@ApiImplicitParam(name = "Authorization", paramType = "header", value = "Access Token", required = true, dataTypeClass = String.class),
 		@ApiImplicitParam(name = "user", paramType = "path", value = "Github user or organization", required = true, dataTypeClass = String.class),
@@ -97,7 +97,7 @@ public class GithubAppController {
 	}
 
 	@Deprecated(forRemoval = false)
-	@ApiOperation(value = "Download Blobs", notes = "Download zip files from Github repository, branch.")
+	@ApiOperation(value = "Download Blobs", notes = "Download zip files from Github repository, branch.", response = CommonResponse.class)
 	@ApiImplicitParams({
 		@ApiImplicitParam(name = "Authorization", paramType = "header", value = "Access Token", required = true, dataTypeClass = String.class),
 		@ApiImplicitParam(name = "user", paramType = "path", value = "Github user or organization", required = true, dataTypeClass = String.class),

@@ -55,7 +55,7 @@ public class UserController {
 		return new CommonResponse<>(response);
 	}
 
-	@ApiOperation(value = "Change Password", response = CommonResponse.class)
+	@ApiOperation(value = "Change Password", notes = "Change user Password.", response = CommonResponse.class)
 	@PostMapping("/auth")
 	public CommonResponse<Boolean> managingUserPassword(@RequestBody UserAuthenticationDto dto) {
 		Boolean response = userService.modifyUserPassword(dto);
