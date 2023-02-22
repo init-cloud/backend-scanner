@@ -76,7 +76,10 @@ public class CheckListService {
 		if (!ruleId.equals(data.getRule_id()))
 			throw new ApiException(ResponseCode.INVALID_REQUEST);
 
-		checkListRepository.updateRule(data.getRule_id(), data.getCustom().toString());
+		/**
+		 * @Todo 추후 변경된 커스텀 룰이 유효한지 확인하는 로직 필요.
+		 */
+		checkListRepository.updateRule(data.getRule_id(), CheckListModifyDto.Modifying.toJsonString(data.getCustom()));
 
 		CustomRule rule = checkListRepository.findByRuleId(ruleId)
 			.orElseThrow(() -> new ApiException(ResponseCode.INVALID_REQUEST));

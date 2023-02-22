@@ -28,8 +28,7 @@ public class SwaggerConfig extends WebMvcConfigurationSupport {
 
 	@Bean
 	public Docket api() {
-		return new Docket(DocumentationType.SWAGGER_2)
-			.apiInfo(apiInfo())
+		return new Docket(DocumentationType.SWAGGER_2).apiInfo(apiInfo())
 			.select()
 			.apis(RequestHandlerSelectors.basePackage("scanner.controller"))
 			.paths(PathSelectors.ant("/api/v1/**"))
@@ -37,18 +36,14 @@ public class SwaggerConfig extends WebMvcConfigurationSupport {
 	}
 
 	private ApiInfo apiInfo() {
-		return new ApiInfoBuilder()
-			.title(API_NAME)
-			.version(API_VERSION)
-			.description(API_DESCRIPTION)
-			.build();
+		return new ApiInfoBuilder().title(API_NAME).version(API_VERSION).description(API_DESCRIPTION).build();
 	}
-
+	
 	@Override
 	public void addResourceHandlers(ResourceHandlerRegistry registry) {
-		registry.addResourceHandler("swagger-ui.html")
-			.addResourceLocations("classpath:/META-INF/resources/");
+		registry.addResourceHandler("/swagger-ui/**")
+			.addResourceLocations("classpath:/META-INF/resources/webjars/springfox-swagger-ui/");
 		registry.addResourceHandler("/webjars/**")
-			.addResourceLocations("classpath:/META-INF/resources/webjars/");
+			.addResourceLocations("classpath:/META-INF/resources/webjars/springfox-swagger-ui/");
 	}
 }

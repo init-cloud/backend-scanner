@@ -23,18 +23,17 @@ public class CheckListController {
 
 	@ApiOperation(value = "Retrieve Checklist", notes = "Retrieve all checklists. You can use Search", response = CommonResponse.class)
 	@ApiImplicitParams({
-		@ApiImplicitParam(name = "Authorization", paramType = "header", value = "Access Token", required = true, dataTypeClass = String.class),
-		@ApiImplicitParam(name = "rule", paramType = "query", value = "Checklist(rule) ID. It's Option.", required = false, dataTypeClass = String.class, example = "CKV_NCP_1")})
+		@ApiImplicitParam(name = "Authorization", paramType = "header", value = "Access Token", required = true, dataTypeClass = String.class)})
 	@GetMapping
-	public CommonResponse<CheckListSimpleDto.Response> checkLists(@RequestParam("rule") String ruleId) {
-		CheckListSimpleDto.Response dto = checkListService.getCheckLists(ruleId);
+	public CommonResponse<CheckListSimpleDto.Response> checkLists() {
+		CheckListSimpleDto.Response dto = checkListService.getCheckLists(null);
 
 		return new CommonResponse<>(dto);
 	}
 
 	@ApiOperation(value = "Create Custom Checklist", notes = "Create custom new checklist from origin.", response = CommonResponse.class)
 	@ApiImplicitParams({
-		@ApiImplicitParam(name = "Authorization", paramType = "header", value = "Access Token", required = true, dataTypeClass = String.class),})
+		@ApiImplicitParam(name = "Authorization", paramType = "header", value = "Access Token", required = true, dataTypeClass = String.class)})
 	@PostMapping
 	public CommonResponse<CheckListDetailDto.Detail> addCheckList(CheckListDetailDto.Detail data) {
 		CheckListDetailDto.Detail dto = checkListService.addCheckListDetails(data);

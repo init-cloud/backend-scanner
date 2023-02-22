@@ -29,7 +29,7 @@ public class ScanHistoryController {
 
 	@ApiOperation(value = "Retrieve Scan History", notes = "Retrieve scan histories for reports.", response = CommonResponse.class)
 	@ApiImplicitParams({
-		@ApiImplicitParam(name = "Authorization", paramType = "header", value = "Access Token", required = true, dataTypeClass = String.class),})
+		@ApiImplicitParam(name = "Authorization", paramType = "header", value = "Access Token", required = true, dataTypeClass = String.class)})
 	@GetMapping("/history")
 	public CommonResponse<List<HistoryDto>> historyList() {
 		List<ScanHistory> history = scanHistoryService.getHistoryList();
