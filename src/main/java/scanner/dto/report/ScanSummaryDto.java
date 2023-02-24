@@ -28,7 +28,7 @@ public class ScanSummaryDto {
 	private Integer unknown;
 	private Double score;
 	private List<FailedDto> failedResource;
-	private List<FailedDto> failedCompliance;
+	private List<FailedComplianceDto> failedCompliance;
 	private List<FailedDto> failedSecurityThreat;
 
 	public static ScanSummaryDto toDto(ScanHistory entity) {
@@ -36,7 +36,7 @@ public class ScanSummaryDto {
 		List<ScanHistoryDetail> details = entity.getDetails();
 
 		Map<String, Integer> resource = FailedDto.toResourceMap(details);
-		Map<String, Integer> compliance = FailedDto.toComplianceMap(details);
+		Map<String, Map<String, Integer>> compliance = FailedComplianceDto.toComplianceMap(details);
 		Map<String, Integer> threat = FailedDto.toThreatMap(details);
 
 		return ScanSummaryDto.builder()
@@ -55,7 +55,7 @@ public class ScanSummaryDto {
 			.unknown(entity.getUnknown())
 			.score(entity.getScore())
 			.failedResource(FailedDto.mapToDto(resource))
-			.failedCompliance(FailedDto.mapToDto(compliance))
+			.failedCompliance(FailedComplianceDto.mapToCompliacnDto(compliance))
 			.failedSecurityThreat(FailedDto.mapToDto(threat))
 			.build();
 	}
