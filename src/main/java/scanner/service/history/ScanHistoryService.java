@@ -9,9 +9,11 @@ import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
 
+import scanner.common.enums.ResponseCode;
 import scanner.dto.history.VisualDto;
 import scanner.dto.report.ScanHistoryDetailDto;
 import scanner.dto.report.ScanSummaryDto;
+import scanner.exception.ApiException;
 import scanner.model.enums.Language;
 import scanner.model.history.ScanHistory;
 import scanner.model.history.ScanHistoryDetail;
@@ -33,7 +35,9 @@ public class ScanHistoryService {
 	@Transactional
 	public ReportResponse getReportDetails(Long reportId, Language lang) {
 
-		ScanHistory history = scanHistoryRepository.findByHistorySeq(reportId);
+		ScanHistory history = scanHistoryRepository.findByHistorySeq(reportId)
+			.orElseThrow(() -> new ApiException(ResponseCode.NO_SCAN_RESULT));
+
 		List<ScanHistoryDetail> details = scanHistoryDetailsRepository.findByHistorySeq(reportId);
 		ScanSummaryDto summaryDto = ScanSummaryDto.toLangDto(history, lang);
 
@@ -48,7 +52,8 @@ public class ScanHistoryService {
 
 	public VisualDto.Response getVisualization(Long reportId) {
 
-		ScanHistory history = scanHistoryRepository.findByHistorySeq(reportId);
+		ScanHistory history = scanHistoryRepository.findByHistorySeq(reportId)
+			.orElseThrow(() -> new ApiException(ResponseCode.NO_SCAN_RESULT));
 
 		return new VisualDto.Response(history.getHistorySeq(), history.getCreatedAt(), history.getVisual());
 	}

@@ -9,9 +9,6 @@ import lombok.Getter;
 @Getter
 public enum ResponseCode {
 
-	/**
-	 * @Todo STATUS NAME MUST BE CHANGED.
-	 */
 	/* Invalid Request */
 	TOKEN_EXPIRED(4001, HttpStatus.UNAUTHORIZED, "Expired Token."),
 	INVALID_TOKEN(4002, HttpStatus.UNAUTHORIZED, "Invalid Token."),
@@ -26,6 +23,7 @@ public enum ResponseCode {
 	INVALID_AUTHORIIY_TYPE(4012, HttpStatus.BAD_REQUEST, "Invalid Authority."),
 	INVALID_AUTHORIIY(4013, HttpStatus.UNAUTHORIZED, "Have no Authority."),
 	INVALID_JSON_FORMAT(4014, HttpStatus.UNAUTHORIZED, "Error During Parse JSON."),
+	NO_SCAN_RESULT(4015, HttpStatus.BAD_REQUEST, "There are no Scan results."),
 
 	/* Server Error. */
 	SERVER_BUSY(5001, HttpStatus.INTERNAL_SERVER_ERROR, "Server busy."),
