@@ -1,7 +1,8 @@
 package scanner.dto.report;
 
 import lombok.*;
-import scanner.model.rule.Compliance;
+import scanner.model.rule.ComplianceEng;
+import scanner.model.rule.ComplianceKor;
 
 @Builder
 @Getter
@@ -12,7 +13,16 @@ public class ComplianceDto {
 	private String complianceNumber;
 	private String description;
 
-	public static ComplianceDto toDto(final Compliance entity) {
+	public static ComplianceDto toDto(final ComplianceEng entity) {
+
+		return ComplianceDto.builder()
+			.compliance(entity.getComplianceName())
+			.complianceNumber(entity.getComplianceNumber())
+			.description(entity.getDescription())
+			.build();
+	}
+
+	public static ComplianceDto toDto(final ComplianceKor entity) {
 
 		return ComplianceDto.builder()
 			.compliance(entity.getComplianceName())

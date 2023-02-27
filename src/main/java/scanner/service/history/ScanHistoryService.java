@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import scanner.dto.history.VisualDto;
 import scanner.dto.report.ScanHistoryDetailDto;
 import scanner.dto.report.ScanSummaryDto;
+import scanner.model.enums.Language;
 import scanner.model.history.ScanHistory;
 import scanner.model.history.ScanHistoryDetail;
 import scanner.repository.ScanHistoryDetailsRepository;
@@ -30,17 +31,17 @@ public class ScanHistoryService {
 	}
 
 	@Transactional
-	public ReportResponse getReportDetails(Long reportId) {
+	public ReportResponse getReportDetails(Long reportId, Language lang) {
 
 		ScanHistory history = scanHistoryRepository.findByHistorySeq(reportId);
-
 		List<ScanHistoryDetail> details = scanHistoryDetailsRepository.findByHistorySeq(reportId);
+		ScanSummaryDto summaryDto = ScanSummaryDto.toLangDto(history, lang);
 
-		ScanSummaryDto summaryDto = ScanSummaryDto.toDto(history);
-
-		List<ScanHistoryDetailDto> detailsDto = details.stream()
-			.map(ScanHistoryDetailDto::toDto)
-			.collect(Collectors.toList());
+		List<ScanHistoryDetailDto> detailsDto;
+		if (lang == Language.KOREAN)
+			detailsDto = details.stream().map(ScanHistoryDetailDto::toKorDto).collect(Collectors.toList());
+		else
+			detailsDto = details.stream().map(ScanHistoryDetailDto::toEngDto).collect(Collectors.toList());
 
 		return new ReportResponse(summaryDto, detailsDto);
 	}

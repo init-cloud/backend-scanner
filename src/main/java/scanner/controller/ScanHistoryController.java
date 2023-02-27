@@ -5,12 +5,15 @@ import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 
+import org.springframework.lang.Nullable;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import scanner.dto.history.HistoryDto;
+import scanner.model.enums.Language;
 import scanner.model.history.ScanHistory;
 import scanner.dto.CommonResponse;
 import scanner.dto.report.ReportResponse;
@@ -42,10 +45,11 @@ public class ScanHistoryController {
 	@ApiOperation(value = "Retrieve Scan Report", notes = "Retrieve report from Scan histories.", response = CommonResponse.class)
 	@ApiImplicitParams({
 		@ApiImplicitParam(name = "Authorization", paramType = "header", value = "Access Token", required = true, dataTypeClass = String.class),
-		@ApiImplicitParam(name = "reportId", paramType = "path", value = "History(Report) ID", required = true, dataTypeClass = Long.class)})
+		@ApiImplicitParam(name = "reportId", paramType = "path", value = "History(Report) ID", required = true, dataTypeClass = Long.class),
+		@ApiImplicitParam(name = "lang", paramType = "query", value = "eng, kor", required = false, dataTypeClass = String.class)})
 	@GetMapping("/report/{reportId}")
-	public CommonResponse<ReportResponse> reportDetails(@PathVariable Long reportId) {
-		ReportResponse dtos = scanHistoryService.getReportDetails(reportId);
+	public CommonResponse<ReportResponse> reportDetails(@PathVariable Long reportId, @Nullable @RequestParam String lang) {
+		ReportResponse dtos = scanHistoryService.getReportDetails(reportId, Language.of(lang));
 
 		return new CommonResponse<>(dtos);
 	}

@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import lombok.*;
+import scanner.model.enums.Language;
 import scanner.model.rule.CustomRule;
 import scanner.model.history.ScanHistoryDetail;
 import scanner.model.rule.Tag;
@@ -29,18 +30,32 @@ public class ScanHistoryDetailDto {
 	private String solution;
 	private List<ComplianceDto> compliance;
 
-	public static ScanHistoryDetailDto toDto(final ScanHistoryDetail entity) {
+	public static ScanHistoryDetailDto toEngDto(final ScanHistoryDetail entity) {
 		CustomRule rule = entity.getRuleSeq();
-		List<ComplianceDto> compliance = rule.getCompliance()
+		List<ComplianceDto> compliance = rule.getComplianceEngs()
 			.stream()
 			.map(ComplianceDto::toDto)
 			.collect(Collectors.toList());
 
-		List<String> tag = rule.getTag()
+		List<String> tag = rule.getTags().stream().map(Tag::getTagName).collect(Collectors.toList());
+
+		return ScanHistoryDetailDto.toDto(entity, rule, tag, compliance);
+	}
+
+	public static ScanHistoryDetailDto toKorDto(final ScanHistoryDetail entity) {
+		CustomRule rule = entity.getRuleSeq();
+		List<ComplianceDto> compliance = rule.getComplianceKors()
 			.stream()
-			.map(Tag::getTagName)
+			.map(ComplianceDto::toDto)
 			.collect(Collectors.toList());
 
+		List<String> tag = rule.getTags().stream().map(Tag::getTagName).collect(Collectors.toList());
+
+		return ScanHistoryDetailDto.toDto(entity, rule, tag, compliance);
+	}
+
+	public static ScanHistoryDetailDto toDto(final ScanHistoryDetail entity, final CustomRule rule,
+		final List<String> tag, final List<ComplianceDto> compliance) {
 		return ScanHistoryDetailDto.builder()
 			.ruleID(rule.getRuleId())
 			.description(rule.getDescription())
@@ -57,21 +72,5 @@ public class ScanHistoryDetailDto {
 			.solution(rule.getSol())
 			.compliance(compliance)
 			.build();
-	}
-
-	public ScanHistoryDetailDto(ScanHistoryDetail entity) {
-		CustomRule rule = entity.getRuleSeq();
-
-		this.ruleID = rule.getRuleId();
-		this.result = entity.getScanResult();
-		this.severity = rule.getLevel();
-		this.description = rule.getDescription();
-		this.type = null;
-		this.fileName = entity.getTargetFile();
-		this.line = entity.getLine();
-		this.resource = entity.getResource();
-		this.resourceName = entity.getResourceName();
-		this.problematicCode = entity.getCode();
-		this.compliance = null;
 	}
 }
