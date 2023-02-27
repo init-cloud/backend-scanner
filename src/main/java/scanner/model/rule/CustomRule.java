@@ -18,7 +18,6 @@ import scanner.model.history.ScanHistoryDetail;
 @Getter
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@ToString(exclude = "compliance")
 @Table(name = "CUSTOM_RULE")
 public class CustomRule extends BaseEntity {
 	@Id
@@ -31,13 +30,16 @@ public class CustomRule extends BaseEntity {
 	@Size(max = 16)
 	private String ruleId;
 
-	@OneToMany(mappedBy = "ruleSeq", fetch = FetchType.LAZY)
-	private final List<Tag> tag = new ArrayList<>();
+	@OneToMany(mappedBy = "ruleSeq")
+	private final List<Tag> tags = new ArrayList<>();
 
-	@OneToMany(mappedBy = "ruleSeq", fetch = FetchType.LAZY)
-	private final List<Compliance> compliance = new ArrayList<>();
+	@OneToMany(mappedBy = "ruleSeq")
+	private final List<ComplianceEng> complianceEngs = new ArrayList<>();
 
-	@OneToMany(mappedBy = "ruleSeq", fetch = FetchType.LAZY)
+	@OneToMany(mappedBy = "ruleSeq")
+	private final List<ComplianceKor> complianceKors = new ArrayList<>();
+
+	@OneToMany(mappedBy = "ruleSeq")
 	private final List<ScanHistoryDetail> historyDetails = new ArrayList<>();
 
 	@Column(name = "DEFAULT_RULE_ID", updatable = false)
@@ -98,7 +100,7 @@ public class CustomRule extends BaseEntity {
 	@Column(name = "CUSTOM_DEFAULT", updatable = false)
 	private String customDefault;
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "customRule")
+	@OneToMany(mappedBy = "customRule")
 	private List<UsedRule> usedRules = new ArrayList<>();
 
 	@Builder
@@ -128,6 +130,6 @@ public class CustomRule extends BaseEntity {
 	}
 
 	public List<TagDto> getTagDto() {
-		return tag.stream().map(TagDto::new).collect(Collectors.toList());
+		return tags.stream().map(TagDto::new).collect(Collectors.toList());
 	}
 }
