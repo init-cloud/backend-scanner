@@ -31,7 +31,7 @@ public class JwtTokenProvider {
 	private final Properties jwt;
 	private final CustomUserDetailService userDetailsService;
 
-	public Token create(String username, RoleType role) {
+	public Token create(String username, RoleType role, String key) {
 
 		Date now = new Date();
 
@@ -40,16 +40,16 @@ public class JwtTokenProvider {
 			.claim("role", role)
 			.setIssuedAt(now)
 			.setExpiration(new Date(now.getTime() + EXPIREDTIME))
-			.signWith(SignatureAlgorithm.HS256, jwt.getSecret())
+			.signWith(SignatureAlgorithm.HS256, key)
 			.compact();
 
 		return new UsernameToken(username, accessToken, null);
 	}
 
-	public Claims getClaims(String token) {
+	public Claims getClaims(String token, String key) {
 		try {
 			return Jwts.parser()
-				.setSigningKey(jwt.getSecret())
+				.setSigningKey(key)
 				.parseClaimsJws(token)
 				.getBody();
 		} catch (SecurityException e) {
@@ -69,25 +69,25 @@ public class JwtTokenProvider {
 		return null;
 	}
 
-	public String getUsername(String token) {
+	public String getUsername(String token, String key) {
 		return Jwts.parser()
-			.setSigningKey(jwt.getSecret())
+			.setSigningKey(key)
 			.parseClaimsJws(token)
 			.getBody()
 			.getSubject();
 	}
 
-	public Authentication getAuthentication(String token) {
+	public Authentication getAuthentication(String token, String key) {
 
-		UserDetails userDetails = userDetailsService.loadUserByUsername(this.getUsername(token));
+		UserDetails userDetails = userDetailsService.loadUserByUsername(this.getUsername(token, key));
 
 		return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
 	}
 
-	public boolean validate(String token) {
+	public boolean validate(String token, String key) {
 		try {
 			Jwts.parser()
-				.setSigningKey(jwt.getSecret())
+				.setSigningKey(key)
 				.parseClaimsJws(token);
 			return true;
 		} catch (SecurityException e) {

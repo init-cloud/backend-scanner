@@ -55,7 +55,7 @@ public class FailedDto {
 			return tag;
 
 		details.stream().forEach(detail -> {
-			List<Tag> tags = detail.getRuleSeq().getTag();
+			List<Tag> tags = detail.getRuleSeq().getTags();
 			
 			for(Tag t : tags) {
 				String key = t.getTagName();
