@@ -18,6 +18,7 @@ import scanner.model.user.User;
 import scanner.model.enums.RoleType;
 import scanner.repository.UserRepository;
 import scanner.common.enums.ResponseCode;
+import scanner.security.config.Properties;
 import scanner.security.dto.Token;
 import scanner.security.provider.JwtTokenProvider;
 import scanner.security.provider.UsernamePasswordAuthenticationProvider;
@@ -32,8 +33,8 @@ public class UsernameService implements UserService {
 	private final UserRepository userRepository;
 	private final JwtTokenProvider jwtTokenProvider;
 	private final UsernamePasswordAuthenticationProvider usernamePasswordAuthenticationProvider;
-
 	private final PasswordEncoder passwordEncoder;
+	private final Properties properties;
 
 	@Override
 	public Token signup(UserSignupDto dto) {
@@ -43,7 +44,7 @@ public class UsernameService implements UserService {
 
 		String password = dto.setHash(passwordEncoder, dto.getPassword());
 		User user = userRepository.save(User.toEntity(dto, password));
-		return jwtTokenProvider.create(user.getUsername(), RoleType.GUEST);
+		return jwtTokenProvider.create(user.getUsername(), RoleType.GUEST, properties.getSecret());
 	}
 
 	@Transactional
@@ -57,9 +58,8 @@ public class UsernameService implements UserService {
 
 		updateLastLogin(dto);
 
-		return jwtTokenProvider.create(
-			dto.getUsername(),
-			((User)authentication.getPrincipal()).getRoleType());
+		return jwtTokenProvider.create(dto.getUsername(), ((User)authentication.getPrincipal()).getRoleType(),
+			properties.getSecret());
 	}
 
 	@Override
@@ -72,10 +72,10 @@ public class UsernameService implements UserService {
 		userRepository.save(user);
 	}
 
-	public UserProfileDto getUserProfile(String header) {
+	public UserProfileDto getUserProfile(String header, String key) {
 		String token = HeaderParse.getAccessToken(header);
 
-		User user = userRepository.findByUsername(jwtTokenProvider.getUsername(token))
+		User user = userRepository.findByUsername(jwtTokenProvider.getUsername(token, key))
 			.orElseThrow(() -> new ApiException(ResponseCode.INVALID_USER));
 
 		return new UserProfileDto(user.getUsername(), user.getEmail(), user.getContact(), user.getRoleType(),
