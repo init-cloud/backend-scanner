@@ -37,10 +37,9 @@ public class ScanHistoryService {
 
 		ScanHistory history = scanHistoryRepository.findByHistorySeq(reportId)
 			.orElseThrow(() -> new ApiException(ResponseCode.NO_SCAN_RESULT));
-
-		List<ScanHistoryDetail> details = scanHistoryDetailsRepository.findByHistorySeq(reportId);
 		ScanSummaryDto summaryDto = ScanSummaryDto.toLangDto(history, lang);
 
+		List<ScanHistoryDetail> details = scanHistoryDetailsRepository.findByHistorySeq(reportId);
 		List<ScanHistoryDetailDto> detailsDto;
 		if (lang == Language.KOREAN)
 			detailsDto = details.stream().map(ScanHistoryDetailDto::toKorDto).collect(Collectors.toList());

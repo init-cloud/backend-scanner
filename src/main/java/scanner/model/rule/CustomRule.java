@@ -30,17 +30,21 @@ public class CustomRule extends BaseEntity {
 	@Size(max = 16)
 	private String ruleId;
 
+	@Setter
 	@OneToMany(mappedBy = "ruleSeq")
-	private final List<Tag> tags = new ArrayList<>();
+	private List<Tag> tags = new ArrayList<>();
 
+	@Setter
 	@OneToMany(mappedBy = "ruleSeq")
-	private final List<ComplianceEng> complianceEngs = new ArrayList<>();
+	private List<ComplianceEng> complianceEngs = new ArrayList<>();
 
+	@Setter
 	@OneToMany(mappedBy = "ruleSeq")
-	private final List<ComplianceKor> complianceKors = new ArrayList<>();
+	private List<ComplianceKor> complianceKors = new ArrayList<>();
 
+	@Setter
 	@OneToMany(mappedBy = "ruleSeq")
-	private final List<ScanHistoryDetail> historyDetails = new ArrayList<>();
+	private List<ScanHistoryDetail> historyDetails = new ArrayList<>();
 
 	@Column(name = "DEFAULT_RULE_ID", updatable = false)
 	@NotNull
@@ -127,6 +131,16 @@ public class CustomRule extends BaseEntity {
 		this.isModifiable = isModifiable;
 		this.customDefault = customDefault;
 		this.usedRules = usedRules;
+	}
+
+	public CustomRule(String ruleId, String defaultRuleId, Provider provider, List<ComplianceKor> complianceKors,
+		List<ComplianceEng> complianceEngs, List<ScanHistoryDetail> historyDetails) {
+		this.ruleId = ruleId;
+		this.defaultRuleId = defaultRuleId;
+		this.provider = provider;
+		this.complianceEngs = complianceEngs;
+		this.complianceKors = complianceKors;
+		this.historyDetails = historyDetails;
 	}
 
 	public List<TagDto> getTagDto() {
