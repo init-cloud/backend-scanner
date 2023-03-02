@@ -83,12 +83,11 @@ public class ScanService {
 	}
 
 	@Transactional
-	public void save(ScanDto.Response scanResult, String[] args, String provider,
-		double[] total) {
+	public void save(ScanDto.Response scanResult, String[] args, String provider, double[] total) {
 		try {
 			ScanHistory scan = ScanHistory.toEntity(args, scanResult.getCheck().getPassed(),
-				scanResult.getCheck().getSkipped(),
-				scanResult.getCheck().getFailed(), total, provider, scanResult.getParse().toString());
+				scanResult.getCheck().getSkipped(), scanResult.getCheck().getFailed(), total, provider,
+				scanResult.getParse().toString());
 
 			scan = scanHistoryRepository.save(scan);
 
@@ -217,65 +216,59 @@ public class ScanService {
 	private double[] calc(List<ScanDto.Result> results) {
 		/* score, high, medium, low, unknown */
 		double[] count = new double[] {0.0, 0.0, 0.0, 0.0, 0.0};
-		int success = 0;
-		int total = 0;
-		int severity = 0;
-		int totalSeverity = 0;
+		int totalHigh = 0;
+		int totalMedium = 0;
+		int totalLow = 0;
 
 		for (ScanDto.Result result : results) {
-
 			try {
-				total += 1;
 				switch (result.getLevel()) {
 					case "High":
 						if (result.getStatus().equals(PASSED)) {
-							success += 1;
-							severity += 3;
 							count[1] += 1;
 						}
-						totalSeverity += 3;
+						totalHigh += 1;
 						break;
 					case "Medium":
 						if (result.getStatus().equals(PASSED)) {
-							success += 1;
-							severity += 2;
 							count[2] += 1;
 						}
-						totalSeverity += 2;
+						totalMedium += 1;
 						break;
 					case "Low":
 						if (result.getStatus().equals(PASSED)) {
-							success += 1;
-							severity += 1;
 							count[3] += 1;
 						}
-						totalSeverity += 1;
+						totalLow += 1;
 						break;
 					default:
 						if (result.getStatus().equals(PASSED)) {
-							success += 1;
-							severity += 1;
 							count[4] += 1;
 						}
-						totalSeverity += 1;
+						totalLow += 1;
 						break;
 				}
 			} catch (NullPointerException e) {
-				continue;
+				if (result.getStatus().equals(PASSED)) {
+					count[3] += 1;
+					totalLow += 1;
+				}
 			}
 		}
 
-		double down = (total * totalSeverity);
+		double down = totalHigh * 3.0 + totalMedium * 2.0 + totalLow * 1.0;
 
-		return getScore(down, count, success, severity);
+		return getScore(down, count);
 	}
 
-	private double[] getScore(double down, double[] count, int success, int severity) {
+	private double[] getScore(double down, double[] count) {
 
-		if (down == 0.0)
+		if (down == 0.0) {
 			count[0] = 0.0;
-		else
-			count[0] = Math.round((success * severity * 100.0) / down) * 10.0 / 10.0;
+		} else {
+			double up = (3 * count[1] + 2 * count[2] * 1 * count[3] + 1 * count[4]);
+			count[0] = Math.round((up * 100.0) / down) * 10.0 / 10.0;
+		}
 
 		return count;
 	}
