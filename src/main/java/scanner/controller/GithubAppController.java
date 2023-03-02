@@ -37,9 +37,9 @@ public class GithubAppController {
 		GithubToken dtos = new GithubToken(accessToken, refreshToken, expiresIn, refreshTokenExpiresIn, scope,
 			tokenType);
 
-		githubAppService.addToken(dtos);
+		GithubToken response = githubAppService.addToken(dtos);
 
-		return new CommonResponse<>(dtos);
+		return new CommonResponse<>(response);
 	}
 
 	@ApiOperation(value = "Get Repository List", notes = "Get Repository List from Github.", response = CommonResponse.class)

@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -17,6 +18,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import scanner.model.BaseEntity;
+import scanner.security.dto.GithubToken;
 
 @Getter
 @Entity
@@ -29,7 +31,7 @@ public class UserOAuthToken extends BaseEntity {
 	@Column(name = "USER_OAUTH_TOKEN_ID")
 	private Long id;
 
-	@OneToOne
+	@OneToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "USER_ID")
 	private User user;
 
@@ -63,5 +65,17 @@ public class UserOAuthToken extends BaseEntity {
 		this.tokenType = tokenType;
 		this.expiresIn = expiresIn;
 		this.refreshTokenExpiresIn = refreshTokenExpiresIn;
+	}
+
+	public UserOAuthToken(UserOAuthToken origin, GithubToken token, User user) {
+		super(origin.getCreatedAt(), LocalDateTime.now());
+		this.id = origin.getId();
+		this.user = user;
+		this.accessToken = token.getAccessToken();
+		this.refreshToken = token.getRefreshToken();
+		this.scope = token.getScope();
+		this.tokenType = token.getTokenType();
+		this.expiresIn = token.getExpiresIn();
+		this.refreshTokenExpiresIn = token.getRefreshTokenExpiresIn();
 	}
 }

@@ -27,7 +27,6 @@ public class GithubAppService {
 	private final GithubFeignClient githubFeignClient;
 	private final JwtTokenProvider jwtTokenProvider;
 	private final UserRepository userRepository;
-
 	private final OAuthTokenRepository oAuthTokenRepository;
 
 	@Transactional
@@ -37,7 +36,12 @@ public class GithubAppService {
 		User requestUser = userRepository.findByUsername(username)
 			.orElseThrow(() -> new ApiException(ResponseCode.INVALID_USER));
 
-		UserOAuthToken saved = oAuthTokenRepository.save(GithubToken.toEntity(tokens, requestUser));
+		UserOAuthToken saved;
+		if (requestUser.getOAuthToken() != null)
+			saved = oAuthTokenRepository.save(
+				new UserOAuthToken(requestUser.getOAuthToken(), tokens, requestUser));
+		else
+			saved = oAuthTokenRepository.save(GithubToken.toEntity(tokens, requestUser));
 
 		if (saved.getAccessToken().equals(tokens.getAccessToken()))
 			return tokens;
