@@ -37,14 +37,15 @@ public class ScanHistoryService {
 
 		ScanHistory history = scanHistoryRepository.findByHistorySeq(reportId)
 			.orElseThrow(() -> new ApiException(ResponseCode.NO_SCAN_RESULT));
+
 		ScanSummaryDto summaryDto = ScanSummaryDto.toLangDto(history, lang);
 
 		List<ScanHistoryDetail> details = scanHistoryDetailsRepository.findByHistorySeq(reportId);
 		List<ScanHistoryDetailDto> detailsDto;
 		if (lang == Language.KOREAN)
-			detailsDto = details.stream().map(ScanHistoryDetailDto::toKorDto).collect(Collectors.toList());
+			detailsDto = details.stream().map(ScanHistoryDetailDto::toKor).collect(Collectors.toList());
 		else
-			detailsDto = details.stream().map(ScanHistoryDetailDto::toEngDto).collect(Collectors.toList());
+			detailsDto = details.stream().map(ScanHistoryDetailDto::toEng).collect(Collectors.toList());
 
 		return new ReportResponse(summaryDto, detailsDto);
 	}

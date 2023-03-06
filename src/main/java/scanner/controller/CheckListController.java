@@ -5,6 +5,7 @@ import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 
+import org.springframework.lang.Nullable;
 import org.springframework.web.bind.annotation.*;
 
 import scanner.dto.rule.CheckListDetailDto;
@@ -48,7 +49,7 @@ public class CheckListController {
 		@ApiImplicitParam(name = "lang", paramType = "query", value = "eng, kor", required = false, dataTypeClass = String.class)})
 	@GetMapping("/{ruleId}")
 	public CommonResponse<CheckListDetailDto.Detail> checkListDetails(@PathVariable String ruleId,
-		@RequestParam String lang) {
+		@Nullable @RequestParam String lang) {
 		CheckListDetailDto.Detail dto = checkListService.getCheckListDetails(ruleId, lang);
 
 		return new CommonResponse<>(dto);

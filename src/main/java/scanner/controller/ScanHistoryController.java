@@ -48,7 +48,8 @@ public class ScanHistoryController {
 		@ApiImplicitParam(name = "reportId", paramType = "path", value = "History(Report) ID", required = true, dataTypeClass = Long.class),
 		@ApiImplicitParam(name = "lang", paramType = "query", value = "eng, kor", required = false, dataTypeClass = String.class)})
 	@GetMapping("/report/{reportId}")
-	public CommonResponse<ReportResponse> reportDetails(@PathVariable Long reportId, @Nullable @RequestParam String lang) {
+	public CommonResponse<ReportResponse> reportDetails(@PathVariable Long reportId,
+		@Nullable @RequestParam String lang) {
 		ReportResponse dtos = scanHistoryService.getReportDetails(reportId, Language.of(lang));
 
 		return new CommonResponse<>(dtos);

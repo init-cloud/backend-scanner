@@ -1,7 +1,9 @@
 package scanner.service.rule;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.transaction.Transactional;
 
@@ -46,14 +48,17 @@ public class CheckListService {
 	@Transactional
 	public CheckListDetailDto.Detail getCheckListDetails(@NonNull String ruleId, @Nullable String lang) {
 
-		CustomRule rule = checkListRepository.findByRuleId(ruleId).orElseThrow();
+		CustomRule rule = checkListRepository.findByRuleId(ruleId)
+			.orElseThrow(() -> new ApiException(ResponseCode.INVALID_REQUEST));
 
-		if (Language.KOREAN == Language.of(lang))
-			for (CustomRuleDetails details : rule.getRuleDetails())
-				if (Language.KOREAN == details.getLanguage())
-					return CheckListDetailDto.toDto(rule, details);
+		Stream<Object> ruleStream = Arrays.stream(rule.getRuleDetails().toArray());
+		Object ruleDetail = ruleStream.filter(detail -> ((CustomRuleDetails)detail).getLanguage() == Language.of(lang))
+			.findFirst()
+			.orElse(ruleStream.filter(detail -> ((CustomRuleDetails)detail).getLanguage() == Language.ENGLISH)
+				.findFirst()
+				.orElseThrow(() -> new ApiException(ResponseCode.INVALID_REQUEST)));
 
-		return new CheckListDetailDto.Detail(rule);
+		return CheckListDetailDto.toDto(rule, (CustomRuleDetails)ruleDetail);
 	}
 
 	public List<CustomRule> getOffedCheckList() {

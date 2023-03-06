@@ -1,9 +1,13 @@
 package scanner.dto.report;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import lombok.*;
+import scanner.common.enums.ResponseCode;
+import scanner.exception.ApiException;
 import scanner.model.enums.Language;
 import scanner.model.rule.CustomRule;
 import scanner.model.history.ScanHistoryDetail;
@@ -31,7 +35,7 @@ public class ScanHistoryDetailDto {
 	private String solution;
 	private List<ComplianceDto> compliance;
 
-	public static ScanHistoryDetailDto toEngDto(final ScanHistoryDetail entity) {
+	public static ScanHistoryDetailDto toEng(final ScanHistoryDetail entity) {
 		CustomRule rule = entity.getRuleSeq();
 		List<ComplianceDto> compliance = rule.getComplianceEngs()
 			.stream()
@@ -40,10 +44,15 @@ public class ScanHistoryDetailDto {
 
 		List<String> tag = rule.getTags().stream().map(Tag::getTagName).collect(Collectors.toList());
 
-		return ScanHistoryDetailDto.toDto(entity, rule, tag, compliance);
+		Stream<Object> ruleStream = Arrays.stream(rule.getRuleDetails().toArray());
+		Object details = ruleStream.filter(detail -> ((CustomRuleDetails)detail).getLanguage() == Language.ENGLISH)
+			.findFirst()
+			.orElseThrow(() -> new ApiException(ResponseCode.INVALID_REQUEST));
+
+		return ScanHistoryDetailDto.toDto(entity, rule, (CustomRuleDetails)details, tag, compliance);
 	}
 
-	public static ScanHistoryDetailDto toKorDto(final ScanHistoryDetail entity) {
+	public static ScanHistoryDetailDto toKor(final ScanHistoryDetail entity) {
 		CustomRule rule = entity.getRuleSeq();
 		List<ComplianceDto> compliance = rule.getComplianceKors()
 			.stream()
@@ -52,31 +61,15 @@ public class ScanHistoryDetailDto {
 
 		List<String> tag = rule.getTags().stream().map(Tag::getTagName).collect(Collectors.toList());
 
-		for (CustomRuleDetails details : rule.getRuleDetails()) {
-			if (details.getLanguage() == Language.KOREAN)
-				return ScanHistoryDetailDto.toDto(entity, rule, details, tag, compliance);
-		}
-		return ScanHistoryDetailDto.toDto(entity, rule, tag, compliance);
-	}
+		Stream<Object> ruleStream = Arrays.stream(rule.getRuleDetails().toArray());
+		Object details = ruleStream.filter(detail -> ((CustomRuleDetails)detail).getLanguage() == Language.KOREAN)
+			.findFirst()
+			.orElse(ruleStream.filter(detail -> ((CustomRuleDetails)detail).getLanguage() == Language.ENGLISH)
+				.findFirst()
+				.orElseThrow(() -> new ApiException(ResponseCode.INVALID_REQUEST)));
 
-	public static ScanHistoryDetailDto toDto(final ScanHistoryDetail entity, final CustomRule rule,
-		final List<String> tag, final List<ComplianceDto> compliance) {
-		return ScanHistoryDetailDto.builder()
-			.ruleID(rule.getRuleId())
-			.description(rule.getDescription())
-			.result(entity.getScanResult())
-			.severity(rule.getLevel())
-			.type(tag)
-			.fileName(entity.getTargetFile())
-			.line(entity.getLine())
-			.resource(entity.getResource())
-			.resourceName(entity.getResourceName())
-			.problematicCode(entity.getCode())
-			.possibleImpact(rule.getPossibleImpact())
-			.solutionSample(rule.getCode())
-			.solution(rule.getSol())
-			.compliance(compliance)
-			.build();
+		return ScanHistoryDetailDto.toDto(entity, rule, (CustomRuleDetails)details, tag, compliance);
+
 	}
 
 	public static ScanHistoryDetailDto toDto(final ScanHistoryDetail entity, final CustomRule rule,

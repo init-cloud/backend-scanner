@@ -13,7 +13,6 @@ public enum Language {
 	private final String lang;
 
 	public static Language of(String code) {
-
 		return Arrays.stream(Language.values()).filter(r -> r.getLang().equals(code)).findAny().orElse(ENGLISH);
 	}
 }
