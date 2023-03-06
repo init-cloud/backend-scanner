@@ -2,6 +2,7 @@ package scanner.dto.report;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -44,8 +45,8 @@ public class ScanHistoryDetailDto {
 
 		List<String> tag = rule.getTags().stream().map(Tag::getTagName).collect(Collectors.toList());
 
-		Stream<Object> ruleStream = Arrays.stream(rule.getRuleDetails().toArray());
-		Object details = ruleStream.filter(detail -> ((CustomRuleDetails)detail).getLanguage() == Language.ENGLISH)
+		Object details = Arrays.stream(rule.getRuleDetails().toArray())
+			.filter(detail -> ((CustomRuleDetails)detail).getLanguage() == Language.ENGLISH)
 			.findFirst()
 			.orElseThrow(() -> new ApiException(ResponseCode.INVALID_REQUEST));
 
@@ -61,15 +62,16 @@ public class ScanHistoryDetailDto {
 
 		List<String> tag = rule.getTags().stream().map(Tag::getTagName).collect(Collectors.toList());
 
-		Stream<Object> ruleStream = Arrays.stream(rule.getRuleDetails().toArray());
-		Object details = ruleStream.filter(detail -> ((CustomRuleDetails)detail).getLanguage() == Language.KOREAN)
+		Supplier<Stream<Object>> streamSupplier = () -> Arrays.stream(rule.getRuleDetails().toArray());
+		Object details = streamSupplier.get()
+			.filter(detail -> ((CustomRuleDetails)detail).getLanguage() == Language.KOREAN)
 			.findFirst()
-			.orElse(ruleStream.filter(detail -> ((CustomRuleDetails)detail).getLanguage() == Language.ENGLISH)
+			.orElse(streamSupplier.get()
+				.filter(detail -> ((CustomRuleDetails)detail).getLanguage() == Language.ENGLISH)
 				.findFirst()
 				.orElseThrow(() -> new ApiException(ResponseCode.INVALID_REQUEST)));
 
 		return ScanHistoryDetailDto.toDto(entity, rule, (CustomRuleDetails)details, tag, compliance);
-
 	}
 
 	public static ScanHistoryDetailDto toDto(final ScanHistoryDetail entity, final CustomRule rule,

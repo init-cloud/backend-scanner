@@ -2,6 +2,7 @@ package scanner.service.rule;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -46,15 +47,16 @@ public class CheckListService {
 	}
 
 	@Transactional
-	public CheckListDetailDto.Detail getCheckListDetails(@NonNull String ruleId, @Nullable String lang) {
-
+	public CheckListDetailDto.Detail getCheckListDetails(@NonNull String ruleId, @Nullable Language lang) {
 		CustomRule rule = checkListRepository.findByRuleId(ruleId)
 			.orElseThrow(() -> new ApiException(ResponseCode.INVALID_REQUEST));
 
-		Stream<Object> ruleStream = Arrays.stream(rule.getRuleDetails().toArray());
-		Object ruleDetail = ruleStream.filter(detail -> ((CustomRuleDetails)detail).getLanguage() == Language.of(lang))
+		Supplier<Stream<Object>> streamSupplier = () -> Arrays.stream(rule.getRuleDetails().toArray());
+		Object ruleDetail = streamSupplier.get()
+			.filter(detail -> ((CustomRuleDetails)detail).getLanguage() == lang)
 			.findFirst()
-			.orElse(ruleStream.filter(detail -> ((CustomRuleDetails)detail).getLanguage() == Language.ENGLISH)
+			.orElse(streamSupplier.get()
+				.filter(detail -> ((CustomRuleDetails)detail).getLanguage() == Language.ENGLISH)
 				.findFirst()
 				.orElseThrow(() -> new ApiException(ResponseCode.INVALID_REQUEST)));
 

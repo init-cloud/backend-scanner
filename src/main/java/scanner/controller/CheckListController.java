@@ -12,6 +12,7 @@ import scanner.dto.rule.CheckListDetailDto;
 import scanner.dto.rule.CheckListModifyDto;
 import scanner.dto.rule.CheckListSimpleDto;
 import scanner.dto.CommonResponse;
+import scanner.model.enums.Language;
 import scanner.service.rule.CheckListService;
 
 @ApiOperation("Checklist API. Checklist is same as Rule.")
@@ -50,7 +51,7 @@ public class CheckListController {
 	@GetMapping("/{ruleId}")
 	public CommonResponse<CheckListDetailDto.Detail> checkListDetails(@PathVariable String ruleId,
 		@Nullable @RequestParam String lang) {
-		CheckListDetailDto.Detail dto = checkListService.getCheckListDetails(ruleId, lang);
+		CheckListDetailDto.Detail dto = checkListService.getCheckListDetails(ruleId, Language.of(lang));
 
 		return new CommonResponse<>(dto);
 	}
