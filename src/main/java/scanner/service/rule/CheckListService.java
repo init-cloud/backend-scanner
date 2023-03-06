@@ -14,7 +14,9 @@ import scanner.dto.rule.CheckListModifyDto;
 import scanner.exception.ApiException;
 import scanner.dto.rule.CheckListDetailDto;
 import scanner.dto.rule.CheckListSimpleDto;
+import scanner.model.enums.Language;
 import scanner.model.rule.CustomRule;
+import scanner.model.rule.CustomRuleDetails;
 import scanner.repository.CheckListRepository;
 import scanner.common.enums.ResponseCode;
 
@@ -42,9 +44,14 @@ public class CheckListService {
 	}
 
 	@Transactional
-	public CheckListDetailDto.Detail getCheckListDetails(String ruleId) {
+	public CheckListDetailDto.Detail getCheckListDetails(@NonNull String ruleId, @Nullable String lang) {
 
 		CustomRule rule = checkListRepository.findByRuleId(ruleId).orElseThrow();
+
+		if (Language.KOREAN == Language.of(lang))
+			for (CustomRuleDetails details : rule.getRuleDetails())
+				if (Language.KOREAN == details.getLanguage())
+					return CheckListDetailDto.toDto(rule, details);
 
 		return new CheckListDetailDto.Detail(rule);
 	}

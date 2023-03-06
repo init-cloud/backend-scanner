@@ -6,6 +6,7 @@ import lombok.*;
 
 import scanner.model.rule.CustomRule;
 import scanner.model.enums.SecurityType;
+import scanner.model.rule.CustomRuleDetails;
 
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class CheckListDetailDto {
@@ -30,9 +31,7 @@ public class CheckListDetailDto {
 		private Character isModified;
 
 		@Builder
-		public Detail(
-			CustomRule rule
-		) {
+		public Detail(CustomRule rule) {
 			this.ruleId = rule.getRuleId();
 			this.tags = rule.getTagDto();
 			this.type = null;
@@ -55,6 +54,24 @@ public class CheckListDetailDto {
 	public static class Solution {
 		private String sol;
 		private String code;
+	}
+
+	public static Detail toDto(CustomRule rule, CustomRuleDetails details) {
+		return Detail.builder()
+			.ruleId(rule.getRuleId())
+			.tags(rule.getTagDto())
+			.level(rule.getLevel())
+			.description(details.getDescription())
+			.explanation(details.getExplanation())
+			.possibleImpact(details.getPossibleImpact())
+			.insecureExample(rule.getInsecureExample())
+			.secureExample(rule.getSecureExample())
+			.solution(new Solution(details.getSol(), rule.getCode()))
+			.state(rule.getRuleOnOff())
+			.isModifiable(rule.getIsModifiable())
+			.isModified(rule.getIsModified())
+			.customDetail(rule.getCustomDetail())
+			.build();
 	}
 
 	public static Detail toDto(CustomRule rule) {

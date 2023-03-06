@@ -107,6 +107,9 @@ public class CustomRule extends BaseEntity {
 	@OneToMany(mappedBy = "customRule")
 	private List<UsedRule> usedRules = new ArrayList<>();
 
+	@OneToMany(mappedBy = "ruleSeq")
+	private List<CustomRuleDetails> ruleDetails = new ArrayList<>();
+
 	@Builder
 	public CustomRule(String ruleId, String defaultRuleId, String ruleOnOff, Provider provider, String ruleType,
 		String level, Character isModified, Character isModifiable, String description, String explanation,

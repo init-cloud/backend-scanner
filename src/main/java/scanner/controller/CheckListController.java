@@ -44,10 +44,12 @@ public class CheckListController {
 	@ApiOperation(value = "Retrieve Checklist Details", notes = "Retrieve checklists.", response = CommonResponse.class)
 	@ApiImplicitParams({
 		@ApiImplicitParam(name = "Authorization", paramType = "header", value = "Access Token", required = true, dataTypeClass = String.class),
-		@ApiImplicitParam(name = "ruleId", paramType = "path", value = "Checklist(rule) ID", required = true, dataTypeClass = String.class, example = "CKV_NCP_1")})
+		@ApiImplicitParam(name = "ruleId", paramType = "path", value = "Checklist(rule) ID", required = true, dataTypeClass = String.class, example = "CKV_NCP_1"),
+		@ApiImplicitParam(name = "lang", paramType = "query", value = "eng, kor", required = false, dataTypeClass = String.class)})
 	@GetMapping("/{ruleId}")
-	public CommonResponse<CheckListDetailDto.Detail> checkListDetails(@PathVariable String ruleId) {
-		CheckListDetailDto.Detail dto = checkListService.getCheckListDetails(ruleId);
+	public CommonResponse<CheckListDetailDto.Detail> checkListDetails(@PathVariable String ruleId,
+		@RequestParam String lang) {
+		CheckListDetailDto.Detail dto = checkListService.getCheckListDetails(ruleId, lang);
 
 		return new CommonResponse<>(dto);
 	}

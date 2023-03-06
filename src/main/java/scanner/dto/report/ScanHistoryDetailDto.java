@@ -7,6 +7,7 @@ import lombok.*;
 import scanner.model.enums.Language;
 import scanner.model.rule.CustomRule;
 import scanner.model.history.ScanHistoryDetail;
+import scanner.model.rule.CustomRuleDetails;
 import scanner.model.rule.Tag;
 
 @Builder
@@ -51,6 +52,10 @@ public class ScanHistoryDetailDto {
 
 		List<String> tag = rule.getTags().stream().map(Tag::getTagName).collect(Collectors.toList());
 
+		for (CustomRuleDetails details : rule.getRuleDetails()) {
+			if (details.getLanguage() == Language.KOREAN)
+				return ScanHistoryDetailDto.toDto(entity, rule, details, tag, compliance);
+		}
 		return ScanHistoryDetailDto.toDto(entity, rule, tag, compliance);
 	}
 
@@ -70,6 +75,26 @@ public class ScanHistoryDetailDto {
 			.possibleImpact(rule.getPossibleImpact())
 			.solutionSample(rule.getCode())
 			.solution(rule.getSol())
+			.compliance(compliance)
+			.build();
+	}
+
+	public static ScanHistoryDetailDto toDto(final ScanHistoryDetail entity, final CustomRule rule,
+		final CustomRuleDetails details, final List<String> tag, final List<ComplianceDto> compliance) {
+		return ScanHistoryDetailDto.builder()
+			.ruleID(rule.getRuleId())
+			.description(details.getDescription())
+			.result(entity.getScanResult())
+			.severity(rule.getLevel())
+			.type(tag)
+			.fileName(entity.getTargetFile())
+			.line(entity.getLine())
+			.resource(entity.getResource())
+			.resourceName(entity.getResourceName())
+			.problematicCode(entity.getCode())
+			.possibleImpact(details.getPossibleImpact())
+			.solutionSample(rule.getCode())
+			.solution(details.getSol())
 			.compliance(compliance)
 			.build();
 	}
