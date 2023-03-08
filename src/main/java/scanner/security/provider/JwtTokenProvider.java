@@ -6,12 +6,14 @@ import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 import scanner.exception.ApiException;
 import scanner.model.enums.RoleType;
 import scanner.common.enums.ResponseCode;
+import scanner.model.user.User;
 import scanner.security.config.Properties;
 import scanner.security.dto.Token;
 import scanner.security.dto.UsernameToken;
@@ -48,10 +50,7 @@ public class JwtTokenProvider {
 
 	public Claims getClaims(String token, String key) {
 		try {
-			return Jwts.parser()
-				.setSigningKey(key)
-				.parseClaimsJws(token)
-				.getBody();
+			return Jwts.parser().setSigningKey(key).parseClaimsJws(token).getBody();
 		} catch (SecurityException e) {
 			log.info("Invalid JWT signature", e);
 		} catch (MalformedJwtException e) {
@@ -70,11 +69,12 @@ public class JwtTokenProvider {
 	}
 
 	public String getUsername(String token, String key) {
-		return Jwts.parser()
-			.setSigningKey(key)
-			.parseClaimsJws(token)
-			.getBody()
-			.getSubject();
+		return Jwts.parser().setSigningKey(key).parseClaimsJws(token).getBody().getSubject();
+	}
+
+	public String getUsername() {
+		Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		return ((User)principal).getUsername();
 	}
 
 	public Authentication getAuthentication(String token, String key) {
@@ -84,11 +84,17 @@ public class JwtTokenProvider {
 		return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
 	}
 
+	public String getToken() {
+		String username = getUsername();
+
+		User requestUser = (User)userDetailsService.loadUserByUsername(username);
+
+		return requestUser.getOAuthToken().getAccessToken();
+	}
+
 	public boolean validate(String token, String key) {
 		try {
-			Jwts.parser()
-				.setSigningKey(key)
-				.parseClaimsJws(token);
+			Jwts.parser().setSigningKey(key).parseClaimsJws(token);
 			return true;
 		} catch (SecurityException e) {
 			log.info("Invalid JWT signature", e);

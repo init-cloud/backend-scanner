@@ -1,32 +1,44 @@
 package scanner.model.user;
 
-import lombok.*;
-
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
-
-import scanner.dto.user.UserSignupDto;
-import scanner.model.enums.OAuthProvider;
-import scanner.model.enums.RoleType;
-import scanner.model.enums.UserAuthority;
-import scanner.model.enums.UserState;
-
-import javax.persistence.*;
-import javax.validation.constraints.Size;
-
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
+import javax.persistence.Table;
+import javax.validation.constraints.Size;
+
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+
+import lombok.AccessLevel;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import scanner.dto.user.UserSignupDto;
+import scanner.model.BaseEntity;
+import scanner.model.enums.OAuthProvider;
+import scanner.model.enums.RoleType;
+import scanner.model.enums.UserAuthority;
+import scanner.model.enums.UserState;
+
 @Getter
 @Entity
 @Table(name = "USER")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class User implements UserDetails {
+public class User extends BaseEntity implements UserDetails {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -40,13 +52,8 @@ public class User implements UserDetails {
 	@Enumerated(EnumType.STRING)
 	private OAuthProvider oAuthProvider;
 
-	@CreatedDate
-	@Column(name = "CREATED_AT")
-	private LocalDateTime createdAt;
-
-	@LastModifiedDate
-	@Column(name = "MODIFIED_AT")
-	private LocalDateTime modifiedAt;
+	@OneToOne(fetch = FetchType.LAZY, mappedBy = "user")
+	private UserOAuthToken oAuthToken;
 
 	@Column(name = "LAST_LOGIN")
 	@Setter

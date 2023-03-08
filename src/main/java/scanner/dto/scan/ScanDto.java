@@ -8,11 +8,18 @@ import lombok.*;
 public class ScanDto {
 
 	@Getter
-	@AllArgsConstructor
 	public static class Response {
-		private final Check check;
-		private final List<Result> result;
-		private final Object parse;
+		private Check check;
+		private List<Result> result;
+		@Setter
+		private Object parse;
+
+		public Response(Check check, List<Result> result) {
+			this.check = check;
+			this.result = result;
+			this.parse = null;
+		}
+
 	}
 
 	@Getter
