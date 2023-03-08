@@ -1,8 +1,8 @@
 plugins {
-	id 'org.springframework.boot' version '2.6.12'
-	id 'io.spring.dependency-management' version '1.0.14.RELEASE'
-	id 'java'
-	id "org.asciidoctor.convert" version "1.5.9.2"
+    id 'org.springframework.boot' version '2.7.1'
+    id 'io.spring.dependency-management' version '1.0.14.RELEASE'
+    id 'java'
+    id 'org.asciidoctor.jvm.convert' version "3.3.2"
 }
 
 group = 'scanner'
@@ -10,108 +10,109 @@ version = '2.0.0'
 sourceCompatibility = '11'
 
 configurations {
-	compileOnly {
-		extendsFrom annotationProcessor
-	}
+    asciidoctorExtensions
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
 }
 
 repositories {
-	mavenCentral()
+    mavenCentral()
 }
 
 dependencies {
-	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-	implementation 'org.springframework.boot:spring-boot-starter-jdbc'
-	implementation 'org.springframework.boot:spring-boot-starter-data-rest'
-	implementation 'org.springframework.boot:spring-boot-starter-validation'
-	implementation 'org.springframework.boot:spring-boot-starter-web'
-	implementation 'org.springframework.boot:spring-boot-starter-webflux'
-	implementation 'org.springframework.boot:spring-boot-starter-security'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.springframework.boot:spring-boot-starter-jdbc'
+    implementation 'org.springframework.boot:spring-boot-starter-data-rest'
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-webflux'
+    implementation 'org.springframework.boot:spring-boot-starter-security'
 
-	implementation 'org.springframework.cloud:spring-cloud-dependencies:2022.0.1'
-	implementation 'org.springframework.cloud:spring-cloud-starter-openfeign:3.1.5'
-	implementation group: 'io.github.openfeign', name: 'feign-gson', version: '11.0'
+    implementation 'org.springframework.cloud:spring-cloud-dependencies:2022.0.1'
+    implementation 'org.springframework.cloud:spring-cloud-starter-openfeign:3.1.5'
+    implementation group: 'io.github.openfeign', name: 'feign-gson', version: '11.0'
 
-	testImplementation 'org.springframework.boot:spring-boot-starter-test'
-	testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
-	testImplementation 'org.springframework.restdocs:spring-restdocs-webtestclient'
-	annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
-	developmentOnly 'org.springframework.boot:spring-boot-devtools'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
+    testImplementation 'org.springframework.restdocs:spring-restdocs-webtestclient'
+    annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
+    developmentOnly 'org.springframework.boot:spring-boot-devtools'
 
-	implementation 'com.google.code.findbugs:jsr305:3.0.2'
+    implementation 'com.google.code.findbugs:jsr305:3.0.2'
 
-	// https://mvnrepository.com/artifact/io.jsonwebtoken
-	implementation 'io.jsonwebtoken:jjwt:0.9.1'
-	implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
-	implementation 'io.jsonwebtoken:jjwt-gson:0.11.5'
-	implementation 'io.jsonwebtoken:jjwt-impl:0.11.5'
-	runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.5'
+    // https://mvnrepository.com/artifact/io.jsonwebtoken
+    implementation 'io.jsonwebtoken:jjwt:0.9.1'
+    implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
+    implementation 'io.jsonwebtoken:jjwt-gson:0.11.5'
+    implementation 'io.jsonwebtoken:jjwt-impl:0.11.5'
+    runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.5'
 
-	// https://mvnrepository.com/artifact/jakarta.xml.bind/jakarta.xml.bind-api
-  	// 2.3.2 -> 4.0.0
-	implementation 'jakarta.xml.bind:jakarta.xml.bind-api:4.0.0'
+    // https://mvnrepository.com/artifact/jakarta.xml.bind/jakarta.xml.bind-api
+    implementation 'jakarta.xml.bind:jakarta.xml.bind-api:4.0.0'
 
-	// https://mvnrepository.com/artifact/com.googlecode.json-simple/json-simple
-	implementation 'com.googlecode.json-simple:json-simple:1.1.1'
+    // https://mvnrepository.com/artifact/com.googlecode.json-simple/json-simple
+    implementation 'com.googlecode.json-simple:json-simple:1.1.1'
 
-	implementation 'commons-io:commons-io:2.11.0'
+    implementation 'commons-io:commons-io:2.11.0'
 
-	implementation 'commons-codec:commons-codec:1.14'
+    implementation 'commons-codec:commons-codec:1.14'
 
-	implementation 'org.apache.commons:commons-compress:1.21'
+    implementation 'org.apache.commons:commons-compress:1.21'
 
-	implementation 'org.mapstruct:mapstruct-processor:1.5.3.Final'
-	annotationProcessor 'org.mapstruct:mapstruct-processor:1.5.3.Final'
+    implementation 'org.mapstruct:mapstruct-processor:1.5.3.Final'
+    annotationProcessor 'org.mapstruct:mapstruct-processor:1.5.3.Final'
 
-	implementation 'org.mariadb.jdbc:mariadb-java-client:3.0.8'
+    implementation 'org.mariadb.jdbc:mariadb-java-client:3.0.8'
 
-	runtimeOnly 'mysql:mysql-connector-java'
+    runtimeOnly 'mysql:mysql-connector-java'
 
-	// https://mvnrepository.com/artifact/javax.xml.bind/jaxb-api
-	implementation 'javax.xml.bind:jaxb-api:2.3.1'
+    // https://mvnrepository.com/artifact/javax.xml.bind/jaxb-api
+    implementation 'javax.xml.bind:jaxb-api:2.3.1'
 
-	// https://mvnrepository.com/artifact/io.springfox/springfox-boot-starter
-	implementation 'io.springfox:springfox-boot-starter:3.0.0'
+    // https://mvnrepository.com/artifact/io.springfox/springfox-boot-starter
+    implementation 'io.springfox:springfox-boot-starter:3.0.0'
 
-	// https://mvnrepository.com/artifact/io.springfox/springfox-swagger-ui
-	implementation 'io.springfox:springfox-swagger-ui:3.0.0'
+    // https://mvnrepository.com/artifact/io.springfox/springfox-swagger-ui
+    implementation 'io.springfox:springfox-swagger-ui:3.0.0'
 
-	compileOnly 'org.projectlombok:lombok'
-	annotationProcessor 'org.projectlombok:lombok'
+    compileOnly 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
 
-	// https://mvnrepository.com/artifact/org.junit.jupiter
-	testImplementation 'org.junit.jupiter:junit-jupiter'
-	testImplementation 'org.junit.jupiter:junit-jupiter-api'
-	testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
+    // https://mvnrepository.com/artifact/org.junit.jupiter
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+    testImplementation 'org.junit.jupiter:junit-jupiter-api'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
 }
 
-ext { 
-	set('snippetsDir', file("build/generated-snippets"))
-	set('springCloudVersion', "2021.0.1")
+ext {
+    set('snippetsDir', file("build/generated-snippets"))
+    set('springCloudVersion', "2021.0.1")
 }
 
 test {
-	useJUnitPlatform()
-	outputs.dir snippetsDir
+    useJUnitPlatform()
+    outputs.dir snippetsDir
 }
 
-asciidoctor { 
-	attributes 'snippets': snippetsDir
-	inputs.dir snippetsDir 
-	dependsOn test 
+asciidoctor {
+    attributes 'snippets': snippetsDir
+    inputs.dir snippetsDir
+    dependsOn test
+    configurations 'asciidoctorExtensions'
 }
 
 bootJar {
-	dependsOn asciidoctor
-	from ("${asciidoctor.outputDir}/html5") { 
-		into 'static/docs'
-	}
-	archivesBaseName = 'scanner'
-	archiveFileName = 'scanner-2.0.0.jar'
-	archiveVersion = '2.0.0'
+    dependsOn asciidoctor
+    from("${asciidoctor.outputDir}/html5") {
+        into 'static/docs'
+    }
+    archivesBaseName = 'scanner'
+    archiveFileName = 'scanner-2.0.0.jar'
+    archiveVersion = '2.0.0'
 }
 
-task copyDocument(type: Copy) { 
+task copyDocument(type: Copy) {
     dependsOn bootJar
     from file("build/asciidoc/html5/")
     into file("src/main/resources/static/docs")

@@ -6,12 +6,14 @@ import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 import scanner.exception.ApiException;
 import scanner.model.enums.RoleType;
 import scanner.common.enums.ResponseCode;
+import scanner.model.user.User;
 import scanner.security.config.Properties;
 import scanner.security.dto.Token;
 import scanner.security.dto.UsernameToken;
@@ -31,7 +33,7 @@ public class JwtTokenProvider {
 	private final Properties jwt;
 	private final CustomUserDetailService userDetailsService;
 
-	public Token create(String username, RoleType role) {
+	public Token create(String username, RoleType role, String key) {
 
 		Date now = new Date();
 
@@ -40,18 +42,15 @@ public class JwtTokenProvider {
 			.claim("role", role)
 			.setIssuedAt(now)
 			.setExpiration(new Date(now.getTime() + EXPIREDTIME))
-			.signWith(SignatureAlgorithm.HS256, jwt.getSecret())
+			.signWith(SignatureAlgorithm.HS256, key)
 			.compact();
 
 		return new UsernameToken(username, accessToken, null);
 	}
 
-	public Claims getClaims(String token) {
+	public Claims getClaims(String token, String key) {
 		try {
-			return Jwts.parser()
-				.setSigningKey(jwt.getSecret())
-				.parseClaimsJws(token)
-				.getBody();
+			return Jwts.parser().setSigningKey(key).parseClaimsJws(token).getBody();
 		} catch (SecurityException e) {
 			log.info("Invalid JWT signature", e);
 		} catch (MalformedJwtException e) {
@@ -69,26 +68,33 @@ public class JwtTokenProvider {
 		return null;
 	}
 
-	public String getUsername(String token) {
-		return Jwts.parser()
-			.setSigningKey(jwt.getSecret())
-			.parseClaimsJws(token)
-			.getBody()
-			.getSubject();
+	public String getUsername(String token, String key) {
+		return Jwts.parser().setSigningKey(key).parseClaimsJws(token).getBody().getSubject();
 	}
 
-	public Authentication getAuthentication(String token) {
+	public String getUsername() {
+		Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		return ((User)principal).getUsername();
+	}
 
-		UserDetails userDetails = userDetailsService.loadUserByUsername(this.getUsername(token));
+	public Authentication getAuthentication(String token, String key) {
+
+		UserDetails userDetails = userDetailsService.loadUserByUsername(this.getUsername(token, key));
 
 		return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
 	}
 
-	public boolean validate(String token) {
+	public String getToken() {
+		String username = getUsername();
+
+		User requestUser = (User)userDetailsService.loadUserByUsername(username);
+
+		return requestUser.getOAuthToken().getAccessToken();
+	}
+
+	public boolean validate(String token, String key) {
 		try {
-			Jwts.parser()
-				.setSigningKey(jwt.getSecret())
-				.parseClaimsJws(token);
+			Jwts.parser().setSigningKey(key).parseClaimsJws(token);
 			return true;
 		} catch (SecurityException e) {
 			log.info("Invalid JWT signature", e);
