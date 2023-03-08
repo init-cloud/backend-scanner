@@ -9,25 +9,20 @@ import java.util.Map;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
+
 import org.mockito.Mock;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import scanner.dto.report.FailedComplianceDto;
-import scanner.model.enums.Language;
 import scanner.model.enums.Provider;
 import scanner.model.history.ScanHistory;
 import scanner.model.history.ScanHistoryDetail;
 import scanner.model.rule.ComplianceEng;
 import scanner.model.rule.ComplianceKor;
 import scanner.model.rule.CustomRule;
-import scanner.repository.ScanHistoryRepository;
 
 @SpringBootTest
 class ComplianceTest {
-
-	@Mock
-	private ScanHistoryRepository scanHistoryRepository;
 
 	@Mock
 	private ScanHistory scanHistory;
