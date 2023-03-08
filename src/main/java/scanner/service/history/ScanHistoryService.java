@@ -9,12 +9,9 @@ import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
 
-import scanner.common.enums.ResponseCode;
 import scanner.dto.history.VisualDto;
 import scanner.dto.report.ScanHistoryDetailDto;
 import scanner.dto.report.ScanSummaryDto;
-import scanner.exception.ApiException;
-import scanner.model.enums.Language;
 import scanner.model.history.ScanHistory;
 import scanner.model.history.ScanHistoryDetail;
 import scanner.repository.ScanHistoryDetailsRepository;
@@ -33,27 +30,24 @@ public class ScanHistoryService {
 	}
 
 	@Transactional
-	public ReportResponse getReportDetails(Long reportId, Language lang) {
+	public ReportResponse getReportDetails(Long reportId) {
 
-		ScanHistory history = scanHistoryRepository.findByHistorySeq(reportId)
-			.orElseThrow(() -> new ApiException(ResponseCode.NO_SCAN_RESULT));
-
-		ScanSummaryDto summaryDto = ScanSummaryDto.toLangDto(history, lang);
+		ScanHistory history = scanHistoryRepository.findByHistorySeq(reportId);
 
 		List<ScanHistoryDetail> details = scanHistoryDetailsRepository.findByHistorySeq(reportId);
-		List<ScanHistoryDetailDto> detailsDto;
-		if (lang == Language.KOREAN)
-			detailsDto = details.stream().map(ScanHistoryDetailDto::toKor).collect(Collectors.toList());
-		else
-			detailsDto = details.stream().map(ScanHistoryDetailDto::toEng).collect(Collectors.toList());
+
+		ScanSummaryDto summaryDto = ScanSummaryDto.toDto(history);
+
+		List<ScanHistoryDetailDto> detailsDto = details.stream()
+			.map(ScanHistoryDetailDto::toDto)
+			.collect(Collectors.toList());
 
 		return new ReportResponse(summaryDto, detailsDto);
 	}
 
 	public VisualDto.Response getVisualization(Long reportId) {
 
-		ScanHistory history = scanHistoryRepository.findByHistorySeq(reportId)
-			.orElseThrow(() -> new ApiException(ResponseCode.NO_SCAN_RESULT));
+		ScanHistory history = scanHistoryRepository.findByHistorySeq(reportId);
 
 		return new VisualDto.Response(history.getHistorySeq(), history.getCreatedAt(), history.getVisual());
 	}

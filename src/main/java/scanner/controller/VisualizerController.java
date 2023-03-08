@@ -21,7 +21,7 @@ public class VisualizerController {
 
 	private final ScanHistoryService scanHistoryService;
 
-	@ApiOperation(value = "Scan Visualization", notes = "Get Scan Visualization from History.", response = CommonResponse.class)
+	@ApiOperation(value = "Scan Visualization", notes = "Get Scan Visualization from History.")
 	@ApiImplicitParams({
 		@ApiImplicitParam(name = "Authorization", paramType = "header", value = "Access Token", required = true, dataTypeClass = String.class),
 		@ApiImplicitParam(name = "history", paramType = "path", value = "History ID", required = true, dataTypeClass = Long.class)})

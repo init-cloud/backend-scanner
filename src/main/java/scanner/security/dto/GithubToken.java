@@ -1,10 +1,6 @@
 package scanner.security.dto;
 
-import java.time.LocalDateTime;
-
 import lombok.*;
-import scanner.model.user.User;
-import scanner.model.user.UserOAuthToken;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -23,19 +19,5 @@ public class GithubToken extends Token {
 		this.refreshTokenExpiresIn = refreshTokenExpiresIn;
 		this.scope = scope;
 		this.tokenType = tokenType;
-	}
-
-	public static UserOAuthToken toEntity(final GithubToken token, final User user) {
-		return UserOAuthToken.builder()
-			.createdAt(LocalDateTime.now())
-			.modifiedAt(LocalDateTime.now())
-			.user(user)
-			.tokenType(token.getTokenType())
-			.accessToken(token.getAccessToken())
-			.refreshToken(token.getRefreshToken())
-			.expiresIn(token.getExpiresIn())
-			.refreshTokenExpiresIn(token.getRefreshTokenExpiresIn())
-			.scope(token.getScope())
-			.build();
 	}
 }
