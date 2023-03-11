@@ -24,7 +24,7 @@ public class AdminController {
 
 	@ApiOperation(value = "Retrieve Users", notes = "Retrieve User List.", response = CommonResponse.class)
 	@ApiImplicitParams({
-		@ApiImplicitParam(name = "Authorization", paramType = "header", value = "Access Token", required = true, dataTypeClass = String.class)})
+		@ApiImplicitParam(name = "Authorization", paramType = "header", value = "Access Token", required = true, dataTypeClass = String.class),})
 	@GetMapping("/user")
 	public CommonResponse<List<UserRetrieveDto>> userListForAdmin() {
 		List<UserRetrieveDto> response = userDetailService.getUserList();
@@ -34,8 +34,7 @@ public class AdminController {
 
 	@ApiOperation(value = "Manage User", notes = "Managing User Authority, Role and State.", response = CommonResponse.class)
 	@ApiImplicitParams({
-		@ApiImplicitParam(name = "Authorization", paramType = "header", value = "Access Token", required = true, dataTypeClass = String.class),
-		@ApiImplicitParam(name = "UserManagingDto", paramType = "body", value = "UserManagingDto", required = true, dataTypeClass = UserManagingDto.class)})
+		@ApiImplicitParam(name = "Authorization", paramType = "header", value = "Access Token", required = true, dataTypeClass = String.class),})
 	@PostMapping("/user")
 	public CommonResponse<UserManagingDto> managingUserDetails(@RequestBody UserManagingDto dto) {
 		UserManagingDto response = userDetailService.modifyUserDetails(dto);

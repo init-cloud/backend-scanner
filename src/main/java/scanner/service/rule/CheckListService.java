@@ -1,10 +1,7 @@
 package scanner.service.rule;
 
-import java.util.Arrays;
 import java.util.List;
-import java.util.function.Supplier;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import javax.transaction.Transactional;
 
@@ -17,9 +14,7 @@ import scanner.dto.rule.CheckListModifyDto;
 import scanner.exception.ApiException;
 import scanner.dto.rule.CheckListDetailDto;
 import scanner.dto.rule.CheckListSimpleDto;
-import scanner.model.enums.Language;
 import scanner.model.rule.CustomRule;
-import scanner.model.rule.CustomRuleDetails;
 import scanner.repository.CheckListRepository;
 import scanner.common.enums.ResponseCode;
 
@@ -47,20 +42,11 @@ public class CheckListService {
 	}
 
 	@Transactional
-	public CheckListDetailDto.Detail getCheckListDetails(@NonNull String ruleId, @Nullable Language lang) {
-		CustomRule rule = checkListRepository.findByRuleId(ruleId)
-			.orElseThrow(() -> new ApiException(ResponseCode.INVALID_REQUEST));
+	public CheckListDetailDto.Detail getCheckListDetails(String ruleId) {
 
-		Supplier<Stream<Object>> streamSupplier = () -> Arrays.stream(rule.getRuleDetails().toArray());
-		Object ruleDetail = streamSupplier.get()
-			.filter(detail -> ((CustomRuleDetails)detail).getLanguage() == lang)
-			.findFirst()
-			.orElse(streamSupplier.get()
-				.filter(detail -> ((CustomRuleDetails)detail).getLanguage() == Language.ENGLISH)
-				.findFirst()
-				.orElseThrow(() -> new ApiException(ResponseCode.INVALID_REQUEST)));
+		CustomRule rule = checkListRepository.findByRuleId(ruleId).orElseThrow();
 
-		return CheckListDetailDto.toDto(rule, (CustomRuleDetails)ruleDetail);
+		return new CheckListDetailDto.Detail(rule);
 	}
 
 	public List<CustomRule> getOffedCheckList() {
@@ -90,10 +76,7 @@ public class CheckListService {
 		if (!ruleId.equals(data.getRule_id()))
 			throw new ApiException(ResponseCode.INVALID_REQUEST);
 
-		/**
-		 * @Todo 추후 변경된 커스텀 룰이 유효한지 확인하는 로직 필요.
-		 */
-		checkListRepository.updateRule(data.getRule_id(), CheckListModifyDto.Modifying.toJsonString(data.getCustom()));
+		checkListRepository.updateRule(data.getRule_id(), data.getCustom().toString());
 
 		CustomRule rule = checkListRepository.findByRuleId(ruleId)
 			.orElseThrow(() -> new ApiException(ResponseCode.INVALID_REQUEST));

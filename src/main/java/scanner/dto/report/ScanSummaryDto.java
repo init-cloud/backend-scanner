@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Map;
 
 import lombok.*;
-import scanner.model.enums.Language;
 import scanner.model.history.ScanHistory;
 import scanner.model.history.ScanHistoryDetail;
 
@@ -29,24 +28,17 @@ public class ScanSummaryDto {
 	private Integer unknown;
 	private Double score;
 	private List<FailedDto> failedResource;
-	private List<FailedComplianceDto> failedCompliance;
+	private List<FailedDto> failedCompliance;
 	private List<FailedDto> failedSecurityThreat;
 
-	public static ScanSummaryDto toLangDto(ScanHistory entity, Language lang) {
+	public static ScanSummaryDto toDto(ScanHistory entity) {
 
 		List<ScanHistoryDetail> details = entity.getDetails();
 
 		Map<String, Integer> resource = FailedDto.toResourceMap(details);
-		Map<String, Map<String, Integer>> compliance =
-			(lang == Language.ENGLISH) ? FailedComplianceDto.toComplianceMap(details) :
-				FailedComplianceDto.toComplianceKorMap(details);
+		Map<String, Integer> compliance = FailedDto.toComplianceMap(details);
 		Map<String, Integer> threat = FailedDto.toThreatMap(details);
 
-		return toDto(entity, resource, compliance, threat);
-	}
-
-	private static ScanSummaryDto toDto(ScanHistory entity, Map<String, Integer> resource,
-		Map<String, Map<String, Integer>> compliance, Map<String, Integer> threat) {
 		return ScanSummaryDto.builder()
 			.historySeq(entity.getHistorySeq())
 			.date(entity.getCreatedAt().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")))
@@ -63,7 +55,7 @@ public class ScanSummaryDto {
 			.unknown(entity.getUnknown())
 			.score(entity.getScore())
 			.failedResource(FailedDto.mapToDto(resource))
-			.failedCompliance(FailedComplianceDto.mapToComplianceDto(compliance))
+			.failedCompliance(FailedDto.mapToDto(compliance))
 			.failedSecurityThreat(FailedDto.mapToDto(threat))
 			.build();
 	}

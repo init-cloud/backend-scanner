@@ -22,7 +22,6 @@ import scanner.security.provider.JwtTokenProvider;
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 	private final JwtTokenProvider jwtTokenProvider;
-	private final Properties properties;
 
 	@Bean
 	@Override
@@ -62,7 +61,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 			.anyRequest().authenticated()
 			.and()
 			.addFilterBefore(
-				new JwtAuthenticationFilter(jwtTokenProvider, properties),
+				new JwtAuthenticationFilter(jwtTokenProvider),
 				UsernamePasswordAuthenticationFilter.class);
 	}
 

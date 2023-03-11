@@ -2,7 +2,6 @@ package scanner.model.rule;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -19,14 +18,14 @@ import scanner.model.BaseEntity;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "COMPLIANCE")
-public class ComplianceEng extends BaseEntity {
+public class Compliance extends BaseEntity {
 
 	@Id
 	@Column(name = "COMP_ID", updatable = false)
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long compId;
 
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne
 	@JoinColumn(name = "rule_seq", updatable = false)
 	private CustomRule ruleSeq;
 
@@ -57,7 +56,7 @@ public class ComplianceEng extends BaseEntity {
 	private String detail;
 
 	@Builder
-	public ComplianceEng(CustomRule ruleSeq, String complianceName, String complianceNumber, String category,
+	public Compliance(CustomRule ruleSeq, String complianceName, String complianceNumber, String category,
 		String article, String description, String detail) {
 		this.ruleSeq = ruleSeq;
 		this.complianceName = complianceName;

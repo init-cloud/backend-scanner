@@ -6,7 +6,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import scanner.security.config.Properties;
 import scanner.security.provider.JwtTokenProvider;
 
 import javax.servlet.FilterChain;
@@ -21,7 +20,6 @@ import java.io.IOException;
 public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
 	private final JwtTokenProvider jwtTokenProvider;
-	private final Properties properties;
 
 	@Override
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
@@ -32,8 +30,8 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 		if (token == null)
 			SecurityContextHolder.getContext().setAuthentication(null);
 
-		else if (jwtTokenProvider.validate(token, properties.getSecret())) {
-			Authentication authentication = jwtTokenProvider.getAuthentication(token, properties.getSecret());
+		else if (jwtTokenProvider.validate(token)) {
+			Authentication authentication = jwtTokenProvider.getAuthentication(token);
 			SecurityContextHolder.getContext().setAuthentication(authentication);
 		}
 
