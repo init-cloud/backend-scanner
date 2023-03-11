@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -201,17 +202,13 @@ public class ScanService {
 		if (!offRules.isEmpty()) {
 			offStr.append(" --skip-check ");
 
-			for (int i = 0; i < offRules.size(); i++) {
-				if (offRules.get(i) == null)
-					continue;
-
-				offStr.append(offRules.get(i).getRuleId());
-
-				if (i + 1 < offRules.size())
-					offStr.append(",");
-			}
+			Arrays.stream(offRules.toArray()).filter(rule -> rule != null).forEach(rule -> {
+				offStr.append(((CustomRule)rule).getRuleId());
+				offStr.append(",");
+			});
 		}
-		return offStr.toString();
+		String result = offStr.toString();
+		return result.substring(0, result.length() - 1);
 	}
 
 	private double[] calc(List<ScanDto.Result> results) {
