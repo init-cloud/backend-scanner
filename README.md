@@ -1,6 +1,6 @@
 
 <div align="center">  
- <img src="https://github.com/init-cloud/backend-scanner/tree/main/docs/logo.png" width="100">
+ <img src="https://raw.githubusercontent.com/init-cloud/backend-scanner/main/docs/logo.png" width="100">
 
 # Init Cloud IaC Scanner API (Beta)
 </div>
