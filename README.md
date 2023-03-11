@@ -1,11 +1,10 @@
 
 <div align="center">  
- <img src="https://raw.githubusercontent.com/init-cloud/backend-scanner/main/docs/logo.png" width="100">
+ <img src="https://raw.githubusercontent.com/init-cloud/backend-scanner/main/docs/logo.png" width="500">
 
-# Init Cloud IaC Scanner API (Beta)
 </div>
  
-## Description   
+## Init Cloud IaC Scanner API (Beta) 
 Init Cloud IaC Scanner support static code scan, visualization and report.
 * This API is except Dashboard. Only API.
 
