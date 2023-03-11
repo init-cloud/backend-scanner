@@ -1,18 +1,24 @@
-<div align="center">    
- 
-# Init Cloud IaC Scanner API
 
+<div align="center">  
+ <img src="https://github.com/init-cloud/backend-scanner/tree/main/docs/logo.png" width="100">
+
+# Init Cloud IaC Scanner API (Beta)
 </div>
  
 ## Description   
-Init Cloud IaC Scanner is Scanner & Visualizer for AWS, NCP.
-* This API is in development.
-* In development, we will support only `Terraform`.
-* This API is except FE Dashboard. Only API.
+Init Cloud IaC Scanner support static code scan, visualization and report.
+* This API is except Dashboard. Only API.
 
+## Which vendors we Support?
+* CSP : AWS, NCP are supported.
+* IaC : Terraform is supported.
+
+## Road Map
+* CSP : `OpenStack` will be supported soon.
+* IaC : `Ansible` will be supported.
 
 ## How to install & run
-1. Install docker & docker-compose on your linux environment.  
+1. Install docker & docker-compose on your environment.  
     [install docker](https://docs.docker.com/engine/install/ubuntu/)  
     [install docker-compose](https://docs.docker.com/compose/install/linux/)
 2. Cloning Init Cloud Scanner API
