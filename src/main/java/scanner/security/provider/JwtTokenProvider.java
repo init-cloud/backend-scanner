@@ -9,8 +9,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
-import scanner.exception.ApiException;
-import scanner.model.enums.RoleType;
+import scanner.common.exception.ApiException;
+import scanner.user.enums.RoleType;
 import scanner.common.enums.ResponseCode;
 import scanner.security.config.Properties;
 import scanner.security.dto.Token;

@@ -7,11 +7,11 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import scanner.dto.user.UserManagingDto;
-import scanner.dto.user.UserRetrieveDto;
-import scanner.exception.ApiException;
-import scanner.model.user.User;
-import scanner.repository.UserRepository;
+import scanner.user.dto.UserManagingDto;
+import scanner.user.dto.UserRetrieveDto;
+import scanner.common.exception.ApiException;
+import scanner.user.entity.User;
+import scanner.user.repository.UserRepository;
 import scanner.common.enums.ResponseCode;
 
 import javax.persistence.*;

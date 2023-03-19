@@ -8,7 +8,7 @@ import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDoc
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.crypto.password.Pbkdf2PasswordEncoder;
-import scanner.dto.user.UserSignupDto;
+import scanner.user.dto.UserSignupDto;
 
 
 @AutoConfigureRestDocs
