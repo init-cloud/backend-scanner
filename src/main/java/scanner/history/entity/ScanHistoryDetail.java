@@ -5,6 +5,7 @@ import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -49,11 +50,11 @@ public class ScanHistoryDetail extends BaseEntity {
 	@Setter
 	@OneToMany(mappedBy = "ruleSeq")
 	private List<ScanHistoryDetail> historyDetails = new ArrayList<>();
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "rule_seq", updatable = false)
 	private CustomRule ruleSeq;
 
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "history_seq", updatable = false)
 	private ScanHistory historySeq;
 
