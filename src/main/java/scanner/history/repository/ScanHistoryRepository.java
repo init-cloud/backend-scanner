@@ -7,10 +7,12 @@ import org.springframework.stereotype.Repository;
 
 import scanner.history.entity.ScanHistory;
 
+import java.util.Optional;
+
 @Repository
 public interface ScanHistoryRepository extends JpaRepository<ScanHistory, Long> {
 
-	ScanHistory findByHistorySeq(Long reportId);
+	Optional<ScanHistory> findByHistorySeq(Long reportId);
 
 	List<ScanHistory> findTop10ByOrderByHistorySeqDesc();
 }

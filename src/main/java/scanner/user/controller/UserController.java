@@ -13,6 +13,8 @@ import scanner.user.service.UsernameService;
 
 import javax.servlet.http.HttpServletRequest;
 
+import scanner.security.config.Properties;
+
 @ApiOperation("User and IAM API")
 @RestController
 @RequestMapping("/api/v1/user")
@@ -20,6 +22,7 @@ import javax.servlet.http.HttpServletRequest;
 public class UserController {
 
 	private final UsernameService userService;
+	private final Properties properties;
 
 	@ApiOperation(value = "Signin", notes = "Login. return access token", response = CommonResponse.class)
 	@PostMapping("/signin")
@@ -41,7 +44,8 @@ public class UserController {
 	@ApiOperation(value = "Retrieve User Profile", notes = "Retrieve personal profile.", response = CommonResponse.class)
 	@GetMapping("/profile")
 	public CommonResponse<UserDetailsDto.Profile> userProfileDetails(HttpServletRequest request) {
-		UserDetailsDto.Profile response = userService.getUserProfile(request.getHeader("Authorization"));
+		UserDetailsDto.Profile response = userService.getUserProfile(request.getHeader("Authorization"),
+			properties.getSecret());
 
 		return new CommonResponse<>(response);
 	}
@@ -54,7 +58,7 @@ public class UserController {
 		return new CommonResponse<>(response);
 	}
 
-	@ApiOperation(value = "Change Password", response = CommonResponse.class)
+	@ApiOperation(value = "Change Password", notes = "Change user Password.", response = CommonResponse.class)
 	@PostMapping("/auth")
 	public CommonResponse<Boolean> managingUserPassword(@RequestBody UserAuthDto.Authentication dto) {
 		Boolean response = userService.modifyUserPassword(dto);

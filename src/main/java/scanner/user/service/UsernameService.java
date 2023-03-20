@@ -14,6 +14,7 @@ import lombok.RequiredArgsConstructor;
 import scanner.common.enums.ResponseCode;
 import scanner.common.exception.ApiException;
 import scanner.common.utils.HeaderParse;
+import scanner.security.config.Properties;
 import scanner.security.dto.Token;
 import scanner.security.provider.JwtTokenProvider;
 import scanner.security.provider.UsernamePasswordAuthenticationProvider;
@@ -31,6 +32,7 @@ public class UsernameService implements UserService {
 	private final JwtTokenProvider jwtTokenProvider;
 	private final UsernamePasswordAuthenticationProvider usernamePasswordAuthenticationProvider;
 	private final PasswordEncoder passwordEncoder;
+	private final Properties properties;
 
 	@Override
 	public Token signup(UserAuthDto.Signup dto) {
@@ -40,7 +42,7 @@ public class UsernameService implements UserService {
 
 		String password = dto.setHash(passwordEncoder, dto.getPassword());
 		User user = userRepository.save(User.addUser(dto, password));
-		return jwtTokenProvider.create(user.getUsername(), RoleType.GUEST);
+		return jwtTokenProvider.create(user.getUsername(), RoleType.GUEST, properties.getSecret());
 	}
 
 	@Transactional
@@ -54,7 +56,8 @@ public class UsernameService implements UserService {
 
 		updateLastLogin(dto);
 
-		return jwtTokenProvider.create(dto.getUsername(), ((User)authentication.getPrincipal()).getRoleType());
+		return jwtTokenProvider.create(dto.getUsername(), ((User)authentication.getPrincipal()).getRoleType(),
+			properties.getSecret());
 	}
 
 	@Override
@@ -62,16 +65,15 @@ public class UsernameService implements UserService {
 		User user = userRepository.findByUsername(dto.getUsername())
 			.orElseThrow(() -> new ApiException(ResponseCode.INVALID_USER));
 
-		User modifiedUser = User.toEntityByModifying(user, LocalDateTime.now(), user.getPassword(),
-			user.getAuthoritiesToString(), user.getRoleType(), user.getUserState(), user.getEmail(), user.getContact());
+		user.setLastLogin(LocalDateTime.now());
 
-		userRepository.save(modifiedUser);
+		userRepository.save(user);
 	}
 
-	public UserDetailsDto.Profile getUserProfile(String header) {
+	public UserDetailsDto.Profile getUserProfile(String header, String key) {
 		String token = HeaderParse.getAccessToken(header);
 
-		User user = userRepository.findByUsername(jwtTokenProvider.getUsername(token))
+		User user = userRepository.findByUsername(jwtTokenProvider.getUsername(token, key))
 			.orElseThrow(() -> new ApiException(ResponseCode.INVALID_USER));
 
 		return new UserDetailsDto.Profile(user.getUsername(), user.getEmail(), user.getContact(), user.getRoleType(),
@@ -83,10 +85,10 @@ public class UsernameService implements UserService {
 		User user = userRepository.findByUsername(dto.getUsername())
 			.orElseThrow(() -> new ApiException(ResponseCode.INVALID_USER));
 
-		User modifiedUser = User.toEntityByModifying(user, user.getLastLogin(), user.getPassword(),
-			user.getAuthoritiesToString(), user.getRoleType(), user.getUserState(), dto.getEmail(), dto.getContact());
+		user.setEmail(dto.getEmail());
+		user.setContact(dto.getContact());
 
-		userRepository.save(modifiedUser);
+		userRepository.save(user);
 
 		return dto;
 	}
@@ -97,11 +99,9 @@ public class UsernameService implements UserService {
 			User user = userRepository.findByUsername(dto.getUsername())
 				.orElseThrow(() -> new ApiException(ResponseCode.INVALID_USER));
 
-			User modifiedUser = User.toEntityByModifying(user, user.getLastLogin(),
-				dto.setHash(passwordEncoder, dto.getPassword()), user.getAuthoritiesToString(), user.getRoleType(),
-				user.getUserState(), user.getEmail(), user.getContact());
+			user.setPassword(dto.setHash(passwordEncoder, dto.getPassword()));
 
-			userRepository.save(modifiedUser);
+			userRepository.save(user);
 
 			return true;
 		} catch (Exception e) {

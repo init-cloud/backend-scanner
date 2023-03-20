@@ -1,7 +1,5 @@
 package scanner.user.entity;
 
-import lombok.*;
-
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -13,13 +11,30 @@ import scanner.user.enums.RoleType;
 import scanner.user.enums.UserAuthority;
 import scanner.user.enums.UserState;
 
-import javax.persistence.*;
 import javax.validation.constraints.Size;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
+import javax.persistence.Table;
+
+import lombok.AccessLevel;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Getter
 @Entity
@@ -39,7 +54,11 @@ public class User extends BaseEntity implements UserDetails {
 	@Enumerated(EnumType.STRING)
 	private OAuthProvider oAuthProvider;
 
+	@OneToOne(fetch = FetchType.LAZY, mappedBy = "user")
+	private UserOAuthToken oAuthToken;
+
 	@Column(name = "LAST_LOGIN")
+	@Setter
 	private LocalDateTime lastLogin;
 
 	@Column(name = "USERNAME")
@@ -47,23 +66,28 @@ public class User extends BaseEntity implements UserDetails {
 	private String username;
 
 	@Column(name = "PASSWORD")
+	@Setter
 	private String password;
 
 	@Column(name = "AUTHORITIES")
+	@Setter
 	private String authorities;
 
 	@Column(name = "ROLE_TYPE")
 	@Enumerated(EnumType.STRING)
+	@Setter
 	private RoleType roleType;
 
 	@Column(name = "USER_STATE")
 	@Enumerated(EnumType.STRING)
 	private UserState userState;
 
+	@Setter
 	@Column(name = "EMAIL")
 	@Size(max = 128)
 	private String email;
 
+	@Setter
 	@Column(name = "contact")
 	@Size(max = 16)
 	private String contact;

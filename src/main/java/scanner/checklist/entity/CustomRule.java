@@ -18,7 +18,6 @@ import scanner.history.entity.ScanHistoryDetail;
 @Getter
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@ToString(exclude = "compliance")
 @Table(name = "CUSTOM_RULE")
 public class CustomRule extends BaseEntity {
 	@Id
@@ -31,14 +30,21 @@ public class CustomRule extends BaseEntity {
 	@Size(max = 16)
 	private String ruleId;
 
-	@OneToMany(mappedBy = "ruleSeq", fetch = FetchType.LAZY)
-	private final List<Tag> tag = new ArrayList<>();
+	@Setter
+	@OneToMany(mappedBy = "ruleSeq")
+	private List<Tag> tags = new ArrayList<>();
 
-	@OneToMany(mappedBy = "ruleSeq", fetch = FetchType.LAZY)
-	private final List<Compliance> compliance = new ArrayList<>();
+	@Setter
+	@OneToMany(mappedBy = "ruleSeq")
+	private List<ComplianceEng> complianceEngs = new ArrayList<>();
 
-	@OneToMany(mappedBy = "ruleSeq", fetch = FetchType.LAZY)
-	private final List<ScanHistoryDetail> historyDetails = new ArrayList<>();
+	@Setter
+	@OneToMany(mappedBy = "ruleSeq")
+	private List<ComplianceKor> complianceKors = new ArrayList<>();
+
+	@Setter
+	@OneToMany(mappedBy = "ruleSeq")
+	private List<ScanHistoryDetail> historyDetails = new ArrayList<>();
 
 	@Column(name = "DEFAULT_RULE_ID", updatable = false)
 	@NotNull
@@ -98,8 +104,11 @@ public class CustomRule extends BaseEntity {
 	@Column(name = "CUSTOM_DEFAULT", updatable = false)
 	private String customDefault;
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "customRule")
+	@OneToMany(mappedBy = "customRule")
 	private List<UsedRule> usedRules = new ArrayList<>();
+
+	@OneToMany(mappedBy = "ruleSeq")
+	private List<CustomRuleDetails> ruleDetails = new ArrayList<>();
 
 	@Builder
 	public CustomRule(String ruleId, String defaultRuleId, String ruleOnOff, Provider provider, String ruleType,
@@ -127,7 +136,18 @@ public class CustomRule extends BaseEntity {
 		this.usedRules = usedRules;
 	}
 
+	public CustomRule(String ruleId, String defaultRuleId, Provider provider, List<ComplianceKor> complianceKors,
+		List<ComplianceEng> complianceEngs, List<ScanHistoryDetail> historyDetails) {
+		this.ruleId = ruleId;
+		this.defaultRuleId = defaultRuleId;
+		this.provider = provider;
+		this.complianceEngs = complianceEngs;
+		this.complianceKors = complianceKors;
+		this.historyDetails = historyDetails;
+	}
+
 	public List<TagDto> getTagDto() {
-		return tag.stream().map(TagDto::new).collect(Collectors.toList());
+		return tags.stream().map(TagDto::new).collect(Collectors.toList());
 	}
 }
+

@@ -6,7 +6,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
+
 import java.util.List;
 import java.util.Map;
 
@@ -18,7 +18,6 @@ import org.apache.tomcat.util.http.fileupload.FileUtils;
 import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
-import scanner.common.client.ApiFeignClient;
 import scanner.common.exception.ApiException;
 import scanner.checklist.dto.CheckListDetailDto;
 import scanner.common.enums.Env;
@@ -32,25 +31,27 @@ import scanner.scan.dto.ScanDto;
 import scanner.common.enums.ResponseCode;
 import scanner.checklist.service.CheckListService;
 
+import java.util.stream.Collectors;
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class ScanService {
+
 	private final CheckListService checkListService;
 	private final ScanHistoryRepository scanHistoryRepository;
 	private final ScanHistoryDetailsRepository scanHistoryDetailsRepository;
 	private final CheckListRepository checkListRepository;
-	private final ApiFeignClient apiFeignClient;
 
 	private static final String CHECK = "checks:";
 	private static final String PASSED = "passed";
 	private static final String FAILED = "failed";
-	private static final String STATUSCHECK = "Check";
-	private static final String STATUSPASSED = "PASSED";
-	private static final String STATUSFAILED = "FAILED";
-	private static final String STATUSFILE = "File";
-	private static final String SPLITCOLONBLANK = ": ";
-	private static final String SPLITCOLON = ":";
+	private static final String STATUS_CHECK = "Check";
+	private static final String STATUS_PASSED = "PASSED";
+	private static final String STATUS_FAILED = "FAILED";
+	private static final String STATUS_FILE = "File";
+	private static final String SPLIT_COLON_BLANK = ": ";
+	private static final String SPLIT_COLON = ":";
 
 	@Transactional
 	public ScanDto.Response scanTerraform(String[] args, String provider) {
@@ -65,48 +66,43 @@ public class ScanService {
 
 			Process p = Runtime.getRuntime().exec(cmd);
 			BufferedReader br = new BufferedReader(new InputStreamReader(p.getInputStream()));
-			ScanDto.Response scanResult = resultToJson(br, args[1], provider);
+			ScanDto.Response scanResult = resultToJson(br);
 
 			p.waitFor();
 			p.destroy();
-			double[] totalCount = calc(scanResult.getResult());
 
-			save(scanResult, args, provider, totalCount);
 			FileUtils.deleteDirectory(file);
 
 			return scanResult;
 		} catch (InterruptedException e) {
 			Thread.currentThread().interrupt();
+			return null;
 		} catch (IOException e) {
 			throw new ApiException(ResponseCode.SERVER_LOAD_FILE_ERROR);
-		}
-		return null;
-	}
-
-	@Transactional
-	public void save(ScanDto.Response scanResult, String[] args, String provider,
-		double[] total) {
-		try {
-			ScanHistory scan = ScanHistory.toEntity(args, scanResult.getCheck().getPassed(),
-				scanResult.getCheck().getSkipped(),
-				scanResult.getCheck().getFailed(), total, provider, scanResult.getParse().toString());
-
-			scan = scanHistoryRepository.save(scan);
-
-			List<ScanHistoryDetail> details = new ArrayList<>();
-
-			for (ScanDto.Result detail : scanResult.getResult()) {
-				CustomRule saveRule = checkListRepository.findByRuleId(detail.getRuleId()).orElse(null);
-
-				if (saveRule == null || saveRule.getId() == null)
-					continue;
-
-				details.add(ScanHistoryDetail.toEntity(detail, saveRule, scan));
-			}
-			scanHistoryDetailsRepository.saveAll(details);
 		} catch (Exception e) {
 			throw new ApiException(ResponseCode.SERVER_STORE_ERROR);
 		}
+	}
+
+	public void saveScanDetails(ScanDto.Response scanResult, String[] args, String provider, double[] total) {
+
+		ScanHistory scan = ScanHistory.toEntity(args, scanResult.getCheck().getPassed(),
+			scanResult.getCheck().getSkipped(), scanResult.getCheck().getFailed(), total, provider,
+			scanResult.getParse().toString());
+
+		scan = scanHistoryRepository.save(scan);
+
+		List<ScanHistoryDetail> details = new ArrayList<>();
+
+		for (ScanDto.Result detail : scanResult.getResult()) {
+			CustomRule saveRule = checkListRepository.findByRuleId(detail.getRuleId()).orElse(null);
+
+			if (saveRule == null || saveRule.getId() == null)
+				continue;
+
+			details.add(ScanHistoryDetail.toEntity(detail, saveRule, scan));
+		}
+		scanHistoryDetailsRepository.saveAll(details);
 	}
 
 	public ScanDto.Check parseScanCheck(String scan) {
@@ -122,29 +118,29 @@ public class ScanService {
 	public ScanDto.Result parseScanResult(String rawResult, ScanDto.Result result, Map<String, String> rulesMap) {
 		String[] lines;
 
-		if (rawResult.contains(STATUSCHECK)) {
-			lines = rawResult.split(SPLITCOLONBLANK);
+		if (rawResult.contains(STATUS_CHECK)) {
+			lines = rawResult.split(SPLIT_COLON_BLANK);
 
 			result.setRuleId(lines[1].strip());
 			result.setDescription(lines[2].strip());
 			result.setLevel(rulesMap.get(lines[1].strip()));
 		}
 
-		if (rawResult.contains(STATUSPASSED)) {
-			lines = rawResult.split(SPLITCOLONBLANK);
+		if (rawResult.contains(STATUS_PASSED)) {
+			lines = rawResult.split(SPLIT_COLON_BLANK);
 
 			result.setStatus(PASSED);
 			result.setDetail("No");
 			result.setTargetResource(lines[1].strip());
-		} else if (rawResult.contains(STATUSFAILED)) {
-			lines = rawResult.split(SPLITCOLONBLANK);
+		} else if (rawResult.contains(STATUS_FAILED)) {
+			lines = rawResult.split(SPLIT_COLON_BLANK);
 
 			result.setStatus(FAILED);
 			result.setTargetResource(lines[1].strip());
 		}
 
-		if (rawResult.contains(STATUSFILE)) {
-			lines = rawResult.split(SPLITCOLON);
+		if (rawResult.contains(STATUS_FILE)) {
+			lines = rawResult.split(SPLIT_COLON);
 
 			result.setTargetFile(lines[1].strip());
 			result.setLines(lines[2].strip());
@@ -152,18 +148,16 @@ public class ScanService {
 		return result;
 	}
 
-	public ScanDto.Response resultToJson(BufferedReader br, String path, String provider) throws IOException {
+	public ScanDto.Response resultToJson(BufferedReader br) throws IOException {
 		StringBuilder sb = new StringBuilder();
 
 		List<ScanDto.Result> resultLists = new ArrayList<>();
 		ScanDto.Check check = new ScanDto.Check();
 		ScanDto.Result result = new ScanDto.Result();
-		Object parse = apiFeignClient.getVisualization(provider, path);
 
-		Map<String, String> rulesMap = new HashMap<>();
-		List<CheckListDetailDto.Detail> rulesInfo = checkListService.getCheckListDetailsList();
-		for (CheckListDetailDto.Detail info : rulesInfo)
-			rulesMap.put(info.getRuleId(), info.getLevel());
+		Map<String, String> rulesMap = checkListService.getCheckListDetailsList()
+			.stream()
+			.collect(Collectors.toMap(CheckListDetailDto.Detail::getRuleId, CheckListDetailDto.Detail::getLevel));
 
 		String rawResult;
 		while ((rawResult = br.readLine()) != null) {
@@ -193,7 +187,7 @@ public class ScanService {
 			}
 		}
 
-		return new ScanDto.Response(check, resultLists, parse);
+		return new ScanDto.Response(check, resultLists);
 	}
 
 	private String getSkipCheckCmd(List<CustomRule> offRules) {
@@ -211,68 +205,62 @@ public class ScanService {
 		return result.substring(0, result.length() - 1);
 	}
 
-	private double[] calc(List<ScanDto.Result> results) {
+	public double[] calc(List<ScanDto.Result> results) {
 		/* score, high, medium, low, unknown */
 		double[] count = new double[] {0.0, 0.0, 0.0, 0.0, 0.0};
-		int success = 0;
-		int total = 0;
-		int severity = 0;
-		int totalSeverity = 0;
+		int totalHigh = 0;
+		int totalMedium = 0;
+		int totalLow = 0;
 
 		for (ScanDto.Result result : results) {
-
 			try {
-				total += 1;
 				switch (result.getLevel()) {
 					case "High":
 						if (result.getStatus().equals(PASSED)) {
-							success += 1;
-							severity += 3;
 							count[1] += 1;
 						}
-						totalSeverity += 3;
+						totalHigh += 1;
 						break;
 					case "Medium":
 						if (result.getStatus().equals(PASSED)) {
-							success += 1;
-							severity += 2;
 							count[2] += 1;
 						}
-						totalSeverity += 2;
+						totalMedium += 1;
 						break;
 					case "Low":
 						if (result.getStatus().equals(PASSED)) {
-							success += 1;
-							severity += 1;
 							count[3] += 1;
 						}
-						totalSeverity += 1;
+						totalLow += 1;
 						break;
 					default:
 						if (result.getStatus().equals(PASSED)) {
-							success += 1;
-							severity += 1;
 							count[4] += 1;
 						}
-						totalSeverity += 1;
+						totalLow += 1;
 						break;
 				}
 			} catch (NullPointerException e) {
-				continue;
+				if (result.getStatus().equals(PASSED)) {
+					count[3] += 1;
+					totalLow += 1;
+				}
 			}
 		}
 
-		double down = (total * totalSeverity);
+		double down = totalHigh * 3.0 + totalMedium * 2.0 + totalLow * 1.0;
 
-		return getScore(down, count, success, severity);
+		return getScore(down, count);
 	}
 
-	private double[] getScore(double down, double[] count, int success, int severity) {
+	private double[] getScore(double down, double[] count) {
 
-		if (down == 0.0)
+		if (down == 0.0) {
 			count[0] = 0.0;
-		else
-			count[0] = Math.round((success * severity * 100.0) / down) * 10.0 / 10.0;
+		} else {
+			double up = (3 * count[1] + 2 * count[2] * 1 * count[3] + 1 * count[4]);
+			count[0] = Math.round((up * 100.0) / down) * 10.0 / 10.0;
+		}
 
 		return count;
 	}

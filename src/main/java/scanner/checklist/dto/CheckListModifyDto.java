@@ -7,6 +7,12 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import scanner.common.enums.ResponseCode;
+import scanner.common.exception.ApiException;
+
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class CheckListModifyDto {
 
@@ -15,22 +21,35 @@ public class CheckListModifyDto {
 	 */
 	@Getter
 	@AllArgsConstructor
+	@NoArgsConstructor(access = AccessLevel.PROTECTED)
 	public static class Modifying {
-		private final String rule_id;
-		private final List<Details> custom;
+		private String rule_id;
+		private List<Details> custom;
+
+		public static String toJsonString(List<Details> dto) {
+			try {
+				ObjectMapper objectMapper = new ObjectMapper();
+				return objectMapper.writeValueAsString(dto);
+			} catch (JsonProcessingException e) {
+				throw new ApiException(ResponseCode.INVALID_REQUEST);
+			}
+		}
 	}
 
 	@Getter
 	@AllArgsConstructor
+	@NoArgsConstructor(access = AccessLevel.PROTECTED)
 	public static class Details {
-		private final String name;
-		private final String value;
+		private String name;
+		private String value;
 	}
 
 	@Getter
 	@AllArgsConstructor
+	@NoArgsConstructor(access = AccessLevel.PROTECTED)
 	public static class State {
-		private final String rule_id;
-		private final String ruleOnOff;
+		private String rule_id;
+		private String ruleOnOff;
 	}
 }
+

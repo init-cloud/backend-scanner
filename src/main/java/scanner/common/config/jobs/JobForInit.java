@@ -1,4 +1,4 @@
-package scanner.common.configuration.jobs;
+package scanner.common.config.jobs;
 
 import org.springframework.stereotype.Component;
 

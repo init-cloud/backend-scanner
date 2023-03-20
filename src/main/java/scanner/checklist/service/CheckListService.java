@@ -1,7 +1,10 @@
 package scanner.checklist.service;
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.transaction.Transactional;
 
@@ -11,6 +14,8 @@ import org.springframework.stereotype.Service;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import scanner.checklist.dto.CheckListModifyDto;
+import scanner.checklist.entity.CustomRuleDetails;
+import scanner.common.enums.Language;
 import scanner.common.exception.ApiException;
 import scanner.checklist.dto.CheckListDetailDto;
 import scanner.checklist.dto.CheckListSimpleDto;
@@ -42,11 +47,20 @@ public class CheckListService {
 	}
 
 	@Transactional
-	public CheckListDetailDto.Detail getCheckListDetails(String ruleId) {
+	public CheckListDetailDto.Detail getCheckListDetails(@NonNull String ruleId, @Nullable Language lang) {
+		CustomRule rule = checkListRepository.findByRuleId(ruleId)
+			.orElseThrow(() -> new ApiException(ResponseCode.INVALID_REQUEST));
 
-		CustomRule rule = checkListRepository.findByRuleId(ruleId).orElseThrow();
+		Supplier<Stream<Object>> streamSupplier = () -> Arrays.stream(rule.getRuleDetails().toArray());
+		Object ruleDetail = streamSupplier.get()
+			.filter(detail -> ((CustomRuleDetails)detail).getLanguage() == lang)
+			.findFirst()
+			.orElse(streamSupplier.get()
+				.filter(detail -> ((CustomRuleDetails)detail).getLanguage() == Language.ENGLISH)
+				.findFirst()
+				.orElseThrow(() -> new ApiException(ResponseCode.INVALID_REQUEST)));
 
-		return new CheckListDetailDto.Detail(rule);
+		return CheckListDetailDto.toDto(rule, (CustomRuleDetails)ruleDetail);
 	}
 
 	public List<CustomRule> getOffedCheckList() {
@@ -76,7 +90,10 @@ public class CheckListService {
 		if (!ruleId.equals(data.getRule_id()))
 			throw new ApiException(ResponseCode.INVALID_REQUEST);
 
-		checkListRepository.updateRule(data.getRule_id(), data.getCustom().toString());
+		/**
+		 * @Todo 추후 변경된 커스텀 룰이 유효한지 확인하는 로직 필요.
+		 */
+		checkListRepository.updateRule(data.getRule_id(), CheckListModifyDto.Modifying.toJsonString(data.getCustom()));
 
 		CustomRule rule = checkListRepository.findByRuleId(ruleId)
 			.orElseThrow(() -> new ApiException(ResponseCode.INVALID_REQUEST));
@@ -113,3 +130,4 @@ public class CheckListService {
 		return new CheckListSimpleDto.Simple(rule);
 	}
 }
+

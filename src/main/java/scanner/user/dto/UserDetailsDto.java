@@ -16,7 +16,6 @@ import scanner.user.enums.UserState;
 public class UserDetailsDto {
 
 	@Getter
-	@NoArgsConstructor(access = AccessLevel.PROTECTED)
 	public static class Retrieve extends UserBaseDto {
 		private UserState userState;
 		private RoleType role;
@@ -35,7 +34,6 @@ public class UserDetailsDto {
 	}
 
 	@Getter
-	@NoArgsConstructor(access = AccessLevel.PROTECTED)
 	public static class Profile extends UserBaseDto {
 		private String email;
 		private String contact;
@@ -50,7 +48,6 @@ public class UserDetailsDto {
 	}
 
 	@Getter
-	@NoArgsConstructor(access = AccessLevel.PROTECTED)
 	public static class Managing extends UserBaseDto {
 		private UserState userState;
 		private RoleType role;

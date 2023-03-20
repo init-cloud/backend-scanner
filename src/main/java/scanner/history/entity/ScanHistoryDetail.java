@@ -1,5 +1,8 @@
 package scanner.history.entity;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -7,11 +10,15 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 import lombok.*;
+import scanner.checklist.entity.ComplianceEng;
+import scanner.checklist.entity.ComplianceKor;
+import scanner.checklist.entity.Tag;
 import scanner.scan.dto.ScanDto;
 import scanner.common.entity.BaseEntity;
 import scanner.checklist.entity.CustomRule;
@@ -27,6 +34,21 @@ public class ScanHistoryDetail extends BaseEntity {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
+	@Setter
+	@OneToMany(mappedBy = "ruleSeq")
+	private List<Tag> tags = new ArrayList<>();
+
+	@Setter
+	@OneToMany(mappedBy = "ruleSeq")
+	private List<ComplianceEng> complianceEngs = new ArrayList<>();
+
+	@Setter
+	@OneToMany(mappedBy = "ruleSeq")
+	private List<ComplianceKor> complianceKors = new ArrayList<>();
+
+	@Setter
+	@OneToMany(mappedBy = "ruleSeq")
+	private List<ScanHistoryDetail> historyDetails = new ArrayList<>();
 	@ManyToOne
 	@JoinColumn(name = "rule_seq", updatable = false)
 	private CustomRule ruleSeq;
