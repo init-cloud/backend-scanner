@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 
-import scanner.dto.github.Git;
+import scanner.github.dto.Git;
 
 @FeignClient(name = "feignClient", contextId = "githubFeignClient", url = "https://api.github.com")
 public interface GithubFeignClient {

@@ -11,7 +11,8 @@ import lombok.RequiredArgsConstructor;
 import scanner.common.client.GithubFeignClient;
 import scanner.common.enums.ResponseCode;
 import scanner.common.exception.ApiException;
-import scanner.dto.github.Git;
+
+import scanner.github.dto.Git;
 import scanner.security.dto.GithubToken;
 import scanner.security.provider.JwtTokenProvider;
 import scanner.user.entity.User;

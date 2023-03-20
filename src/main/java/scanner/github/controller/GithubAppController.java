@@ -10,9 +10,9 @@ import org.springframework.lang.Nullable;
 import org.springframework.web.bind.annotation.*;
 
 import scanner.common.dto.CommonResponse;
+import scanner.github.dto.Git;
 import scanner.github.service.GithubAppService;
 import scanner.security.dto.GithubToken;
-import scanner.dto.github.Git;
 
 import java.util.List;
 import java.util.stream.Collectors;
