@@ -28,27 +28,20 @@ public class SwaggerConfig extends WebMvcConfigurationSupport {
 
 	@Bean
 	public Docket api() {
-		return new Docket(DocumentationType.SWAGGER_2)
-			.apiInfo(apiInfo())
+		return new Docket(DocumentationType.SWAGGER_2).apiInfo(apiInfo())
 			.select()
-			.apis(RequestHandlerSelectors.basePackage("scanner.controller"))
+			.apis(RequestHandlerSelectors.any())
 			.paths(PathSelectors.ant("/api/v1/**"))
 			.build();
 	}
 
 	private ApiInfo apiInfo() {
-		return new ApiInfoBuilder()
-			.title(API_NAME)
-			.version(API_VERSION)
-			.description(API_DESCRIPTION)
-			.build();
+		return new ApiInfoBuilder().title(API_NAME).version(API_VERSION).description(API_DESCRIPTION).build();
 	}
 
 	@Override
 	public void addResourceHandlers(ResourceHandlerRegistry registry) {
-		registry.addResourceHandler("swagger-ui.html")
-			.addResourceLocations("classpath:/META-INF/resources/");
-		registry.addResourceHandler("/webjars/**")
-			.addResourceLocations("classpath:/META-INF/resources/webjars/");
+		registry.addResourceHandler("swagger-ui.html").addResourceLocations("classpath:/META-INF/resources/");
+		registry.addResourceHandler("/webjars/**").addResourceLocations("classpath:/META-INF/resources/webjars/");
 	}
 }
