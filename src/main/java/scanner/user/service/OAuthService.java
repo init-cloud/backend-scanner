@@ -5,9 +5,8 @@ import lombok.NoArgsConstructor;
 
 import org.springframework.stereotype.Service;
 
-import scanner.user.dto.UserAuthenticationDto;
-import scanner.user.dto.UserDto;
-import scanner.user.dto.UserSignupDto;
+import scanner.user.dto.UserAuthDto;
+import scanner.user.dto.UserBaseDto;
 import scanner.security.dto.Token;
 
 @Service
@@ -15,17 +14,17 @@ import scanner.security.dto.Token;
 public class OAuthService implements UserService {
 
 	@Override
-	public Token signup(UserSignupDto dto) {
+	public Token signup(UserAuthDto.Signup dto) {
 		return null;
 	}
 
 	@Override
-	public Token signin(UserAuthenticationDto dto) {
+	public Token signin(UserAuthDto.Authentication dto) {
 		return null;
 	}
 
 	@Override
-	public void updateLastLogin(UserDto user) {
+	public void updateLastLogin(UserBaseDto user) {
 		//
 	}
 }

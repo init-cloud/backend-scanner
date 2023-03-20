@@ -7,8 +7,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import scanner.user.dto.UserManagingDto;
-import scanner.user.dto.UserRetrieveDto;
+import scanner.user.dto.UserDetailsDto;
 import scanner.common.exception.ApiException;
 import scanner.user.entity.User;
 import scanner.user.repository.UserRepository;
@@ -31,38 +30,42 @@ public class CustomUserDetailService implements UserDetailsService {
 
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-		return userRepository.findByUsername(username)
-			.orElseThrow(() -> new ApiException(ResponseCode.INVALID_USER));
+		return userRepository.findByUsername(username).orElseThrow(() -> new ApiException(ResponseCode.INVALID_USER));
 	}
 
+	/* for the future */
 	@Transactional
-	public UserManagingDto modifyUserRole(UserManagingDto dto) {
+	public UserDetailsDto.Managing modifyUserRole(UserDetailsDto.Managing dto) {
 
 		User user = userRepository.findByUsername(dto.getUsername())
 			.orElseThrow(() -> new ApiException(ResponseCode.INVALID_USER));
 
-		user.setRoleType(dto.getRole());
+		User modifiedUser = User.toEntityByModifying(user, user.getLastLogin(), user.getPassword(),
+			user.getAuthoritiesToString(), dto.getRole(), user.getUserState(), user.getEmail(), user.getContact());
 
-		userRepository.save(user);
+		userRepository.save(modifiedUser);
+
+		return dto;
+	}
+
+	/* for the future */
+	@Transactional
+	public UserDetailsDto.Managing modifyUserAuthority(UserDetailsDto.Managing dto) {
+
+		User user = userRepository.findByUsername(dto.getUsername())
+			.orElseThrow(() -> new ApiException(ResponseCode.INVALID_USER));
+
+		User modifiedUser = User.toEntityByModifying(user, user.getLastLogin(), user.getPassword(),
+			User.getAuthorities(dto.getAuthorities()), user.getRoleType(), user.getUserState(), user.getEmail(),
+			user.getContact());
+
+		userRepository.save(modifiedUser);
 
 		return dto;
 	}
 
 	@Transactional
-	public UserManagingDto modifyUserAuthority(UserManagingDto dto) {
-
-		User user = userRepository.findByUsername(dto.getUsername())
-			.orElseThrow(() -> new ApiException(ResponseCode.INVALID_USER));
-
-		user.setAuthorities(User.getAuthorities(dto.getAuthorities()));
-
-		userRepository.save(user);
-
-		return dto;
-	}
-
-	@Transactional
-	public UserManagingDto modifyUserDetails(UserManagingDto dto) {
+	public UserDetailsDto.Managing modifyUserDetails(UserDetailsDto.Managing dto) {
 
 		EntityManager manager = emf.createEntityManager();
 		EntityTransaction transaction = manager.getTransaction();
@@ -72,10 +75,11 @@ public class CustomUserDetailService implements UserDetailsService {
 			User user = userRepository.findByUsername(dto.getUsername())
 				.orElseThrow(() -> new ApiException(ResponseCode.INVALID_USER));
 
-			user.setRoleType(dto.getRole());
-			user.setAuthorities(User.getAuthorities(dto.getAuthorities()));
+			User modifiedUser = User.toEntityByModifying(user, user.getLastLogin(), user.getPassword(),
+				User.getAuthorities(dto.getAuthorities()), dto.getRole(), user.getUserState(), user.getEmail(),
+				user.getContact());
 
-			manager.persist(user);
+			manager.persist(modifiedUser);
 			transaction.commit();
 		} catch (Exception e) {
 			transaction.rollback();
@@ -88,12 +92,10 @@ public class CustomUserDetailService implements UserDetailsService {
 	}
 
 	@Transactional
-	public List<UserRetrieveDto> getUserList() {
+	public List<UserDetailsDto.Retrieve> getUserList() {
 
 		List<User> user = userRepository.findAll();
 
-		return user.stream()
-			.map(UserRetrieveDto::new)
-			.collect(Collectors.toList());
+		return user.stream().map(UserDetailsDto.Retrieve::new).collect(Collectors.toList());
 	}
 }
