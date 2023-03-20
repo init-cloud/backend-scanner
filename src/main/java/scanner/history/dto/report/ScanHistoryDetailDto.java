@@ -36,10 +36,7 @@ public class ScanHistoryDetailDto {
 			.map(ComplianceDto::toDto)
 			.collect(Collectors.toList());
 
-		List<String> tag = rule.getTag()
-			.stream()
-			.map(Tag::getTagName)
-			.collect(Collectors.toList());
+		List<String> tag = rule.getTag().stream().map(Tag::getTagName).collect(Collectors.toList());
 
 		return ScanHistoryDetailDto.builder()
 			.ruleID(rule.getRuleId())
@@ -57,21 +54,5 @@ public class ScanHistoryDetailDto {
 			.solution(rule.getSol())
 			.compliance(compliance)
 			.build();
-	}
-
-	public ScanHistoryDetailDto(ScanHistoryDetail entity) {
-		CustomRule rule = entity.getRuleSeq();
-
-		this.ruleID = rule.getRuleId();
-		this.result = entity.getScanResult();
-		this.severity = rule.getLevel();
-		this.description = rule.getDescription();
-		this.type = null;
-		this.fileName = entity.getTargetFile();
-		this.line = entity.getLine();
-		this.resource = entity.getResource();
-		this.resourceName = entity.getResourceName();
-		this.problematicCode = entity.getCode();
-		this.compliance = null;
 	}
 }

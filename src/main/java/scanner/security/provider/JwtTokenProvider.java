@@ -27,7 +27,6 @@ import java.util.Date;
 public class JwtTokenProvider {
 
 	private static final long EXPIREDTIME = 3 * 24 * 60 * 60 * 1000L;
-
 	private final Properties jwt;
 	private final CustomUserDetailService userDetailsService;
 

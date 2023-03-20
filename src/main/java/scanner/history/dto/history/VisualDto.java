@@ -15,7 +15,6 @@ public class VisualDto {
 	public static class Response {
 		private Long historySeq;
 		private LocalDateTime scanDate;
-
 		private String result;
 
 		public Response(Long historySeq, LocalDateTime scanDate, String result) {
