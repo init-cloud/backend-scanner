@@ -7,7 +7,6 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class UsernameToken extends Token {
-
 	private String username;
 
 	public UsernameToken(String username, String accessToken, String refreshToken) {
