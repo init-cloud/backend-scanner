@@ -71,7 +71,7 @@ public class ScanService {
 			p.waitFor();
 			p.destroy();
 
-			FileUtils.deleteDirectory(file);
+			//FileUtils.deleteDirectory(file);
 
 			return scanResult;
 		} catch (InterruptedException e) {
@@ -80,6 +80,7 @@ public class ScanService {
 		} catch (IOException e) {
 			throw new ApiException(ResponseCode.SERVER_LOAD_FILE_ERROR);
 		} catch (Exception e) {
+			e.printStackTrace();
 			throw new ApiException(ResponseCode.SERVER_STORE_ERROR);
 		}
 	}
@@ -202,6 +203,9 @@ public class ScanService {
 			});
 		}
 		String result = offStr.toString();
+		if(result.length() == 0)
+			return result;
+
 		return result.substring(0, result.length() - 1);
 	}
 

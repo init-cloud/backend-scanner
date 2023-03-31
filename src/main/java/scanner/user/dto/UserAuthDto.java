@@ -11,9 +11,9 @@ import scanner.user.enums.RoleType;
 public class UserAuthDto {
 
 	@Getter
+	@NoArgsConstructor
 	public static class Authentication extends UserBaseDto {
-		private final String password;
-
+		private String password;
 		public Authentication(String username, String password, LocalDateTime lastLogin) {
 			super(username, lastLogin);
 			this.password = password;
@@ -21,11 +21,12 @@ public class UserAuthDto {
 	}
 
 	@Getter
+	@NoArgsConstructor
 	public static class Signup extends UserBaseDto {
-		private final String password;
-		private final String email;
-		private final String contact;
-		private final RoleType role;
+		private String password;
+		private String email;
+		private String contact;
+		private RoleType role;
 
 		public Signup(String username, String password, LocalDateTime lastLogin, String email, String contact,
 			RoleType role) {
