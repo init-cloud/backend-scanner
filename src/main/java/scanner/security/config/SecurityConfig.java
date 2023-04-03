@@ -22,6 +22,7 @@ import scanner.security.provider.JwtTokenProvider;
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 	private final JwtTokenProvider jwtTokenProvider;
+	private final Properties properties;
 
 	@Bean
 	@Override
@@ -47,6 +48,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 			.antMatchers("/swagger-ui/**").permitAll()
 			.and()
 			.authorizeRequests()
+			.antMatchers("/api/v1/**").permitAll()
+			.and()
+			.authorizeRequests()
 			.antMatchers("/api/v1").permitAll()
 			.antMatchers("/api/v1/user/signin").permitAll()
 			.antMatchers("/api/v1/user/signup").permitAll()
@@ -61,7 +65,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 			.anyRequest().authenticated()
 			.and()
 			.addFilterBefore(
-				new JwtAuthenticationFilter(jwtTokenProvider),
+				new JwtAuthenticationFilter(jwtTokenProvider, properties),
 				UsernamePasswordAuthenticationFilter.class);
 	}
 
