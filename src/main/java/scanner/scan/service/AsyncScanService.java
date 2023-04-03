@@ -7,6 +7,9 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
+import scanner.common.client.ApiFeignClient;
+import scanner.common.enums.ResponseCode;
+import scanner.common.exception.ApiException;
 import scanner.scan.dto.ScanDto;
 
 @Service
@@ -14,17 +17,25 @@ import scanner.scan.dto.ScanDto;
 public class AsyncScanService {
 
 	private final ScanService scanService;
+	private final ApiFeignClient apiFeignClient;
 
 	@Async
 	public CompletableFuture<ScanDto.Response> scanAsync(String[] args, String provider) {
-		ScanDto.Response result = null;
-		try {
-			Thread.sleep(500);
-			result = scanService.scanTerraform(args, provider);
+		CompletableFuture<Object> futureVisualization = apiFeignClient.getVisualizationAsync(provider, args[1]);
 
-		} catch (InterruptedException ie) {
-			Thread.currentThread().interrupt();
-		}
-		return CompletableFuture.completedFuture(result);
+		CompletableFuture<ScanDto.Response> scanResultFuture = CompletableFuture.supplyAsync(() -> {
+			ScanDto.Response scanResult = scanService.scanTerraform(args, provider);
+			if (scanResult == null) {
+				throw new ApiException(ResponseCode.SCAN_ERROR);
+			}
+			return scanResult;
+		});
+
+		return scanResultFuture.thenCombineAsync(futureVisualization, (scanResult, visualization) -> {
+			scanResult.setParse(visualization);
+			scanService.saveScanHistory(scanResult, args, provider);
+			return scanResult;
+		});
 	}
 }
+

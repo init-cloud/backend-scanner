@@ -18,8 +18,6 @@ import org.springframework.web.multipart.MultipartFile;
 import lombok.extern.slf4j.Slf4j;
 import scanner.common.client.ApiFeignClient;
 import scanner.common.dto.CommonResponse;
-import scanner.common.enums.ResponseCode;
-import scanner.common.exception.ApiException;
 import scanner.scan.dto.ScanDto;
 import scanner.scan.service.AsyncScanService;
 import scanner.scan.service.ScanService;
@@ -59,13 +57,9 @@ public class TerraformScanController {
 	public CommonResponse<ScanDto.Response> scanTerraform(@PathVariable("provider") String provider,
 		@RequestPart("file") MultipartFile file) {
 		String[] result = storageService.store(file);
-		long beforeTime = System.currentTimeMillis();
 		ScanDto.Response dtos = scanService.scanTerraform(result, provider);
 		dtos.setParse(apiFeignClient.getVisualization(provider, result[1]));
-		saveScanHistory(dtos, result, provider);
-		long afterTime = System.currentTimeMillis(); // 코드 실행 후에 시간 받아오기
-
-		log.info("Scan spent - {}", afterTime - beforeTime);
+		scanService.saveScanHistory(dtos, result, provider);
 		return new CommonResponse<>(dtos);
 	}
 
@@ -77,25 +71,7 @@ public class TerraformScanController {
 	public CommonResponse<ScanDto.Response> scanTerraformAsync(@PathVariable("provider") String provider,
 		@RequestPart("file") MultipartFile file) throws ExecutionException, InterruptedException {
 		String[] result = storageService.store(file);
-		long beforeTime = System.currentTimeMillis();
 		CompletableFuture<ScanDto.Response> futureResult = asyncScanService.scanAsync(result, provider);
-		Object parse = apiFeignClient.getVisualization(provider, result[1]);
-		futureResult.thenAccept(dtos -> {
-			if (dtos == null) {
-				throw new ApiException(ResponseCode.SCAN_ERROR);
-			}
-			dtos.setParse(parse);
-			saveScanHistory(dtos, result, provider);
-			long afterTime = System.currentTimeMillis(); // 코드 실행 후에 시간 받아오기
-
-			log.info("Scan Async spent - {}", afterTime - beforeTime);
-		});
-
 		return new CommonResponse<>(futureResult.get());
-	}
-
-	private void saveScanHistory(ScanDto.Response result, String[] args, String provider) {
-		double[] totalCount = scanService.calc(result.getResult());
-		scanService.saveScanDetails(result, args, provider, totalCount);
 	}
 }
