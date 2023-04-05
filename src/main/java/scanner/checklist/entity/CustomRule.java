@@ -15,6 +15,12 @@ import scanner.scan.enums.Provider;
 import scanner.checklist.dto.TagDto;
 import scanner.history.entity.ScanHistoryDetail;
 
+/*
+	@Written by @Floodnut, v0.3.1-beta
+	@Todo
+	Columns moved to the CustomRuleDetails table will be deleted.
+ */
+
 @Getter
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -110,7 +116,7 @@ public class CustomRule extends BaseEntity {
 	@OneToMany(mappedBy = "ruleSeq")
 	private List<CustomRuleDetails> ruleDetails = new ArrayList<>();
 
-	@Builder
+	@Builder(builderClassName = "customRuleAddBuilder", builderMethodName = "customRuleAddBuilder")
 	public CustomRule(String ruleId, String defaultRuleId, String ruleOnOff, Provider provider, String ruleType,
 		String level, Character isModified, Character isModifiable, String description, String explanation,
 		String possibleImpact, String insecureExample, String secureExample, String sol, String code,
