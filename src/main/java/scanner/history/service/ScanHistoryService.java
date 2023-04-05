@@ -39,7 +39,7 @@ public class ScanHistoryService {
 		ScanHistory history = scanHistoryRepository.findByHistorySeq(reportId)
 			.orElseThrow(() -> new ApiException(ResponseCode.NO_SCAN_RESULT));
 
-		ScanSummaryDto summaryDto = ScanSummaryDto.toLangDto(history, lang);
+		ScanSummaryDto.Content summaryDto = ScanSummaryDto.mapDtoByLanguage(history, lang);
 
 		List<ScanHistoryDetail> details = scanHistoryDetailsRepository.findByHistorySeq(reportId);
 		List<ScanHistoryDetailDto> detailsDto;
