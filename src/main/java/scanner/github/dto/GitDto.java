@@ -8,7 +8,9 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Git {
+public class GitDto {
+
+	private static final String GITHUB_API_BASE_URL = "https://api.github.com";
 
 	@Getter
 	@AllArgsConstructor
@@ -21,11 +23,10 @@ public class Git {
 		private Boolean pull;
 	}
 
+	// @Todo - modify if camel case could applied.
 	@Getter
-	@Builder
-	@AllArgsConstructor
 	@NoArgsConstructor(access = AccessLevel.PROTECTED)
-	public static class Repository {
+	public static class RepositoryInfo {
 		private Long id;
 		private String node_id;
 		private String full_name;
@@ -37,17 +38,31 @@ public class Git {
 		private String default_branch;
 		private Permission permissions;
 
-		// @Todo - modify if camel case could applied.
-		public static Repository toRepository(final Repository repo) {
-			return Repository.builder()
+		@Builder
+		public RepositoryInfo(Long id, String node_id, String full_name, String visibility, String created_at,
+			String updated_at, String url, String downloads_url, String default_branch, Permission permissions) {
+			this.id = id;
+			this.node_id = node_id;
+			this.full_name = full_name;
+			this.visibility = visibility;
+			this.created_at = created_at;
+			this.updated_at = updated_at;
+			this.url = url;
+			this.downloads_url = downloads_url;
+			this.default_branch = default_branch;
+			this.permissions = permissions;
+		}
+
+		public static RepositoryInfo toApiRepository(final RepositoryInfo repo) {
+			return RepositoryInfo.builder()
 				.id(repo.getId())
 				.node_id(repo.getNode_id())
 				.full_name(repo.getFull_name())
 				.visibility(repo.getVisibility())
 				.created_at(repo.getCreated_at())
 				.updated_at(repo.getUpdated_at())
-				.url(repo.getUrl().replace("https://api.github.com", ""))
-				.downloads_url(repo.getDownloads_url().replace("https://api.github.com", ""))
+				.url(repo.getUrl().replace(GITHUB_API_BASE_URL, ""))
+				.downloads_url(repo.getDownloads_url().replace(GITHUB_API_BASE_URL, ""))
 				.default_branch(repo.getDefault_branch())
 				.permissions(repo.getPermissions())
 				.build();
@@ -68,7 +83,7 @@ public class Git {
 			this.name = name;
 			this.sha = sha;
 			this.path = path;
-			this.url = url.replace("https://api.github.com", "");
+			this.url = url.replace(GITHUB_API_BASE_URL, "");
 		}
 	}
 
