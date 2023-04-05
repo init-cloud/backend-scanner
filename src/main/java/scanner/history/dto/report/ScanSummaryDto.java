@@ -10,8 +10,6 @@ import scanner.common.enums.Language;
 import scanner.history.entity.ScanHistory;
 import scanner.history.entity.ScanHistoryDetail;
 
-@Builder
-@AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class ScanSummaryDto {
 
@@ -43,8 +41,6 @@ public class ScanSummaryDto {
 		Map<String, Integer> resource = FailedDto.toResourceMap(details);
 		Map<String, Integer> threat = FailedDto.toThreatMap(details);
 		Map<String, Map<String, Integer>> compliance = new LinkedHashMap<>();
-
-
 
 		if (!details.isEmpty()) {
 			if (lang == Language.KOREAN)

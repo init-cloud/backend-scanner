@@ -24,16 +24,18 @@ public class AsyncScanService {
 		CompletableFuture<Object> futureVisualization = apiFeignClient.getVisualizationAsync(provider, args[1]);
 
 		CompletableFuture<ScanDto.Response> scanResultFuture = CompletableFuture.supplyAsync(() -> {
-			ScanDto.Response scanResult = scanService.scanTerraform(args, provider);
-			if (scanResult == null) {
+			ScanDto.Response scanResult = scanService.scanTerraformFiles(args, provider);
+
+			if (scanResult == null)
 				throw new ApiException(ResponseCode.SCAN_ERROR);
-			}
+
 			return scanResult;
 		});
 
 		return scanResultFuture.thenCombineAsync(futureVisualization, (scanResult, visualization) -> {
-			scanResult.setParse(visualization);
+			scanResult.addVisualizingResult(visualization);
 			scanService.saveScanHistory(scanResult, args, provider);
+
 			return scanResult;
 		});
 	}
