@@ -11,8 +11,6 @@ import scanner.checklist.enums.SecurityType;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class CheckListDetailDto {
 
-	@AllArgsConstructor
-	@Builder
 	@Getter
 	public static class Detail {
 		private String ruleId;
@@ -30,7 +28,26 @@ public class CheckListDetailDto {
 		private Character isModifiable;
 		private Character isModified;
 
-		@Builder
+		@Builder(builderClassName = "checklistDetailsBuilder", builderMethodName = "checklistDetailsBuilder")
+		public Detail(String ruleId, List<TagDto> tags, List<SecurityType> type, String level, String description,
+			String explanation, String possibleImpact, String insecureExample, String secureExample, Solution solution,
+			String state, String customDetail, Character isModifiable, Character isModified) {
+			this.ruleId = ruleId;
+			this.tags = tags;
+			this.type = type;
+			this.level = level;
+			this.description = description;
+			this.explanation = explanation;
+			this.possibleImpact = possibleImpact;
+			this.insecureExample = insecureExample;
+			this.secureExample = secureExample;
+			this.solution = solution;
+			this.state = state;
+			this.customDetail = customDetail;
+			this.isModifiable = isModifiable;
+			this.isModified = isModified;
+		}
+
 		public Detail(CustomRule rule) {
 			this.ruleId = rule.getRuleId();
 			this.tags = rule.getTagDto();
@@ -56,8 +73,8 @@ public class CheckListDetailDto {
 		private String code;
 	}
 
-	public static Detail toDto(CustomRule rule, CustomRuleDetails details) {
-		return Detail.builder()
+	public static Detail toDetailsDto(final CustomRule rule, final CustomRuleDetails details) {
+		return Detail.checklistDetailsBuilder()
 			.ruleId(rule.getRuleId())
 			.tags(rule.getTagDto())
 			.level(rule.getLevel())
@@ -74,8 +91,8 @@ public class CheckListDetailDto {
 			.build();
 	}
 
-	public static Detail toDto(CustomRule rule) {
-		return Detail.builder()
+	public static Detail toDto(final CustomRule rule) {
+		return Detail.checklistDetailsBuilder()
 			.ruleId(rule.getRuleId())
 			.tags(rule.getTagDto())
 			.level(rule.getLevel())
@@ -92,8 +109,8 @@ public class CheckListDetailDto {
 			.build();
 	}
 
-	public static CustomRule toEntity(final Detail dto) {
-		return CustomRule.builder()
+	public static CustomRule toNewEntity(final Detail dto) {
+		return CustomRule.customRuleAddBuilder()
 			.ruleId(dto.getRuleId())
 			.ruleOnOff(dto.getState())
 			.isModified('y')
