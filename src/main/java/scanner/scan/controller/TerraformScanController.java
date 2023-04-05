@@ -57,9 +57,11 @@ public class TerraformScanController {
 	public CommonResponse<ScanDto.Response> scanTerraform(@PathVariable("provider") String provider,
 		@RequestPart("file") MultipartFile file) {
 		String[] result = storageService.store(file);
-		ScanDto.Response dtos = scanService.scanTerraform(result, provider);
-		dtos.setParse(apiFeignClient.getVisualization(provider, result[1]));
+
+		ScanDto.Response dtos = scanService.scanTerraformFiles(result, provider);
+		dtos.addVisualizingResult(apiFeignClient.getVisualization(provider, result[1]));
 		scanService.saveScanHistory(dtos, result, provider);
+
 		return new CommonResponse<>(dtos);
 	}
 

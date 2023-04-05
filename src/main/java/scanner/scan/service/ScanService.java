@@ -41,21 +41,22 @@ public class ScanService {
 	private final CheckListRepository checkListRepository;
 
 	@Transactional
-	public ScanDto.Response scanTerraform(String[] args, String provider) {
+	public ScanDto.Response scanTerraformFiles(String[] args, String provider) {
 		try {
 			List<CustomRule> offRules = getOffedCheckList();
-			String offStr = getSkipCheckCmd(offRules);
+			String skipCheckedRules = getSkipCheckedRules(offRules);
 			String fileUploadPath = Env.UPLOAD_PATH.getValue();
 			File file = new File(fileUploadPath + File.separator + args[1]);
 
 			ProcessBuilder processBuilder = new ProcessBuilder("bash", "-l", "-c",
-				Env.SHELL_COMMAND_RAW.getValue() + args[1] + Env.getCSPExternalPath(provider) + offStr);
+				Env.SHELL_COMMAND_RAW.getValue() + args[1] + Env.getCSPExternalPath(provider) + skipCheckedRules);
+
 			processBuilder.redirectErrorStream(true);
 			processBuilder.directory(new File(fileUploadPath));
 			Process process = processBuilder.start();
 
 			try (BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()))) {
-				ScanDto.Response scanResult = resultToJson(reader);
+				ScanDto.Response scanResult = changeScanOutputToDto(reader);
 
 				int exitCode = process.waitFor();
 				if (exitCode != 0) {
@@ -72,12 +73,11 @@ public class ScanService {
 		} catch (IOException e) {
 			throw new ApiException(ResponseCode.SERVER_LOAD_FILE_ERROR);
 		} catch (Exception e) {
-			e.printStackTrace();
 			throw new ApiException(ResponseCode.SERVER_STORE_ERROR);
 		}
 	}
 
-	public void saveScanDetails(ScanDto.Response scanResult, String[] args, String provider, double[] total) {
+	public void saveTerraformScanDetails(ScanDto.Response scanResult, String[] args, String provider, double[] total) {
 
 		ScanHistory scan = ScanHistory.toEntity(args, scanResult.getCheck().getPassed(),
 			scanResult.getCheck().getSkipped(), scanResult.getCheck().getFailed(), total, provider,
@@ -95,17 +95,8 @@ public class ScanService {
 
 			details.add(ScanHistoryDetail.toEntity(detail, saveRule, scan));
 		}
+
 		scanHistoryDetailsRepository.saveAll(details);
-	}
-
-	public ScanDto.Check parseScanCheck(String scan) {
-		String[] lines = scan.strip().split(", ");
-		String[] passed = lines[0].split(ScanConstants.CHECK);
-		String[] failed = lines[1].split(ScanConstants.CHECK);
-		String[] skipped = lines[2].split(ScanConstants.CHECK);
-
-		return new ScanDto.Check(Integer.parseInt(passed[1].strip()), Integer.parseInt(failed[1].strip()),
-			Integer.parseInt(skipped[1].strip()));
 	}
 
 	public ScanDto.Result parseScanResult(String rawResult, ScanDto.Result result, Map<String, String> rulesMap) {
@@ -131,7 +122,7 @@ public class ScanService {
 		return result;
 	}
 
-	public ScanDto.Response resultToJson(BufferedReader br) throws IOException {
+	public ScanDto.Response changeScanOutputToDto(BufferedReader br) throws IOException {
 		StringBuilder sb = new StringBuilder();
 
 		List<ScanDto.Result> resultLists = new ArrayList<>();
@@ -144,63 +135,65 @@ public class ScanService {
 		String rawResult;
 		while ((rawResult = br.readLine()) != null) {
 			if (rawResult.contains("Passed checks")) {
-				check = parseScanCheck(rawResult);
+				check = ScanDto.Check.parseScanCheck(rawResult);
+				continue;
+			}
+
+			result = parseScanResult(rawResult, result, rulesMap);
+			if (result.getTargetFile() == null)
+				continue;
+
+			if (result.getStatus().equals(ScanConstants.PASSED)) {
+				resultLists.add(result);
+				result = new ScanDto.Result();
+				sb = new StringBuilder();
+			} else if (rawResult.contains(result.getLines().split("-")[1] + " |")) {
+				sb.append(rawResult).append("\n");
+				result.setDetail(sb.toString());
+				resultLists.add(result);
+				result = new ScanDto.Result();
+				sb = new StringBuilder();
 			} else {
-
-				result = parseScanResult(rawResult, result, rulesMap);
-
-				if (result.getTargetFile() != null) {
-					if (result.getStatus().equals(ScanConstants.PASSED)) {
-						resultLists.add(result);
-						result = new ScanDto.Result();
-						sb = new StringBuilder();
-					} else {
-						sb.append(rawResult);
-						sb.append("\n");
-
-						if (rawResult.contains(result.getLines().split("-")[1] + " |")) {
-							result.setDetail(sb.toString());
-							resultLists.add(result);
-							result = new ScanDto.Result();
-							sb = new StringBuilder();
-						}
-					}
-				}
+				sb.append(rawResult).append("\n");
 			}
 		}
 
 		return new ScanDto.Response(check, resultLists);
 	}
 
-	private String getSkipCheckCmd(List<CustomRule> offRules) {
+	private String getSkipCheckedRules(List<CustomRule> offRules) {
 		if (offRules.isEmpty())
 			return "";
 
 		StringBuilder offStr = new StringBuilder();
 		offStr.append(" --skip-check ");
-		Arrays.stream(offRules.toArray()).filter(rule -> rule != null).forEach(rule -> {
-			offStr.append(((CustomRule)rule).getRuleId()).append(",");
-		});
+
+		Arrays.stream(offRules.toArray())
+			.filter(rule -> rule != null)
+			.forEach(
+				rule -> {
+					offStr.append(((CustomRule)rule).getRuleId()).append(",");
+				}
+			);
 
 		return offStr.substring(0, offStr.length() - 1);
 	}
 
 	public void saveScanHistory(ScanDto.Response result, String[] args, String provider) {
-		double[] totalCount = calc(result.getResult());
-		saveScanDetails(result, args, provider, totalCount);
+		double[] totalCount = calcIacScore(result.getResult());
+		saveTerraformScanDetails(result, args, provider, totalCount);
 	}
 
 	public List<CustomRule> getOffedCheckList() {
 		return checkListRepository.findByRuleOnOff("n");
 	}
 
-	@Transactional
 	public List<CheckListDetailDto.Detail> getCheckListDetailsList() {
 		List<CustomRule> ruleList = checkListRepository.findAll();
 		return ruleList.stream().map(CheckListDetailDto.Detail::new).collect(Collectors.toList());
 	}
 
-	public double[] calc(List<ScanDto.Result> results) {
+	public double[] calcIacScore(List<ScanDto.Result> results) {
 		/* score, high, medium, low, unknown */
 		double[] count = new double[] {0.0, 0.0, 0.0, 0.0, 0.0};
 		int totalHigh = 0, totalMedium = 0, totalLow = 0;
