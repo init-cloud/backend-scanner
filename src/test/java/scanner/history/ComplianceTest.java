@@ -56,8 +56,8 @@ class ComplianceTest {
 		//then
 		List<ScanHistoryDetail> detailsTest = scanHistory.getDetails();
 
-		Map<String, Map<String, Integer>> complianceMapEng = FailedComplianceDto.toComplianceMap(detailsTest);
-		Map<String, Map<String, Integer>> complianceMapKor = FailedComplianceDto.toComplianceKorMap(detailsTest);
+		Map<String, Map<String, Integer>> complianceMapEng = FailedComplianceDto.toEnglishDto(detailsTest);
+		Map<String, Map<String, Integer>> complianceMapKor = FailedComplianceDto.toKoreanDto(detailsTest);
 
 		Assertions.assertTrue(complianceMapEng.get("ISMS-P").containsKey("0.0.0"));
 		Assertions.assertTrue(complianceMapKor.get("ISMS-P").containsKey("0.0.0"));

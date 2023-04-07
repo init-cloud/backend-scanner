@@ -24,7 +24,7 @@ public class TagDto {
 	}
 
 	public static Tag toEntity(final TagDto dto) {
-		return Tag.builder()
+		return Tag.tagFromRuleBuilder()
 			.tagName(dto.getTag())
 			.build();
 	}

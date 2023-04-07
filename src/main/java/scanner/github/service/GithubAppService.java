@@ -12,7 +12,7 @@ import scanner.common.client.GithubFeignClient;
 import scanner.common.enums.ResponseCode;
 import scanner.common.exception.ApiException;
 
-import scanner.github.dto.Git;
+import scanner.github.dto.GitDto;
 import scanner.security.dto.GithubToken;
 import scanner.security.provider.JwtTokenProvider;
 import scanner.user.entity.User;
@@ -48,12 +48,12 @@ public class GithubAppService {
 			throw new ApiException(ResponseCode.SERVER_STORE_ERROR);
 	}
 
-	public List<Git.Repository> getRepositories(@NonNull String user) {
+	public List<GitDto.RepositoryInfo> getRepositories(@NonNull String user) {
 		String token = jwtTokenProvider.getToken();
 		return githubFeignClient.getRepositoryList(token, user);
 	}
 
-	public List<Git.File> getRepository(String user, String repo, String branch) {
+	public List<GitDto.File> getRepository(String user, String repo, String branch) {
 		String token = jwtTokenProvider.getToken();
 		return githubFeignClient.getRepositoryDetails(token, user, repo, branch);
 	}

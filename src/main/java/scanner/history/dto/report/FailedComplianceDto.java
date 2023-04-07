@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -11,6 +12,14 @@ import lombok.NoArgsConstructor;
 import scanner.checklist.entity.ComplianceEng;
 import scanner.checklist.entity.ComplianceKor;
 import scanner.history.entity.ScanHistoryDetail;
+
+/*
+	@Written by @Floodnut, v0.3.1-beta
+	@Todo
+	DB tables need to be redesigned.
+	After the design, the classes are integrated into 'ComplianceDto'
+	We're going to refactoring language-specific methods.
+ */
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -23,30 +32,27 @@ public class FailedComplianceDto {
 		this.failedDto = failedDto;
 	}
 
-	public static List<FailedComplianceDto> mapToComplianceDto(Map<String, Map<String, Integer>> map) {
-		List<FailedComplianceDto> dto = new ArrayList<>();
+	public static List<FailedComplianceDto> toFailedComplianceList(Map<String, Map<String, Integer>> map) {
+		List<FailedComplianceDto> dtoList = new ArrayList<>();
 
-		map.forEach((compliance, data) -> {
-			List<FailedDto> details = new ArrayList<>();
-			data.forEach((key, value) -> details.add(new FailedDto(key, value)));
-			dto.add(new FailedComplianceDto(compliance, details));
+		map.forEach((complianceName, complianceDetail) -> {
+			List<FailedDto> details = complianceDetail.entrySet()
+				.stream()
+				.map(entry -> new FailedDto(entry.getKey(), entry.getValue()))
+				.collect(Collectors.toList());
+			dtoList.add(new FailedComplianceDto(complianceName, details));
 		});
 
-		return dto;
+		return dtoList;
 	}
 
 	/* ComplianceEng */
-	public static Map<String, Map<String, Integer>> toComplianceMap(List<ScanHistoryDetail> details) {
-
+	public static Map<String, Map<String, Integer>> toEnglishDto(List<ScanHistoryDetail> details) {
 		Map<String, Map<String, Integer>> total = new LinkedHashMap<>();
-
-		if (details.isEmpty())
-			return total;
-
 		details.stream().forEach(detail -> {
-			List<ComplianceEng> compliances = detail.getRuleSeq().getComplianceEngs();
-			for (ComplianceEng cmp : compliances) {
+			for (ComplianceEng cmp : detail.getRuleSeq().getComplianceEngs()) {
 				Map<String, Integer> compliance;
+
 				if (total.containsKey(cmp.getComplianceName()))
 					compliance = total.get(cmp.getComplianceName());
 				else
@@ -65,17 +71,12 @@ public class FailedComplianceDto {
 		return total;
 	}
 
-	public static Map<String, Map<String, Integer>> toComplianceKorMap(List<ScanHistoryDetail> details) {
-
+	public static Map<String, Map<String, Integer>> toKoreanDto(List<ScanHistoryDetail> details) {
 		Map<String, Map<String, Integer>> total = new LinkedHashMap<>();
-
-		if (details.isEmpty())
-			return total;
-
 		details.stream().forEach(detail -> {
-			List<ComplianceKor> compliances = detail.getRuleSeq().getComplianceKors();
-			for (ComplianceKor cmp : compliances) {
+			for (ComplianceKor cmp : detail.getRuleSeq().getComplianceKors()) {
 				Map<String, Integer> compliance;
+
 				if (total.containsKey(cmp.getComplianceName()))
 					compliance = total.get(cmp.getComplianceName());
 				else
