@@ -34,7 +34,7 @@ public class Tag extends BaseEntity {
 	@Size(max = 64)
 	private String tagName;
 
-	@Builder
+	@Builder(builderClassName = "tagFromRuleBuilder", builderMethodName = "tagFromRuleBuilder")
 	public Tag(CustomRule ruleSeq, String tagName) {
 		this.ruleSeq = ruleSeq;
 		this.tagName = tagName;

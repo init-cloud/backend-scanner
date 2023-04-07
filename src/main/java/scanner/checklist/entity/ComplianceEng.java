@@ -14,6 +14,13 @@ import javax.validation.constraints.Size;
 import lombok.*;
 import scanner.common.entity.BaseEntity;
 
+/*
+	@Written by @Floodnut, v0.3.1-beta
+	@Todo
+	Tables separated by language(Korean, English) will be combined into one table.
+	Details will be organized into separate tables.
+ */
+
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -55,7 +62,7 @@ public class ComplianceEng extends BaseEntity {
 	@Column(name = "DETAIL")
 	private String detail;
 
-	@Builder
+	@Builder(builderClassName = "complianceEnglishBuilder", builderMethodName = "complianceEnglishBuilder")
 	public ComplianceEng(CustomRule ruleSeq, String complianceName, String complianceNumber, String category,
 		String article, String description, String detail) {
 		this.ruleSeq = ruleSeq;

@@ -8,18 +8,18 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 
-import scanner.github.dto.Git;
+import scanner.github.dto.GitDto;
 
 @FeignClient(name = "feignClient", contextId = "githubFeignClient", url = "https://api.github.com")
 public interface GithubFeignClient {
 
 	@GetMapping(value = "/users/{USER}/repos")
-	List<Git.Repository> getRepositoryList(@RequestHeader("Authorization") String token,
+	List<GitDto.RepositoryInfo> getRepositoryList(@RequestHeader("Authorization") String token,
 		@PathVariable("USER") String user);
 
 	/* Contents in Repository */
 	@GetMapping(value = "/repos/{USER}/{REPO}/contents")
-	List<Git.File> getRepositoryDetails(@RequestHeader("Authorization") String token, @PathVariable("USER") String user,
+	List<GitDto.File> getRepositoryDetails(@RequestHeader("Authorization") String token, @PathVariable("USER") String user,
 		@PathVariable("REPO") String repo, @RequestParam("ref") String branch);
 
 	@GetMapping(value = "/repos/{USER}/{REPO}/commits")

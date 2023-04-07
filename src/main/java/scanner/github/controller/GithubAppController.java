@@ -10,7 +10,7 @@ import org.springframework.lang.Nullable;
 import org.springframework.web.bind.annotation.*;
 
 import scanner.common.dto.CommonResponse;
-import scanner.github.dto.Git;
+import scanner.github.dto.GitDto;
 import scanner.github.service.GithubAppService;
 import scanner.security.dto.GithubToken;
 
@@ -47,9 +47,11 @@ public class GithubAppController {
 		@ApiImplicitParam(name = "Authorization", paramType = "header", value = "Access Token", required = true, dataTypeClass = String.class),
 		@ApiImplicitParam(name = "user", value = "Github user or organization", required = true, dataTypeClass = String.class)})
 	@GetMapping("/repos/{user}")
-	public CommonResponse<List<Git.Repository>> repositoryList(@PathVariable("user") String user) {
-		List<Git.Repository> dtos = githubAppService.getRepositories(user);
-		List<Git.Repository> response = dtos.stream().map(Git.Repository::toRepository).collect(Collectors.toList());
+	public CommonResponse<List<GitDto.RepositoryInfo>> repositoryList(@PathVariable("user") String user) {
+		List<GitDto.RepositoryInfo> dtos = githubAppService.getRepositories(user);
+		List<GitDto.RepositoryInfo> response = dtos.stream()
+			.map(GitDto.RepositoryInfo::toApiRepository)
+			.collect(Collectors.toList());
 		return new CommonResponse<>(response);
 	}
 
@@ -58,11 +60,11 @@ public class GithubAppController {
 		@ApiImplicitParam(name = "Authorization", paramType = "header", value = "Access Token", required = true, dataTypeClass = String.class),
 		@ApiImplicitParam(name = "user", value = "Github user or organization", required = true, dataTypeClass = String.class),
 		@ApiImplicitParam(name = "repo", value = "Github repository", required = true, dataTypeClass = String.class),
-		@ApiImplicitParam(name = "ref", paramType = "query", value = "Branch", required = false, dataTypeClass = String.class)})
+		@ApiImplicitParam(name = "ref", paramType = "query", value = "Branch", dataTypeClass = String.class)})
 	@GetMapping("/repos/{user}/{repo}")
-	public CommonResponse<List<Git.File>> repositoryDetails(@PathVariable("user") String user,
+	public CommonResponse<List<GitDto.File>> repositoryDetails(@PathVariable("user") String user,
 		@PathVariable("repo") String repo, @Nullable @RequestParam("ref") String branch) {
-		List<Git.File> dtos = githubAppService.getRepository(user, repo, branch);
+		List<GitDto.File> dtos = githubAppService.getRepository(user, repo, branch);
 
 		return new CommonResponse<>(dtos);
 	}
@@ -72,7 +74,7 @@ public class GithubAppController {
 		@ApiImplicitParam(name = "Authorization", paramType = "header", value = "Access Token", required = true, dataTypeClass = String.class),
 		@ApiImplicitParam(name = "user", paramType = "path", value = "Github user or organization", required = true, dataTypeClass = String.class),
 		@ApiImplicitParam(name = "repo", paramType = "path", value = "Github repository", required = true, dataTypeClass = String.class),
-		@ApiImplicitParam(name = "ref", paramType = "query", value = "Branch", required = false, dataTypeClass = String.class)})
+		@ApiImplicitParam(name = "ref", paramType = "query", value = "Branch", dataTypeClass = String.class)})
 	@GetMapping("/repos/{user}/{repo}/commits")
 	public CommonResponse<List<Object>> commitList(@PathVariable("user") String user, @PathVariable("repo") String repo,
 		@Nullable @RequestParam("ref") String branch) {
@@ -87,7 +89,7 @@ public class GithubAppController {
 		@ApiImplicitParam(name = "user", paramType = "path", value = "Github user or organization", required = true, dataTypeClass = String.class),
 		@ApiImplicitParam(name = "repo", paramType = "path", value = "Github repository", required = true, dataTypeClass = String.class),
 		@ApiImplicitParam(name = "hash", paramType = "path", value = "Commit Hash", required = true, dataTypeClass = String.class),
-		@ApiImplicitParam(name = "ref", paramType = "query", value = "Branch", required = false, dataTypeClass = String.class)})
+		@ApiImplicitParam(name = "ref", paramType = "query", value = "Branch", dataTypeClass = String.class)})
 	@GetMapping("/repos/{user}/{repo}/commits/{hash}")
 	public CommonResponse<Object> commitDetails(@PathVariable("user") String user, @PathVariable("repo") String repo,
 		@PathVariable("hash") String hash, @Nullable @RequestParam("ref") String branch) {
@@ -103,7 +105,7 @@ public class GithubAppController {
 		@ApiImplicitParam(name = "user", paramType = "path", value = "Github user or organization", required = true, dataTypeClass = String.class),
 		@ApiImplicitParam(name = "repo", paramType = "path", value = "Github repository", required = true, dataTypeClass = String.class),
 		@ApiImplicitParam(name = "hash", paramType = "path", value = "Commit Hash", required = true, dataTypeClass = String.class),
-		@ApiImplicitParam(name = "ref", paramType = "query", value = "Branch", required = false, dataTypeClass = String.class)})
+		@ApiImplicitParam(name = "ref", paramType = "query", value = "Branch", dataTypeClass = String.class)})
 	@GetMapping("/repos/{user}/{repo}/git/blobs/{hash}")
 	public CommonResponse<?> gitFiles(@PathVariable("user") String user, @PathVariable("repo") String repo,
 		@PathVariable("hash") String hash, @Nullable @RequestParam("ref") String branch) {

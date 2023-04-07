@@ -36,7 +36,7 @@ public class StorageServiceImpl implements StorageService {
 	@Value("${spring.servlet.multipart.location}")
 	private String uploadPath;
 
-	private static final String ROOTPATH = "./uploads/";
+	private static final String ROOT_PATH = "./uploads/";
 
 	@Override
 	public void init() {
@@ -47,12 +47,14 @@ public class StorageServiceImpl implements StorageService {
 		}
 	}
 
+	/**
+	 * 	Save Files under UUID directory
+	 */
 	@Override
 	public String[] store(MultipartFile file) {
 		try {
-			String[] result = {null, null, null};
-			UUID uniqName = UUID.randomUUID();
-			String saved = uniqName.toString();
+			String[] result = new String[3];
+			String saved = UUID.randomUUID().toString();
 			Path root = Paths.get(uploadPath + saved);
 			File dir = new File(uploadPath + saved);
 
@@ -72,13 +74,12 @@ public class StorageServiceImpl implements StorageService {
 				if (isNotValidExt(file.getOriginalFilename()))
 					throw new ApiException(ResponseCode.SERVER_STORE_ERROR);
 
-				Files.copy(
-					inputStream, root.resolve(file.getOriginalFilename()), StandardCopyOption.REPLACE_EXISTING);
+				Files.copy(inputStream, root.resolve(file.getOriginalFilename()), StandardCopyOption.REPLACE_EXISTING);
 
-				String fileHash = FileDigest.getChecksum(ROOTPATH + saved + "/" + file.getOriginalFilename());
+				String fileHash = FileDigest.getChecksum(ROOT_PATH + saved + "/" + file.getOriginalFilename());
 
 				if (isCompressed(file.getOriginalFilename()))
-					decompress(ROOTPATH + saved + "/" + file.getOriginalFilename(), ROOTPATH + saved);
+					decompress(ROOT_PATH + saved + "/" + file.getOriginalFilename(), ROOT_PATH + saved);
 
 				result[0] = fileHash;
 				result[1] = saved;
@@ -93,8 +94,7 @@ public class StorageServiceImpl implements StorageService {
 		}
 	}
 
-	public static void decompress(String zipFileName, String directory)
-		throws Throwable {
+	public static void decompress(String zipFileName, String directory) throws Throwable {
 		File zipFile = new File(zipFileName);
 		FileInputStream fis = null;
 		ZipInputStream zis = null;
@@ -186,8 +186,7 @@ public class StorageServiceImpl implements StorageService {
 		String contentType = null;
 
 		try {
-			contentType = request.getServletContext()
-				.getMimeType(resource.getFile().getAbsolutePath());
+			contentType = request.getServletContext().getMimeType(resource.getFile().getAbsolutePath());
 		} catch (IOException ex) {
 			throw new ApiException(ResponseCode.SERVER_ERROR);
 		}
