@@ -59,10 +59,7 @@ public class ScanService {
 				ScanDto.Response scanResult = changeScanOutputToDto(reader);
 
 				int exitCode = process.waitFor();
-				if (exitCode != 0) {
-					throw new ApiException(ResponseCode.SCAN_ERROR);
-				}
-
+				log.info("Scan exitCode is {}", exitCode);
 				// FileUtils.deleteDirectory(file);
 
 				return scanResult;
