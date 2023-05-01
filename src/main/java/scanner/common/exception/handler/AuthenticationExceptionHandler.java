@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
-
 import lombok.extern.slf4j.Slf4j;
 import scanner.common.dto.CommonResponse;
 import scanner.common.exception.ApiAuthException;
@@ -17,17 +16,16 @@ import scanner.common.exception.ApiAuthException;
 @Slf4j
 public class AuthenticationExceptionHandler extends ResponseEntityExceptionHandler {
 
-	@ExceptionHandler({ApiAuthException.class})
+	@ExceptionHandler(value = ApiAuthException.class)
 	@ResponseBody
 	public ResponseEntity<Object> handleJwtException(ApiAuthException e) {
 		log.error("handleJwtException throw JwtException : {}", e.getResponseCode().getMessage());
 		return CommonResponse.toException(e);
 	}
 
-	@ExceptionHandler({AuthenticationException.class})
+	@ExceptionHandler(value = AuthenticationException.class)
 	@ResponseBody
-	public ResponseEntity<Object> handleAuthenticateException(Exception e) {
-		e.printStackTrace();
+	public ResponseEntity<Object> handleAuthenticateException(AuthenticationException e) {
 		log.error("handleAuthenticateException throw AuthenticateException : {}", e.getMessage());
 		return CommonResponse.toException(e);
 	}
