@@ -19,7 +19,7 @@ import io.jsonwebtoken.UnsupportedJwtException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import scanner.common.enums.ResponseCode;
-import scanner.common.exception.ApiException;
+import scanner.common.exception.ApiAuthException;
 import scanner.security.config.Properties;
 import scanner.security.dto.Token;
 import scanner.security.dto.UsernameToken;
@@ -56,20 +56,24 @@ public class JwtTokenProvider {
 		try {
 			return Jwts.parser().setSigningKey(key).parseClaimsJws(token).getBody();
 		} catch (SecurityException e) {
-			log.info("Invalid JWT signature", e);
+			log.error(ResponseCode.INVALID_TOKEN_SIGNATURE.getMessage(), e.getMessage());
+			throw new ApiAuthException(ResponseCode.INVALID_TOKEN_SIGNATURE);
 		} catch (MalformedJwtException e) {
-			log.info("Invalid JWT token", e);
+			log.error(ResponseCode.INVALID_TOKEN.getMessage(), e.getMessage());
+			throw new ApiAuthException(ResponseCode.INVALID_TOKEN);
 		} catch (ExpiredJwtException e) {
-			log.info("Expired JWT Token", e);
+			log.error(ResponseCode.TOKEN_EXPIRED.getMessage(), e.getMessage());
+			throw new ApiAuthException(ResponseCode.TOKEN_EXPIRED);
 		} catch (UnsupportedJwtException e) {
-			log.info("Unsupported JWT Token", e);
+			log.error(ResponseCode.UNSUPPORTED_TOKEN.getMessage(), e.getMessage());
+			throw new ApiAuthException(ResponseCode.UNSUPPORTED_TOKEN);
 		} catch (IllegalArgumentException e) {
-			log.info("JWT claims string is empty", e);
+			log.error(ResponseCode.EMPTY_TOKEN_CLAIMS.getMessage(), e.getMessage());
+			throw new ApiAuthException(ResponseCode.EMPTY_TOKEN_CLAIMS);
 		} catch (Exception e) {
-			log.info("Error occur on JWT", e);
+			log.error(ResponseCode.INVALID_TOKEN.getMessage(), e.getMessage());
+			throw new ApiAuthException(ResponseCode.INVALID_TOKEN);
 		}
-
-		return null;
 	}
 
 	public String getUsername(String token, String key) {
@@ -101,20 +105,24 @@ public class JwtTokenProvider {
 			Jwts.parser().setSigningKey(key).parseClaimsJws(token);
 			return true;
 		} catch (SecurityException e) {
-			log.info("Invalid JWT signature", e);
+			log.error(ResponseCode.INVALID_TOKEN_SIGNATURE.getMessage(), e.getMessage());
+			throw new ApiAuthException(ResponseCode.INVALID_TOKEN_SIGNATURE);
 		} catch (MalformedJwtException e) {
-			log.info("Invalid JWT token", e);
+			log.error(ResponseCode.INVALID_TOKEN.getMessage(), e.getMessage());
+			throw new ApiAuthException(ResponseCode.INVALID_TOKEN);
 		} catch (ExpiredJwtException e) {
-			log.info("Expired JWT Token", e);
+			log.error(ResponseCode.TOKEN_EXPIRED.getMessage(), e.getMessage());
+			throw new ApiAuthException(ResponseCode.TOKEN_EXPIRED);
 		} catch (UnsupportedJwtException e) {
-			log.info("Unsupported JWT Token", e);
+			log.error(ResponseCode.UNSUPPORTED_TOKEN.getMessage(), e.getMessage());
+			throw new ApiAuthException(ResponseCode.UNSUPPORTED_TOKEN);
 		} catch (IllegalArgumentException e) {
-			log.info("JWT claims string is empty", e);
+			log.error(ResponseCode.EMPTY_TOKEN_CLAIMS.getMessage(), e.getMessage());
+			throw new ApiAuthException(ResponseCode.EMPTY_TOKEN_CLAIMS);
 		} catch (Exception e) {
-			log.info("Error occur on JWT", e);
+			log.error(ResponseCode.INVALID_TOKEN.getMessage(), e.getMessage());
+			throw new ApiAuthException(ResponseCode.INVALID_TOKEN);
 		}
-
-		return false;
 	}
 
 	public String resolve(HttpServletRequest request) {
@@ -130,7 +138,7 @@ public class JwtTokenProvider {
 		if (authorization.startsWith("token "))
 			return authorization.substring(6);
 
-		throw new ApiException(ResponseCode.INVALID_TOKEN);
+		throw new ApiAuthException(ResponseCode.INVALID_TOKEN);
 	}
 }
 
