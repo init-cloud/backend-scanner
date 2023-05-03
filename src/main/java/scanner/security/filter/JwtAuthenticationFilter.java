@@ -4,38 +4,41 @@ import java.io.IOException;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.filter.OncePerRequestFilter;
 
 import lombok.RequiredArgsConstructor;
+
+import scanner.common.enums.ResponseCode;
+import scanner.common.exception.ApiAuthException;
 import scanner.security.config.Properties;
 import scanner.security.provider.JwtTokenProvider;
 
 @RequiredArgsConstructor
-public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
+public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
 	private final JwtTokenProvider jwtTokenProvider;
 	private final Properties properties;
 
 	@Override
-	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws
+	public void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws
 		IOException,
 		ServletException {
 
-		String token = jwtTokenProvider.resolve((HttpServletRequest)request);
+		String token = jwtTokenProvider.resolve(request);
 
 		if (token == null)
-			SecurityContextHolder.getContext().setAuthentication(null);
+			throw new ApiAuthException(ResponseCode.NULL_TOKEN);
 
-		else if (jwtTokenProvider.validate(token, properties.getSecret())) {
-			Authentication authentication = jwtTokenProvider.getAuthentication(token, properties.getSecret());
-			SecurityContextHolder.getContext().setAuthentication(authentication);
-		}
+		if (!jwtTokenProvider.validate(token, properties.getSecret()))
+			throw new ApiAuthException(ResponseCode.INVALID_TOKEN);
+
+		Authentication authentication = jwtTokenProvider.getAuthentication(token, properties.getSecret());
+		SecurityContextHolder.getContext().setAuthentication(authentication);
 
 		chain.doFilter(request, response);
 	}
