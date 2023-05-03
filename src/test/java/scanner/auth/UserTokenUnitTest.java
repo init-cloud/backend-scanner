@@ -1,18 +1,16 @@
-package scanner.document;
+package scanner.auth;
 
 import java.time.LocalDateTime;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.crypto.password.Pbkdf2PasswordEncoder;
 
 import scanner.user.dto.UserAuthDto;
 
-@AutoConfigureRestDocs
 @SpringBootTest
 class UserTokenUnitTest {
 
