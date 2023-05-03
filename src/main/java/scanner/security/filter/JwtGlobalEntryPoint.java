@@ -1,8 +1,9 @@
 package scanner.security.filter;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -11,14 +12,16 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.stereotype.Component;
 
+import lombok.extern.slf4j.Slf4j;
 import scanner.common.enums.ResponseCode;
 
+@Slf4j
 @Component("jwtGlobalEntryPoint")
 public class JwtGlobalEntryPoint implements AuthenticationEntryPoint {
 
 	@Override
 	public void commence(HttpServletRequest request, HttpServletResponse response,
-		org.springframework.security.core.AuthenticationException authException) throws IOException, ServletException {
+		org.springframework.security.core.AuthenticationException authException) throws IOException {
 		Integer exception = (Integer)request.getAttribute("exception");
 
 		if (exception == null) {
@@ -35,8 +38,6 @@ public class JwtGlobalEntryPoint implements AuthenticationEntryPoint {
 			setResponse(response, ResponseCode.UNSUPPORTED_TOKEN);
 		} else if (exception.equals(ResponseCode.INVALID_TOKEN_FORMAT.getCode())) {
 			setResponse(response, ResponseCode.INVALID_TOKEN_FORMAT);
-		} else {
-			setResponse(response, ResponseCode.INVALID_TOKEN);
 		}
 	}
 
@@ -44,14 +45,16 @@ public class JwtGlobalEntryPoint implements AuthenticationEntryPoint {
 		response.setStatus(HttpStatus.UNAUTHORIZED.value());
 		response.setContentType("application/json");
 
-		JSONObject responseJson = new JSONObject();
-		JSONObject errorJson = new JSONObject();
-		errorJson.put("code", code.getCode());
-		errorJson.put("message", code.getMessage());
+		Map<String, Object> errorMap = new HashMap<>();
+		errorMap.put("code", code.getCode());
+		errorMap.put("message", code.getMessage());
 
-		responseJson.put("success", false);
-		responseJson.put("data", null);
-		responseJson.put("error", errorJson);
+		Map<String, Object> responseMap = new HashMap<>();
+		responseMap.put("success", false);
+		responseMap.put("data", null);
+		responseMap.put("error", errorMap);
+
+		JSONObject responseJson = new JSONObject(responseMap);
 
 		response.getWriter().print(responseJson);
 	}

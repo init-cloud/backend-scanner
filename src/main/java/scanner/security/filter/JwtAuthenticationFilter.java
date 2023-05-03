@@ -12,6 +12,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import lombok.RequiredArgsConstructor;
+
 import scanner.common.enums.ResponseCode;
 import scanner.common.exception.ApiAuthException;
 import scanner.security.config.Properties;
@@ -30,7 +31,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
 		String token = jwtTokenProvider.resolve(request);
 
-		if (token == null || jwtTokenProvider.validate(token, properties.getSecret()))
+		if (token == null)
+			throw new ApiAuthException(ResponseCode.NULL_TOKEN);
+
+		if (!jwtTokenProvider.validate(token, properties.getSecret()))
 			throw new ApiAuthException(ResponseCode.INVALID_TOKEN);
 
 		Authentication authentication = jwtTokenProvider.getAuthentication(token, properties.getSecret());

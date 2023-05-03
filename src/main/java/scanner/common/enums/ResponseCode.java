@@ -28,6 +28,7 @@ public enum ResponseCode {
 	UNSUPPORTED_TOKEN(4017, HttpStatus.UNAUTHORIZED, "Unsupported Token."),
 	INVALID_TOKEN_SIGNATURE(4018, HttpStatus.UNAUTHORIZED, "Invalid Token signature."),
 	EMPTY_TOKEN_CLAIMS(4019, HttpStatus.UNAUTHORIZED, "Empty Token Claims."),
+	NULL_TOKEN(4020, HttpStatus.UNAUTHORIZED, "Token is null"),
 
 	/* Server Error. */
 	SERVER_BUSY(5001, HttpStatus.INTERNAL_SERVER_ERROR, "Server busy."),
