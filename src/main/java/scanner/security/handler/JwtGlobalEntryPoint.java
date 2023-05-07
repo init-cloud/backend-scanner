@@ -1,4 +1,4 @@
-package scanner.security.filter;
+package scanner.security.handler;
 
 import java.io.IOException;
 import java.util.HashMap;

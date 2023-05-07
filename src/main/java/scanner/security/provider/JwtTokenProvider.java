@@ -4,6 +4,7 @@ import java.util.Date;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -20,7 +21,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import scanner.common.enums.ResponseCode;
 import scanner.common.exception.ApiAuthException;
-import scanner.security.config.Properties;
 import scanner.security.dto.Token;
 import scanner.security.dto.UsernameToken;
 import scanner.security.service.CustomUserDetailService;
@@ -33,8 +33,9 @@ import scanner.user.enums.RoleType;
 public class JwtTokenProvider {
 
 	private static final long EXPIREDTIME = 3 * 24 * 60 * 60 * 1000L;
+	private static final String PREFIX_BEARER = "Bearer ";
+	private static final String PREFIX_TOKEN = "token ";
 
-	private final Properties jwt;
 	private final CustomUserDetailService userDetailsService;
 
 	public Token create(String username, RoleType role, String key) {
@@ -71,8 +72,8 @@ public class JwtTokenProvider {
 			log.error(ResponseCode.EMPTY_TOKEN_CLAIMS.getMessage(), e.getMessage());
 			throw new ApiAuthException(ResponseCode.EMPTY_TOKEN_CLAIMS);
 		} catch (Exception e) {
-			log.error(ResponseCode.INVALID_TOKEN.getMessage(), e.getMessage());
-			throw new ApiAuthException(ResponseCode.INVALID_TOKEN);
+			log.error(ResponseCode.INVALID_ACCESS.getMessage(), e.getMessage());
+			throw new ApiAuthException(ResponseCode.INVALID_ACCESS);
 		}
 	}
 
@@ -120,22 +121,22 @@ public class JwtTokenProvider {
 			log.error(ResponseCode.EMPTY_TOKEN_CLAIMS.getMessage(), e.getMessage());
 			throw new ApiAuthException(ResponseCode.EMPTY_TOKEN_CLAIMS);
 		} catch (Exception e) {
-			log.error(ResponseCode.INVALID_TOKEN.getMessage(), e.getMessage());
-			throw new ApiAuthException(ResponseCode.INVALID_TOKEN);
+			log.error(ResponseCode.INVALID_ACCESS.getMessage(), e.getMessage());
+			throw new ApiAuthException(ResponseCode.INVALID_ACCESS);
 		}
 	}
 
 	public String resolve(HttpServletRequest request) {
 
-		String authorization = request.getHeader("Authorization");
+		String authorization = request.getHeader(HttpHeaders.AUTHORIZATION);
 
 		if (authorization == null)
 			return null;
 
-		if (authorization.startsWith("Bearer "))
+		if (authorization.startsWith(PREFIX_BEARER))
 			return authorization.substring(7);
 
-		if (authorization.startsWith("token "))
+		if (authorization.startsWith(PREFIX_TOKEN))
 			return authorization.substring(6);
 
 		throw new ApiAuthException(ResponseCode.INVALID_TOKEN);
