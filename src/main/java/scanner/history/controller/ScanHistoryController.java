@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import scanner.common.dto.CommonResponse;
+import scanner.common.dto.ResponseDto;
 
 import scanner.common.enums.Language;
 import scanner.history.dto.history.HistoryDto;
@@ -31,28 +31,28 @@ public class ScanHistoryController {
 
 	private final ScanHistoryService scanHistoryService;
 
-	@ApiOperation(value = "Retrieve Scan History", notes = "Retrieve scan histories for reports.", response = CommonResponse.class)
+	@ApiOperation(value = "Retrieve Scan History", notes = "Retrieve scan histories for reports.", response = ResponseDto.class)
 	@ApiImplicitParams({
 		@ApiImplicitParam(name = "Authorization", paramType = "header", value = "Access Token", required = true, dataTypeClass = String.class)})
 	@GetMapping("/history")
-	public CommonResponse<List<HistoryDto>> historyList() {
+	public ResponseDto<List<HistoryDto>> historyList() {
 		List<ScanHistory> history = scanHistoryService.getHistoryList();
 
 		List<HistoryDto> dtos = history.stream().map(HistoryDto::new).collect(Collectors.toList());
 
-		return new CommonResponse<>(dtos);
+		return new ResponseDto<>(dtos);
 	}
 
-	@ApiOperation(value = "Retrieve Scan Report", notes = "Retrieve report from Scan histories.", response = CommonResponse.class)
+	@ApiOperation(value = "Retrieve Scan Report", notes = "Retrieve report from Scan histories.", response = ResponseDto.class)
 	@ApiImplicitParams({
 		@ApiImplicitParam(name = "Authorization", paramType = "header", value = "Access Token", required = true, dataTypeClass = String.class),
 		@ApiImplicitParam(name = "reportId", paramType = "path", value = "History(Report) ID", required = true, dataTypeClass = Long.class),
 		@ApiImplicitParam(name = "lang", paramType = "query", value = "eng, kor", required = false, dataTypeClass = String.class)})
 	@GetMapping("/report/{reportId}")
-	public CommonResponse<ReportResponse> reportDetails(@PathVariable Long reportId,
+	public ResponseDto<ReportResponse> reportDetails(@PathVariable Long reportId,
 		@Nullable @RequestParam String lang) {
 		ReportResponse dtos = scanHistoryService.getReportDetails(reportId, Language.of(lang));
 
-		return new CommonResponse<>(dtos);
+		return new ResponseDto<>(dtos);
 	}
 }
