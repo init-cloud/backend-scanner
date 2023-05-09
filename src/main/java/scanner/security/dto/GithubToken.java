@@ -3,8 +3,8 @@ package scanner.security.dto;
 import java.time.LocalDateTime;
 
 import lombok.*;
-import scanner.user.entity.User;
-import scanner.user.entity.UserOAuthToken;
+import scanner.auth.entity.User;
+import scanner.auth.entity.UserOAuthToken;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)

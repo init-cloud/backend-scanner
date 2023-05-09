@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 import scanner.user.dto.UserAuthDto;
 import scanner.user.dto.UserBaseDto;
 import scanner.security.dto.Token;
-import scanner.user.entity.User;
+import scanner.auth.entity.User;
 
 @Service
 @NoArgsConstructor(access = AccessLevel.PROTECTED)

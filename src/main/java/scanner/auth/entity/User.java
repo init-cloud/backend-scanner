@@ -1,4 +1,4 @@
-package scanner.user.entity;
+package scanner.auth.entity;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -90,8 +90,8 @@ public class User extends BaseEntity implements UserDetails {
 	@Size(max = 16)
 	private String contact;
 
-	@OneToMany(mappedBy = "user")
-	private List<UsedRule> usedRules = new ArrayList<>();
+	@OneToMany
+	private List<UsersOfTeam> usersOfTeams = new ArrayList<>();
 
 	@Builder(builderClassName = "modifyUserBuilder", builderMethodName = "modifyUserInfoBuilder")
 	public User(User user, LocalDateTime lastLogin, String password, String authorities, RoleType roleType,

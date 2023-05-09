@@ -3,7 +3,7 @@ package scanner.user.service;
 import scanner.user.dto.UserAuthDto;
 import scanner.user.dto.UserBaseDto;
 import scanner.security.dto.Token;
-import scanner.user.entity.User;
+import scanner.auth.entity.User;
 
 public interface UserService {
 

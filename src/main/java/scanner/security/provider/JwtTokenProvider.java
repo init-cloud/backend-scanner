@@ -11,7 +11,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
-import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.MalformedJwtException;
@@ -24,7 +23,7 @@ import scanner.common.exception.ApiAuthException;
 import scanner.security.dto.Token;
 import scanner.security.dto.UsernameToken;
 import scanner.security.service.CustomUserDetailService;
-import scanner.user.entity.User;
+import scanner.auth.entity.User;
 import scanner.user.enums.RoleType;
 
 @Slf4j

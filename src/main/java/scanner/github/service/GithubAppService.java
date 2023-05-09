@@ -15,8 +15,8 @@ import scanner.common.exception.ApiException;
 import scanner.github.dto.GitDto;
 import scanner.security.dto.GithubToken;
 import scanner.security.provider.JwtTokenProvider;
-import scanner.user.entity.User;
-import scanner.user.entity.UserOAuthToken;
+import scanner.auth.entity.User;
+import scanner.auth.entity.UserOAuthToken;
 import scanner.user.repository.OAuthTokenRepository;
 import scanner.user.repository.UserRepository;
 

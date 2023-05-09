@@ -1,4 +1,4 @@
-package scanner.user.entity;
+package scanner.auth.entity;
 
 import java.time.LocalDateTime;
 

@@ -1,6 +1,7 @@
 package scanner.user.entity;
 
 import lombok.Getter;
+import scanner.auth.entity.User;
 import scanner.common.entity.BaseEntity;
 import scanner.checklist.entity.CustomRule;
 

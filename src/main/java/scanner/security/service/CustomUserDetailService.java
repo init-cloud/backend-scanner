@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 
 import scanner.user.dto.UserDetailsDto;
 import scanner.common.exception.ApiException;
-import scanner.user.entity.User;
+import scanner.auth.entity.User;
 import scanner.user.repository.UserRepository;
 import scanner.common.enums.ResponseCode;
 

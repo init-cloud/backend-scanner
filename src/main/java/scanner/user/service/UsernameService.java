@@ -18,7 +18,7 @@ import scanner.security.provider.UsernamePasswordAuthenticationProvider;
 import scanner.user.dto.UserAuthDto;
 import scanner.user.dto.UserBaseDto;
 import scanner.user.dto.UserDetailsDto;
-import scanner.user.entity.User;
+import scanner.auth.entity.User;
 import scanner.user.enums.RoleType;
 import scanner.user.repository.UserRepository;
 

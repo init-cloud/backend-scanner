@@ -8,7 +8,7 @@ import org.springframework.security.core.GrantedAuthority;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import scanner.user.entity.User;
+import scanner.auth.entity.User;
 import scanner.user.enums.RoleType;
 import scanner.user.enums.UserState;
 
