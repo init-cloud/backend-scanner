@@ -20,7 +20,6 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 import lombok.RequiredArgsConstructor;
 import scanner.security.filter.JwtAuthenticationFilter;
-import scanner.security.filter.JwtExceptionFilter;
 import scanner.security.handler.JwtGlobalEntryPoint;
 import scanner.security.provider.JwtTokenProvider;
 
@@ -32,7 +31,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 	private final ApplicationContext applicationContext;
 	private final JwtGlobalEntryPoint jwtGlobalEntryPoint;
-	private final JwtExceptionFilter jwtExceptionFilter;
 	private final JwtTokenProvider jwtTokenProvider;
 	private final Properties properties;
 
@@ -72,8 +70,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 			.exceptionHandling().authenticationEntryPoint(jwtGlobalEntryPoint)
 			.and()
 			.addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider, properties),
-				UsernamePasswordAuthenticationFilter.class)
-			.addFilterBefore(jwtExceptionFilter, JwtAuthenticationFilter.class);
+				UsernamePasswordAuthenticationFilter.class);
 	}
 
 	@Bean

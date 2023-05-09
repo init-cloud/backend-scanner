@@ -38,6 +38,8 @@ public class JwtGlobalEntryPoint implements AuthenticationEntryPoint {
 			setResponse(response, ResponseCode.UNSUPPORTED_TOKEN);
 		} else if (exception.equals(ResponseCode.INVALID_TOKEN_FORMAT.getCode())) {
 			setResponse(response, ResponseCode.INVALID_TOKEN_FORMAT);
+		} else if (exception.equals(ResponseCode.NULL_TOKEN.getCode())) {
+			setResponse(response, ResponseCode.NULL_TOKEN);
 		}
 	}
 
