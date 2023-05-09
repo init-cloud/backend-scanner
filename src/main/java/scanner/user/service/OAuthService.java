@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import scanner.user.dto.UserAuthDto;
 import scanner.user.dto.UserBaseDto;
 import scanner.security.dto.Token;
+import scanner.user.entity.User;
 
 @Service
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -24,7 +25,11 @@ public class OAuthService implements UserService {
 	}
 
 	@Override
+	public User getCurrentUser() {
+		return null;
+	}
+
+	@Override
 	public void updateLastLogin(UserBaseDto user) {
-		//
 	}
 }

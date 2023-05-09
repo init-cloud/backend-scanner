@@ -6,6 +6,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import scanner.common.entity.BaseEntity;
 import scanner.user.dto.UserAuthDto;
+import scanner.user.dto.UserDetailsDto;
 import scanner.user.enums.OAuthProvider;
 import scanner.user.enums.RoleType;
 import scanner.user.enums.UserAuthority;
@@ -58,7 +59,6 @@ public class User extends BaseEntity implements UserDetails {
 	private UserOAuthToken oAuthToken;
 
 	@Column(name = "LAST_LOGIN")
-	@Setter
 	private LocalDateTime lastLogin;
 
 	@Column(name = "USERNAME")
@@ -82,12 +82,10 @@ public class User extends BaseEntity implements UserDetails {
 	@Enumerated(EnumType.STRING)
 	private UserState userState;
 
-	@Setter
 	@Column(name = "EMAIL")
 	@Size(max = 128)
 	private String email;
 
-	@Setter
 	@Column(name = "contact")
 	@Size(max = 16)
 	private String contact;
@@ -95,7 +93,7 @@ public class User extends BaseEntity implements UserDetails {
 	@OneToMany(mappedBy = "user")
 	private List<UsedRule> usedRules = new ArrayList<>();
 
-	@Builder
+	@Builder(builderClassName = "modifyUserBuilder", builderMethodName = "modifyUserInfoBuilder")
 	public User(User user, LocalDateTime lastLogin, String password, String authorities, RoleType roleType,
 		UserState userState, String email, String contact) {
 		super(user.getCreatedAt(), user.getModifiedAt());
@@ -115,7 +113,7 @@ public class User extends BaseEntity implements UserDetails {
 
 	public static User toEntityByModifying(User user, LocalDateTime lastLogin, String password, String authorities,
 		RoleType roleType, UserState userState, String email, String contact) {
-		return User.builder()
+		return User.modifyUserInfoBuilder()
 			.user(user)
 			.lastLogin(lastLogin)
 			.password(password)
@@ -138,6 +136,15 @@ public class User extends BaseEntity implements UserDetails {
 		this.userState = userState;
 		this.email = email;
 		this.contact = contact;
+	}
+
+	public void modifyUserLoginDateTime() {
+		this.lastLogin = LocalDateTime.now();
+	}
+
+	public void modifyUserContactsProfile(UserDetailsDto.Profile dto) {
+		this.email = dto.getEmail();
+		this.contact = dto.getContact();
 	}
 
 	public static User addUser(UserAuthDto.Signup dto, String password) {

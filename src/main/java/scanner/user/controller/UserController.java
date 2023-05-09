@@ -22,7 +22,6 @@ import scanner.security.config.Properties;
 public class UserController {
 
 	private final UsernameService userService;
-	private final Properties properties;
 
 	@ApiOperation(value = "Signin", notes = "Login. return access token", response = ResponseDto.class)
 	@PostMapping("/signin")
@@ -43,9 +42,8 @@ public class UserController {
 
 	@ApiOperation(value = "Retrieve User Profile", notes = "Retrieve personal profile.", response = ResponseDto.class)
 	@GetMapping("/profile")
-	public ResponseDto<UserDetailsDto.Profile> userProfileDetails(HttpServletRequest request) {
-		UserDetailsDto.Profile response = userService.getUserProfile(request.getHeader("Authorization"),
-			properties.getSecret());
+	public ResponseDto<UserDetailsDto.Profile> userProfileDetails() {
+		UserDetailsDto.Profile response = userService.getUserProfile();
 
 		return new ResponseDto<>(response);
 	}

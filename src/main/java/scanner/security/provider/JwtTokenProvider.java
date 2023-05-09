@@ -53,37 +53,17 @@ public class JwtTokenProvider {
 		return new UsernameToken(username, accessToken, null);
 	}
 
-	public Claims getClaims(String token, String key) {
-		try {
-			return Jwts.parser().setSigningKey(key).parseClaimsJws(token).getBody();
-		} catch (SecurityException e) {
-			log.error(ResponseCode.INVALID_TOKEN_SIGNATURE.getMessage(), e.getMessage());
-			throw new ApiAuthException(ResponseCode.INVALID_TOKEN_SIGNATURE);
-		} catch (MalformedJwtException e) {
-			log.error(ResponseCode.INVALID_TOKEN.getMessage(), e.getMessage());
-			throw new ApiAuthException(ResponseCode.INVALID_TOKEN);
-		} catch (ExpiredJwtException e) {
-			log.error(ResponseCode.TOKEN_EXPIRED.getMessage(), e.getMessage());
-			throw new ApiAuthException(ResponseCode.TOKEN_EXPIRED);
-		} catch (UnsupportedJwtException e) {
-			log.error(ResponseCode.UNSUPPORTED_TOKEN.getMessage(), e.getMessage());
-			throw new ApiAuthException(ResponseCode.UNSUPPORTED_TOKEN);
-		} catch (IllegalArgumentException e) {
-			log.error(ResponseCode.EMPTY_TOKEN_CLAIMS.getMessage(), e.getMessage());
-			throw new ApiAuthException(ResponseCode.EMPTY_TOKEN_CLAIMS);
-		} catch (Exception e) {
-			log.error(ResponseCode.INVALID_ACCESS.getMessage(), e.getMessage());
-			throw new ApiAuthException(ResponseCode.INVALID_ACCESS);
-		}
-	}
-
 	public String getUsername(String token, String key) {
 		return Jwts.parser().setSigningKey(key).parseClaimsJws(token).getBody().getSubject();
 	}
 
 	public String getUsername() {
-		Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-		return ((User)principal).getUsername();
+		final Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+		if (authentication == null)
+			return null;
+
+		return ((User)authentication.getPrincipal()).getUsername();
 	}
 
 	public Authentication getAuthentication(String token, String key) {

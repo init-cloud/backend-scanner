@@ -1,7 +1,5 @@
 package scanner.user.service;
 
-import java.time.LocalDateTime;
-
 import javax.transaction.Transactional;
 
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -13,7 +11,6 @@ import org.springframework.stereotype.Service;
 import lombok.RequiredArgsConstructor;
 import scanner.common.enums.ResponseCode;
 import scanner.common.exception.ApiException;
-import scanner.common.utils.HeaderParse;
 import scanner.security.config.Properties;
 import scanner.security.dto.Token;
 import scanner.security.provider.JwtTokenProvider;
@@ -34,6 +31,10 @@ public class UsernameService implements UserService {
 	private final PasswordEncoder passwordEncoder;
 	private final Properties properties;
 
+	/**
+	 * Register User on System.
+	 * @return Token
+	 */
 	@Override
 	public Token signup(UserAuthDto.Signup dto) {
 		userRepository.findByUsername(dto.getUsername()).ifPresent(user -> {
@@ -45,6 +46,10 @@ public class UsernameService implements UserService {
 		return jwtTokenProvider.create(user.getUsername(), RoleType.GUEST, properties.getSecret());
 	}
 
+	/**
+	 * Issue access-token.
+	 * @return Token
+	 */
 	@Transactional
 	@Override
 	public Token signin(UserAuthDto.Authentication dto) {
@@ -60,39 +65,57 @@ public class UsernameService implements UserService {
 			properties.getSecret());
 	}
 
+	/**
+	 *	Update last-login datetime
+	 */
 	@Override
 	public void updateLastLogin(UserBaseDto dto) {
 		User user = userRepository.findByUsername(dto.getUsername())
 			.orElseThrow(() -> new ApiException(ResponseCode.INVALID_USER));
-
-		user.setLastLogin(LocalDateTime.now());
+		user.modifyUserLoginDateTime();
 
 		userRepository.save(user);
 	}
 
-	public UserDetailsDto.Profile getUserProfile(String header, String key) {
-		String token = HeaderParse.getAccessToken(header);
+	/**
+	 *	Return Current-Accessed User
+	 * @return User who accessed
+	 */
+	@Override
+	public User getCurrentUser() {
+		String username = jwtTokenProvider.getUsername();
 
-		User user = userRepository.findByUsername(jwtTokenProvider.getUsername(token, key))
+		return userRepository.findByUsername(username)
 			.orElseThrow(() -> new ApiException(ResponseCode.INVALID_USER));
-
-		return new UserDetailsDto.Profile(user.getUsername(), user.getEmail(), user.getContact(), user.getRoleType(),
-			user.getLastLogin());
 	}
 
+	/**
+	 * Get current-accessed User's Profile
+	 * @return Profile
+	 */
+	public UserDetailsDto.Profile getUserProfile() {
+		User user = getCurrentUser();
+
+		return new UserDetailsDto.Profile(user);
+	}
+
+	/**
+	 * Update current-accessed User's Profile
+	 * @return updated Profile
+	 */
 	@Transactional
 	public UserDetailsDto.Profile manageUserProfile(UserDetailsDto.Profile dto) {
-		User user = userRepository.findByUsername(dto.getUsername())
-			.orElseThrow(() -> new ApiException(ResponseCode.INVALID_USER));
-
-		user.setEmail(dto.getEmail());
-		user.setContact(dto.getContact());
-
+		User user = getCurrentUser();
+		user.modifyUserContactsProfile(dto);
 		userRepository.save(user);
 
 		return dto;
 	}
 
+	/**
+	 * Update User's Password
+	 * @return Boolean
+	 */
 	@Transactional
 	public Boolean modifyUserPassword(UserAuthDto.Authentication dto) {
 		try {

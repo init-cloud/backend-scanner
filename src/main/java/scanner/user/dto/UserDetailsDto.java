@@ -45,6 +45,13 @@ public class UserDetailsDto {
 			this.email = email;
 			this.contact = contact;
 		}
+
+		public Profile(User user) {
+			super(user.getUsername(), user.getLastLogin());
+			this.role = user.getRoleType();
+			this.email = user.getEmail();
+			this.contact = user.getContact();
+		}
 	}
 
 	@Getter
