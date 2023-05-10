@@ -16,10 +16,12 @@ import org.springframework.boot.test.context.SpringBootTest;
 import scanner.checklist.entity.ComplianceEng;
 import scanner.checklist.entity.ComplianceKor;
 import scanner.checklist.entity.CustomRule;
+import scanner.checklist.entity.UsedRule;
 import scanner.history.dto.report.FailedComplianceDto;
 import scanner.history.entity.ScanHistory;
 import scanner.history.entity.ScanHistoryDetail;
 import scanner.scan.enums.Provider;
+import scanner.user.entity.User;
 
 @SpringBootTest
 class ComplianceTest {
@@ -32,9 +34,11 @@ class ComplianceTest {
 	void mapComplianceTest() {
 
 		// given
-		CustomRule rule = new CustomRule("CKV_NCP_1", "CKV_NCP_1", Provider.NCP, null, null, null);
-		ComplianceKor complianceKor = new ComplianceKor(rule, "ISMS-P", "0.0.0", "카테고리", "아티클", "컴플라이언스 설명", "");
-		ComplianceEng complianceEng = new ComplianceEng(rule, "ISMS-P", "0.0.0", "Category", "Article", "description",
+		User testUser = new User(1L);
+		CustomRule originRule = new CustomRule("CKV_NCP_1", Provider.NCP, null, null, null);
+		UsedRule rule = new UsedRule(1L, testUser, originRule, "CKV_NCP_1", 'n', 'y', "");
+		ComplianceKor complianceKor = new ComplianceKor(originRule, "ISMS-P", "0.0.0", "카테고리", "아티클", "컴플라이언스 설명", "");
+		ComplianceEng complianceEng = new ComplianceEng(originRule, "ISMS-P", "0.0.0", "Category", "Article", "description",
 			"");
 		ScanHistoryDetail detail = new ScanHistoryDetail(rule, scanHistory, "resource", "resourceName", "scanResult",
 			"file.tf", "line", "code");
@@ -46,9 +50,9 @@ class ComplianceTest {
 		List<ScanHistoryDetail> details = new ArrayList<>();
 		details.add(detail);
 
-		rule.setComplianceKors(kors);
-		rule.setComplianceEngs(engs);
-		rule.setHistoryDetails(details);
+		originRule.addComplianceKorsForTest(kors);
+		originRule.addComplianceEngsForTest(engs);
+		originRule.addHistoryDetailsForTest(details);
 
 		// when
 		doReturn(details).when(scanHistory).getDetails();

@@ -6,31 +6,28 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Arrays;
-
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
-
-import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
-import scanner.common.exception.ApiException;
+import lombok.extern.slf4j.Slf4j;
 import scanner.checklist.dto.CheckListDetailDto;
+import scanner.checklist.entity.UsedRule;
+import scanner.checklist.repository.UsedCheckListRepository;
 import scanner.common.enums.Env;
-import scanner.checklist.entity.CustomRule;
+import scanner.common.enums.ResponseCode;
+import scanner.common.exception.ApiException;
 import scanner.history.entity.ScanHistory;
 import scanner.history.entity.ScanHistoryDetail;
-import scanner.checklist.repository.CheckListRepository;
 import scanner.history.repository.ScanHistoryDetailsRepository;
 import scanner.history.repository.ScanHistoryRepository;
 import scanner.scan.dto.ScanDto;
-import scanner.common.enums.ResponseCode;
 import scanner.scan.service.constants.ScanConstants;
-
-import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -38,12 +35,12 @@ import java.util.stream.Collectors;
 public class ScanService {
 	private final ScanHistoryRepository scanHistoryRepository;
 	private final ScanHistoryDetailsRepository scanHistoryDetailsRepository;
-	private final CheckListRepository checkListRepository;
+	private final UsedCheckListRepository usedCheckListRepository;
 
 	@Transactional
 	public ScanDto.Response scanTerraformFiles(String[] args, String provider) {
 		try {
-			List<CustomRule> offRules = getOffedCheckList();
+			List<UsedRule> offRules = getOffedCheckList();
 			String skipCheckedRules = getSkipCheckedRules(offRules);
 			String fileUploadPath = Env.UPLOAD_PATH.getValue();
 			File file = new File(fileUploadPath + File.separator + args[1]);
@@ -85,7 +82,7 @@ public class ScanService {
 		List<ScanHistoryDetail> details = new ArrayList<>();
 
 		for (ScanDto.Result detail : scanResult.getResult()) {
-			CustomRule saveRule = checkListRepository.findByRuleId(detail.getRuleId()).orElse(null);
+			UsedRule saveRule = usedCheckListRepository.findByRuleName(detail.getRuleId()).orElse(null);
 
 			if (saveRule == null || saveRule.getId() == null)
 				continue;
@@ -127,7 +124,7 @@ public class ScanService {
 		ScanDto.Result result = new ScanDto.Result();
 
 		Map<String, String> rulesMap = getCheckListDetailsList().stream()
-			.collect(Collectors.toMap(CheckListDetailDto.Detail::getRuleId, CheckListDetailDto.Detail::getLevel));
+			.collect(Collectors.toMap(CheckListDetailDto.Detail::getRuleName, CheckListDetailDto.Detail::getLevel));
 
 		String rawResult;
 		while ((rawResult = br.readLine()) != null) {
@@ -158,7 +155,7 @@ public class ScanService {
 		return new ScanDto.Response(check, resultLists);
 	}
 
-	private String getSkipCheckedRules(List<CustomRule> offRules) {
+	private String getSkipCheckedRules(List<UsedRule> offRules) {
 		if (offRules.isEmpty())
 			return "";
 
@@ -169,7 +166,7 @@ public class ScanService {
 			.filter(rule -> rule != null)
 			.forEach(
 				rule -> {
-					offStr.append(((CustomRule)rule).getRuleId()).append(",");
+					offStr.append(((UsedRule)rule).getRuleName()).append(",");
 				}
 			);
 
@@ -181,12 +178,13 @@ public class ScanService {
 		saveTerraformScanDetails(result, args, provider, totalCount);
 	}
 
-	public List<CustomRule> getOffedCheckList() {
-		return checkListRepository.findByRuleOnOff("n");
+	public List<UsedRule> getOffedCheckList() {
+		return usedCheckListRepository.findByIsOn("n");
 	}
 
 	public List<CheckListDetailDto.Detail> getCheckListDetailsList() {
-		List<CustomRule> ruleList = checkListRepository.findAll();
+		List<UsedRule> ruleList = usedCheckListRepository.findAll();
+
 		return ruleList.stream().map(CheckListDetailDto.Detail::new).collect(Collectors.toList());
 	}
 

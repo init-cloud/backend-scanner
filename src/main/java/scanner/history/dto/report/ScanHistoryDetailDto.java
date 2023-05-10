@@ -10,6 +10,7 @@ import lombok.*;
 import scanner.checklist.entity.CustomRule;
 import scanner.checklist.entity.CustomRuleDetails;
 import scanner.checklist.entity.Tag;
+import scanner.checklist.entity.UsedRule;
 import scanner.common.enums.Language;
 import scanner.common.enums.ResponseCode;
 import scanner.common.exception.ApiException;
@@ -21,7 +22,7 @@ import scanner.history.entity.ScanHistoryDetail;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class ScanHistoryDetailDto {
 
-	private String ruleID;
+	private String ruleName;
 	private String result;
 	private String severity;
 	private String description;
@@ -37,15 +38,21 @@ public class ScanHistoryDetailDto {
 	private List<ComplianceDto> compliance;
 
 	public static ScanHistoryDetailDto toEng(final ScanHistoryDetail entity) {
-		CustomRule rule = entity.getRuleSeq();
-		List<ComplianceDto> compliance = rule.getComplianceEngs()
+		UsedRule rule = entity.getRule();
+		CustomRule originRule = rule.getOriginRule();
+
+		List<ComplianceDto> compliance = originRule.getComplianceEngs()
 			.stream()
 			.map(ComplianceDto::toDto)
 			.collect(Collectors.toList());
 
-		List<String> tag = rule.getTags().stream().map(Tag::getTagName).collect(Collectors.toList());
+		List<String> tag = originRule
+			.getTags()
+			.stream()
+			.map(Tag::getTagName)
+			.collect(Collectors.toList());
 
-		Object details = Arrays.stream(rule.getRuleDetails().toArray())
+		Object details = Arrays.stream(originRule.getRuleDetails().toArray())
 			.filter(detail -> ((CustomRuleDetails)detail).getLanguage() == Language.ENGLISH)
 			.findFirst()
 			.orElseThrow(() -> new ApiException(ResponseCode.INVALID_REQUEST));
@@ -54,15 +61,20 @@ public class ScanHistoryDetailDto {
 	}
 
 	public static ScanHistoryDetailDto toKor(final ScanHistoryDetail entity) {
-		CustomRule rule = entity.getRuleSeq();
-		List<ComplianceDto> compliance = rule.getComplianceKors()
+		UsedRule rule = entity.getRule();
+		CustomRule originRule = rule.getOriginRule();
+
+		List<ComplianceDto> compliance = originRule.getComplianceKors()
 			.stream()
 			.map(ComplianceDto::toDto)
 			.collect(Collectors.toList());
 
-		List<String> tag = rule.getTags().stream().map(Tag::getTagName).collect(Collectors.toList());
+		List<String> tag = originRule.getTags()
+			.stream()
+			.map(Tag::getTagName)
+			.collect(Collectors.toList());
 
-		Supplier<Stream<Object>> streamSupplier = () -> Arrays.stream(rule.getRuleDetails().toArray());
+		Supplier<Stream<Object>> streamSupplier = () -> Arrays.stream(originRule.getRuleDetails().toArray());
 		Object details = streamSupplier.get()
 			.filter(detail -> ((CustomRuleDetails)detail).getLanguage() == Language.KOREAN)
 			.findFirst()
@@ -74,10 +86,12 @@ public class ScanHistoryDetailDto {
 		return ScanHistoryDetailDto.toDto(entity, rule, (CustomRuleDetails)details, tag, compliance);
 	}
 
-	public static ScanHistoryDetailDto toDto(final ScanHistoryDetail entity, final CustomRule rule,
+	public static ScanHistoryDetailDto toDto(final ScanHistoryDetail entity, final UsedRule usedRule,
 		final CustomRuleDetails details, final List<String> tag, final List<ComplianceDto> compliance) {
+
+		CustomRule rule = usedRule.getOriginRule();
 		return ScanHistoryDetailDto.builder()
-			.ruleID(rule.getRuleId())
+			.ruleName(usedRule.getRuleName())
 			.description(details.getDescription())
 			.result(entity.getScanResult())
 			.severity(rule.getLevel())

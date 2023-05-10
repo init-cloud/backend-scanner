@@ -31,25 +31,16 @@ public class CheckListController {
 		return new CommonResponse<>(dto);
 	}
 
-	@ApiOperation(value = "Create Custom Checklist", notes = "Create custom new checklist from origin.", response = CommonResponse.class)
-	@ApiImplicitParams({
-		@ApiImplicitParam(name = "Authorization", paramType = "header", value = "Access Token", required = true, dataTypeClass = String.class)})
-	@PostMapping
-	public CommonResponse<CheckListDetailDto.Detail> addCheckList(CheckListDetailDto.Detail data) {
-		CheckListDetailDto.Detail dto = checkListService.addCheckListDetails(data);
-
-		return new CommonResponse<>(dto);
-	}
-
 	@ApiOperation(value = "Retrieve Checklist Details", notes = "Retrieve checklists.", response = CommonResponse.class)
 	@ApiImplicitParams({
 		@ApiImplicitParam(name = "Authorization", paramType = "header", value = "Access Token", required = true, dataTypeClass = String.class),
-		@ApiImplicitParam(name = "ruleId", paramType = "path", value = "Checklist(rule) ID", required = true, dataTypeClass = String.class, example = "CKV_NCP_1"),
+		@ApiImplicitParam(name = "ruleName", paramType = "path", value = "Checklist(rule) name", required = true, dataTypeClass = String.class, example = "CKV_NCP_1"),
 		@ApiImplicitParam(name = "lang", paramType = "query", value = "eng, kor", dataTypeClass = String.class)})
-	@GetMapping("/{ruleId}")
-	public CommonResponse<CheckListDetailDto.Detail> checkListDetails(@PathVariable String ruleId,
+	@GetMapping("/{ruleName}")
+	public CommonResponse<CheckListDetailDto.Detail> checkListDetails(
+		@PathVariable String ruleName,
 		@Nullable @RequestParam String lang) {
-		CheckListDetailDto.Detail dto = checkListService.getCheckListDetails(ruleId, Language.of(lang));
+		CheckListDetailDto.Detail dto = checkListService.getCheckListDetails(ruleName, Language.of(lang));
 
 		return new CommonResponse<>(dto);
 	}
@@ -57,12 +48,12 @@ public class CheckListController {
 	@ApiOperation(value = "Modify Checklist", notes = "Make Custom checklist by modifying origin.", response = CommonResponse.class)
 	@ApiImplicitParams({
 		@ApiImplicitParam(name = "Authorization", paramType = "header", value = "Access Token", required = true, dataTypeClass = String.class),
-		@ApiImplicitParam(name = "ruleId", paramType = "path", value = "ruleId.", required = true, dataTypeClass = String.class),
+		@ApiImplicitParam(name = "ruleName", paramType = "path", value = "ruleName.", required = true, dataTypeClass = String.class),
 		@ApiImplicitParam(name = "CheckListDto.Simple", paramType = "body", value = "Modify ruleOnOff n to y, y to n", required = true, dataTypeClass = CheckListDto.Modifying.class)})
-	@PatchMapping("/{ruleId}")
-	public CommonResponse<CheckListDto.Summary> modifyCheckListDetails(@PathVariable String ruleId,
+	@PatchMapping("/{ruleName}")
+	public CommonResponse<CheckListDto.Summary> modifyCheckListDetails(@PathVariable String ruleName,
 		@RequestBody CheckListDto.Modifying data) {
-		CheckListDto.Summary dto = checkListService.modifyCheckList(ruleId, data);
+		CheckListDto.Summary dto = checkListService.modifyCheckList(ruleName, data);
 
 		return new CommonResponse<>(dto);
 	}
@@ -70,12 +61,13 @@ public class CheckListController {
 	@ApiOperation(value = "Modify Checklist On/Off State", notes = "Make Checklist State On/Off.", response = CommonResponse.class)
 	@ApiImplicitParams({
 		@ApiImplicitParam(name = "Authorization", paramType = "header", value = "Access Token", required = true, dataTypeClass = String.class),
-		@ApiImplicitParam(name = "ruleId", paramType = "path", value = "ruleId.", required = true, dataTypeClass = String.class),
+		@ApiImplicitParam(name = "ruleName", paramType = "path", value = "ruleName.", required = true, dataTypeClass = String.class),
 		@ApiImplicitParam(name = "CheckListDto.RuleState", paramType = "body", value = "Modify ruleOnOff n to y, y to n", required = true, dataTypeClass = CheckListDto.RuleState.class)})
-	@PatchMapping("/state/{ruleId}")
-	public CommonResponse<CheckListDto.Summary> modifyCheckListOnOff(@PathVariable String ruleId,
+	@PatchMapping("/state/{ruleName}")
+	public CommonResponse<CheckListDto.Summary> modifyCheckListOnOff(
+		@PathVariable String ruleName,
 		@RequestBody CheckListDto.Summary data) {
-		CheckListDto.Summary dto = checkListService.modifyCheckListAsOnOff(ruleId, data);
+		CheckListDto.Summary dto = checkListService.modifyCheckListAsOnOff(ruleName, data);
 
 		return new CommonResponse<>(dto);
 	}
@@ -83,7 +75,7 @@ public class CheckListController {
 	@ApiOperation(value = "Reset Checklist", notes = "Reset custom checklist to origin.", response = CommonResponse.class)
 	@ApiImplicitParams({
 		@ApiImplicitParam(name = "Authorization", paramType = "header", value = "Access Token", required = true, dataTypeClass = String.class),
-		@ApiImplicitParam(name = "CheckListDto.Simple", paramType = "body", value = "Body need ruleId.", required = true, dataTypeClass = CheckListDto.Summary.class)})
+		@ApiImplicitParam(name = "CheckListDto.Simple", paramType = "body", value = "Body need ruleName.", required = true, dataTypeClass = CheckListDto.Summary.class)})
 	@PostMapping("/state")
 	public CommonResponse<CheckListDto.Summary> resetCheckList(@RequestBody CheckListDto.Summary data) {
 		CheckListDto.Summary dto = checkListService.resetCheckList(data);

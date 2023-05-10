@@ -28,14 +28,14 @@ public class ScanHistoryService {
 	private final ScanHistoryRepository scanHistoryRepository;
 
 	public VisualDto.Response getVisualization(Long reportId) {
-		ScanHistory history = scanHistoryRepository.findByHistorySeq(reportId)
+		ScanHistory history = scanHistoryRepository.findById(reportId)
 			.orElseThrow(() -> new ApiException(ResponseCode.NO_SCAN_RESULT));
 
-		return new VisualDto.Response(history.getHistorySeq(), history.getCreatedAt(), history.getVisual());
+		return new VisualDto.Response(history.getId(), history.getCreatedAt(), history.getVisual());
 	}
 
 	public List<ScanHistory> getHistoryList() {
-		return scanHistoryRepository.findTop10ByOrderByHistorySeqDesc();
+		return scanHistoryRepository.findTop10ByOrderByIdDesc();
 	}
 
 	@Transactional
@@ -47,7 +47,7 @@ public class ScanHistoryService {
 	}
 
 	private ScanHistory getScanHistory(Long reportId) {
-		return scanHistoryRepository.findByHistorySeq(reportId)
+		return scanHistoryRepository.findById(reportId)
 			.orElseThrow(() -> new ApiException(ResponseCode.NO_SCAN_RESULT));
 	}
 

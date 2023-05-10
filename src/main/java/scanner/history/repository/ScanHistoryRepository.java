@@ -12,7 +12,7 @@ import java.util.Optional;
 @Repository
 public interface ScanHistoryRepository extends JpaRepository<ScanHistory, Long> {
 
-	Optional<ScanHistory> findByHistorySeq(Long reportId);
+	Optional<ScanHistory> findById(Long reportId);
 
-	List<ScanHistory> findTop10ByOrderByHistorySeqDesc();
+	List<ScanHistory> findTop10ByOrderByIdDesc();
 }

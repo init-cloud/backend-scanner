@@ -4,6 +4,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import scanner.checklist.entity.UsedRule;
 import scanner.common.entity.BaseEntity;
 import scanner.user.dto.UserAuthDto;
 import scanner.user.enums.OAuthProvider;
@@ -186,5 +187,11 @@ public class User extends BaseEntity implements UserDetails {
 	@Override
 	public boolean isEnabled() {
 		return this.userState.equals(UserState.ACTIVATE);
+	}
+
+	/* For Test code */
+
+	public User(Long id) {
+		this.id = id;
 	}
 }

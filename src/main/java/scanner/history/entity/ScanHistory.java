@@ -25,12 +25,9 @@ import scanner.common.entity.BaseEntity;
 public class ScanHistory extends BaseEntity {
 
 	@Id
-	@Column(name = "HISTORY_SEQ")
+	@Column(name = "HISTORY_ID")
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long historySeq;
-
-	@OneToMany(mappedBy = "historySeq")
-	private List<ScanHistoryDetail> details = new ArrayList<>();
+	private Long id;
 
 	@Column(name = "FILE_NAME")
 	@NotNull
@@ -81,10 +78,13 @@ public class ScanHistory extends BaseEntity {
 	@NotNull
 	private String visual;
 
+	@OneToMany(mappedBy = "history")
+	private List<ScanHistoryDetail> details = new ArrayList<>();
+
 	@Builder
-	public ScanHistory(Long historySeq, String fileName, String fileHash, String csp, Integer passed, Integer skipped,
+	public ScanHistory(Long historyId, String fileName, String fileHash, String csp, Integer passed, Integer skipped,
 		Integer failed, Integer high, Integer medium, Integer low, Integer unknown, Double score, String visual) {
-		this.historySeq = historySeq;
+		this.id = historyId;
 		this.fileName = fileName;
 		this.fileHash = fileHash;
 		this.csp = csp;
