@@ -1,5 +1,7 @@
 package scanner.oauth.middleware;
 
+import org.springframework.stereotype.Component;
+
 import lombok.RequiredArgsConstructor;
 import scanner.common.client.OAuthFeignClient;
 import scanner.common.client.OAuthInfoFeignClient;
@@ -8,6 +10,7 @@ import scanner.security.config.Properties;
 import scanner.security.dto.Token;
 import scanner.security.provider.JwtTokenProvider;
 
+@Component
 @RequiredArgsConstructor
 public class OAuthRequestFacade {
 

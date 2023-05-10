@@ -18,24 +18,32 @@ import scanner.checklist.entity.CustomRuleDetails;
 import scanner.checklist.entity.UsedRule;
 import scanner.checklist.repository.UsedCheckListRepository;
 import scanner.common.enums.Language;
+import scanner.common.exception.ApiAuthException;
 import scanner.common.exception.ApiException;
 import scanner.checklist.dto.CheckListDetailDto;
 import scanner.common.enums.ResponseCode;
+import scanner.security.provider.JwtTokenProvider;
+import scanner.user.entity.User;
+import scanner.user.repository.UserRepository;
 
 @Service
 @RequiredArgsConstructor
 public class CheckListService {
 
 	private final UsedCheckListRepository usedCheckListRepository;
+	private final UserRepository userRepository;
+	private final JwtTokenProvider jwtTokenProvider;
 
 	@Transactional
 	public CheckListDto.Response getCheckLists(@Nullable String ruleName) {
+
+		User currentUser = getCurrentUser();
 
 		List<UsedRule> ruleList;
 		List<CheckListDto.Summary> ruleDtos;
 
 		if (ruleName != null) {
-			ruleList = usedCheckListRepository.findByRuleNameContains(ruleName);
+			ruleList = usedCheckListRepository.findByUserAndRuleNameContains(currentUser, ruleName);
 			ruleDtos = ruleList.stream().map(CheckListDto.Summary::new).collect(Collectors.toList());
 		} else {
 			ruleList = usedCheckListRepository.findAll();
@@ -47,7 +55,9 @@ public class CheckListService {
 
 	@Transactional
 	public CheckListDetailDto.Detail getCheckListDetails(@NonNull String ruleName, @Nullable Language lang) {
-		UsedRule rule = usedCheckListRepository.findByRuleName(ruleName)
+		User currentUser = getCurrentUser();
+
+		UsedRule rule = usedCheckListRepository.findByUserAndRuleName(currentUser, ruleName)
 			.orElseThrow(() -> new ApiException(ResponseCode.INVALID_REQUEST));
 
 		Supplier<Stream<Object>> streamSupplier = () -> Arrays.stream(rule.getOriginRule().getRuleDetails().toArray());
@@ -71,12 +81,11 @@ public class CheckListService {
 		if (!ruleId.equals(data.getRuleName()))
 			throw new ApiException(ResponseCode.INVALID_REQUEST);
 
-		/**
-		 * @Todo 추후 변경된 커스텀 룰이 유효한지 확인하는 로직 필요.
-		 **/
-		usedCheckListRepository.updateRule(data.getRuleName(), CheckListDto.Modifying.toJsonString(data.getCustom()));
+		User currentUser = getCurrentUser();
+		usedCheckListRepository.updateRule(currentUser.getId(), data.getRuleName(),
+			CheckListDto.Modifying.toJsonString(data.getCustom()));
 
-		UsedRule rule = usedCheckListRepository.findByRuleName(ruleId)
+		UsedRule rule = usedCheckListRepository.findByUserAndRuleName(currentUser, ruleId)
 			.orElseThrow(() -> new ApiException(ResponseCode.INVALID_REQUEST));
 
 		return new CheckListDto.Summary(rule);
@@ -90,9 +99,10 @@ public class CheckListService {
 		if (!ruleId.equals(data.getRuleName()))
 			throw new ApiException(ResponseCode.INVALID_REQUEST);
 
-		usedCheckListRepository.updateRuleOnOff(ruleId, data.getRuleOnOff());
+		User currentUser = getCurrentUser();
+		usedCheckListRepository.updateRuleOnOff(currentUser.getId(), ruleId, data.getRuleOnOff());
 
-		UsedRule rule = usedCheckListRepository.findByRuleName(ruleId)
+		UsedRule rule = usedCheckListRepository.findByUserAndRuleName(currentUser, ruleId)
 			.orElseThrow(() -> new ApiException(ResponseCode.INVALID_REQUEST));
 
 		return new CheckListDto.Summary(rule);
@@ -103,12 +113,20 @@ public class CheckListService {
 		if (data.getRuleName() == null)
 			throw new ApiException(ResponseCode.DATA_MISSING);
 
-		usedCheckListRepository.resetRule(data.getRuleName());
+		User currentUser = getCurrentUser();
 
-		UsedRule rule = usedCheckListRepository.findByRuleName(data.getRuleName())
+		usedCheckListRepository.resetRule(currentUser.getId(), data.getRuleName());
+
+		UsedRule rule = usedCheckListRepository.findByUserAndRuleName(currentUser, data.getRuleName())
 			.orElseThrow(() -> new ApiException(ResponseCode.INVALID_REQUEST));
 
 		return new CheckListDto.Summary(rule);
+	}
+
+	private User getCurrentUser() {
+		String username = jwtTokenProvider.getUsername();
+		return userRepository.findByUsername(username)
+			.orElseThrow(() -> new ApiAuthException(ResponseCode.INVALID_USER));
 	}
 }
 

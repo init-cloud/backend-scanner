@@ -10,7 +10,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
-import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.MalformedJwtException;
@@ -20,7 +19,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import scanner.common.enums.ResponseCode;
 import scanner.common.exception.ApiAuthException;
-import scanner.security.config.Properties;
 import scanner.security.dto.Token;
 import scanner.security.dto.UsernameToken;
 import scanner.security.service.CustomUserDetailService;
@@ -102,6 +100,14 @@ public class JwtTokenProvider {
 			log.error(ResponseCode.INVALID_TOKEN.getMessage(), e.getMessage());
 			throw new ApiAuthException(ResponseCode.INVALID_TOKEN);
 		}
+	}
+
+	public String getToken() {
+		String username = getUsername();
+
+		User requestUser = (User)userDetailsService.loadUserByUsername(username);
+
+		return requestUser.getOAuthToken().getAccessToken();
 	}
 
 	public String resolve(HttpServletRequest request) {

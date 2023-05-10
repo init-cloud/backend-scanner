@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import lombok.RequiredArgsConstructor;
 
 import scanner.common.enums.Language;
+import scanner.common.exception.ApiAuthException;
 import scanner.common.exception.ApiException;
 import scanner.history.dto.history.VisualDto;
 import scanner.history.dto.report.ScanHistoryDetailDto;
@@ -20,22 +21,31 @@ import scanner.history.repository.ScanHistoryRepository;
 import scanner.history.dto.report.ReportResponse;
 
 import scanner.common.enums.ResponseCode;
+import scanner.security.provider.JwtTokenProvider;
+import scanner.user.entity.User;
+import scanner.user.repository.UserRepository;
 
 @Service
 @RequiredArgsConstructor
 public class ScanHistoryService {
 
 	private final ScanHistoryRepository scanHistoryRepository;
+	private final UserRepository userRepository;
+	private final JwtTokenProvider jwtTokenProvider;
 
 	public VisualDto.Response getVisualization(Long reportId) {
-		ScanHistory history = scanHistoryRepository.findById(reportId)
+		User currentUser = getCurrentUser();
+
+		ScanHistory history = scanHistoryRepository.findByUserAndId(currentUser, reportId)
 			.orElseThrow(() -> new ApiException(ResponseCode.NO_SCAN_RESULT));
 
 		return new VisualDto.Response(history.getId(), history.getCreatedAt(), history.getVisual());
 	}
 
 	public List<ScanHistory> getHistoryList() {
-		return scanHistoryRepository.findTop10ByOrderByIdDesc();
+		User currentUser = getCurrentUser();
+
+		return scanHistoryRepository.findTop10ByUserOrderByIdDesc(currentUser);
 	}
 
 	@Transactional
@@ -47,7 +57,9 @@ public class ScanHistoryService {
 	}
 
 	private ScanHistory getScanHistory(Long reportId) {
-		return scanHistoryRepository.findById(reportId)
+		User currentUser = getCurrentUser();
+
+		return scanHistoryRepository.findByUserAndId(currentUser, reportId)
 			.orElseThrow(() -> new ApiException(ResponseCode.NO_SCAN_RESULT));
 	}
 
@@ -63,5 +75,11 @@ public class ScanHistoryService {
 			detailsDto = details.stream().map(ScanHistoryDetailDto::toEng).collect(Collectors.toList());
 		}
 		return detailsDto;
+	}
+
+	private User getCurrentUser() {
+		String username = jwtTokenProvider.getUsername();
+		return userRepository.findByUsername(username)
+			.orElseThrow(() -> new ApiAuthException(ResponseCode.INVALID_USER));
 	}
 }

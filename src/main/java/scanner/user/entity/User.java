@@ -9,10 +9,12 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.Size;
 
@@ -51,6 +53,9 @@ public class User extends BaseEntity implements UserDetails {
 	@Column(name = "OAUTH_PROVIDER")
 	@Enumerated(EnumType.STRING)
 	private OAuthProvider oAuthProvider;
+
+	@OneToOne(fetch = FetchType.LAZY, mappedBy = "user")
+	private UserOAuthToken oAuthToken;
 
 	@Column(name = "LAST_LOGIN")
 	private LocalDateTime lastLogin;
