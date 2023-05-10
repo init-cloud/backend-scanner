@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.*;
 
 import scanner.user.dto.UserAuthDto;
 import scanner.user.dto.UserDetailsDto;
-import scanner.common.dto.CommonResponse;
+import scanner.common.dto.ResponseDto;
 import scanner.security.dto.Token;
 import scanner.user.service.UsernameService;
 
@@ -24,45 +24,45 @@ public class UserController {
 	private final UsernameService userService;
 	private final Properties properties;
 
-	@ApiOperation(value = "Signin", notes = "Login. return access token", response = CommonResponse.class)
+	@ApiOperation(value = "Signin", notes = "Login. return access token", response = ResponseDto.class)
 	@PostMapping("/signin")
-	public CommonResponse<Token> login(@RequestBody UserAuthDto.Authentication dto) {
+	public ResponseDto<Token> login(@RequestBody UserAuthDto.Authentication dto) {
 
 		Token response = userService.signin(dto);
 
-		return new CommonResponse<>(response);
+		return new ResponseDto<>(response);
 	}
 
-	@ApiOperation(value = "Signup", notes = "Register. return access token", response = CommonResponse.class)
+	@ApiOperation(value = "Signup", notes = "Register. return access token", response = ResponseDto.class)
 	@PostMapping("/signup")
-	public CommonResponse<Token> register(@RequestBody UserAuthDto.Signup dto) {
+	public ResponseDto<Token> register(@RequestBody UserAuthDto.Signup dto) {
 		Token response = userService.signup(dto);
 
-		return new CommonResponse<>(response);
+		return new ResponseDto<>(response);
 	}
 
-	@ApiOperation(value = "Retrieve User Profile", notes = "Retrieve personal profile.", response = CommonResponse.class)
+	@ApiOperation(value = "Retrieve User Profile", notes = "Retrieve personal profile.", response = ResponseDto.class)
 	@GetMapping("/profile")
-	public CommonResponse<UserDetailsDto.Profile> userProfileDetails(HttpServletRequest request) {
+	public ResponseDto<UserDetailsDto.Profile> userProfileDetails(HttpServletRequest request) {
 		UserDetailsDto.Profile response = userService.getUserProfile(request.getHeader("Authorization"),
 			properties.getSecret());
 
-		return new CommonResponse<>(response);
+		return new ResponseDto<>(response);
 	}
 
-	@ApiOperation(value = "Manage User Profile", notes = "Manage personal profile.", response = CommonResponse.class)
+	@ApiOperation(value = "Manage User Profile", notes = "Manage personal profile.", response = ResponseDto.class)
 	@PostMapping("/profile")
-	public CommonResponse<UserDetailsDto.Profile> managingUserProfileDetails(@RequestBody UserDetailsDto.Profile dto) {
+	public ResponseDto<UserDetailsDto.Profile> managingUserProfileDetails(@RequestBody UserDetailsDto.Profile dto) {
 		UserDetailsDto.Profile response = userService.manageUserProfile(dto);
 
-		return new CommonResponse<>(response);
+		return new ResponseDto<>(response);
 	}
 
-	@ApiOperation(value = "Change Password", notes = "Change user Password.", response = CommonResponse.class)
+	@ApiOperation(value = "Change Password", notes = "Change user Password.", response = ResponseDto.class)
 	@PostMapping("/auth")
-	public CommonResponse<Boolean> managingUserPassword(@RequestBody UserAuthDto.Authentication dto) {
+	public ResponseDto<Boolean> managingUserPassword(@RequestBody UserAuthDto.Authentication dto) {
 		Boolean response = userService.modifyUserPassword(dto);
 
-		return new CommonResponse<>(response);
+		return new ResponseDto<>(response);
 	}
 }

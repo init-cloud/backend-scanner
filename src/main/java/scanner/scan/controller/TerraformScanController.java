@@ -17,7 +17,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import lombok.extern.slf4j.Slf4j;
 import scanner.common.client.ApiFeignClient;
-import scanner.common.dto.CommonResponse;
+import scanner.common.dto.ResponseDto;
 import scanner.scan.dto.ScanDto;
 import scanner.scan.service.AsyncScanService;
 import scanner.scan.service.ScanService;
@@ -49,12 +49,12 @@ public class TerraformScanController {
 			.body(resource);
 	}
 
-	@ApiOperation(value = "Scan Terraform File", notes = "Uploads .tf or .zip file to scan.", response = CommonResponse.class)
+	@ApiOperation(value = "Scan Terraform File", notes = "Uploads .tf or .zip file to scan.", response = ResponseDto.class)
 	@ApiImplicitParams({
 		@ApiImplicitParam(name = "Authorization", paramType = "header", value = "Access Token", required = true, dataTypeClass = String.class),
 		@ApiImplicitParam(name = "file", paramType = "body", value = "TF file by Form Data", required = true, dataTypeClass = MultipartFile.class)})
 	@PostMapping("/file/{provider}")
-	public CommonResponse<ScanDto.Response> scanTerraform(@PathVariable("provider") String provider,
+	public ResponseDto<ScanDto.Response> scanTerraform(@PathVariable("provider") String provider,
 		@RequestPart("file") MultipartFile file) {
 		String[] result = storageService.store(file);
 
@@ -62,18 +62,18 @@ public class TerraformScanController {
 		dtos.addVisualizingResult(apiFeignClient.getVisualization(provider, result[1]));
 		scanService.saveScanHistory(dtos, result, provider);
 
-		return new CommonResponse<>(dtos);
+		return new ResponseDto<>(dtos);
 	}
 
-	@ApiOperation(value = "[BETA] Async Scan Terraform File", notes = "Uploads .tf or .zip file to scan.", response = CommonResponse.class)
+	@ApiOperation(value = "[BETA] Async Scan Terraform File", notes = "Uploads .tf or .zip file to scan.", response = ResponseDto.class)
 	@ApiImplicitParams({
 		@ApiImplicitParam(name = "Authorization", paramType = "header", value = "Access Token", required = true, dataTypeClass = String.class),
 		@ApiImplicitParam(name = "file", paramType = "body", value = "TF file by Form Data", required = true, dataTypeClass = MultipartFile.class)})
 	@PostMapping("/async/file/{provider}")
-	public CommonResponse<ScanDto.Response> scanTerraformAsync(@PathVariable("provider") String provider,
+	public ResponseDto<ScanDto.Response> scanTerraformAsync(@PathVariable("provider") String provider,
 		@RequestPart("file") MultipartFile file) throws ExecutionException, InterruptedException {
 		String[] result = storageService.store(file);
 		CompletableFuture<ScanDto.Response> futureResult = asyncScanService.scanAsync(result, provider);
-		return new CommonResponse<>(futureResult.get());
+		return new ResponseDto<>(futureResult.get());
 	}
 }

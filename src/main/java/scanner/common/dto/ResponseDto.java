@@ -16,12 +16,12 @@ import scanner.common.exception.ApiException;
 @AllArgsConstructor
 @Builder
 @Getter
-public class CommonResponse<T> {
+public class ResponseDto<T> {
 	private final Boolean success;
 	private final T data;
 	private final ExceptionDto error;
 
-	public CommonResponse(@Nullable T data) {
+	public ResponseDto(@Nullable T data) {
 		this.success = true;
 		this.data = data;
 		this.error = null;
@@ -29,7 +29,7 @@ public class CommonResponse<T> {
 
 	public static ResponseEntity<Object> toException(ApiException e) {
 		return ResponseEntity.status(e.getResponseCode().getHttpStatus())
-			.body(CommonResponse.builder()
+			.body(ResponseDto.builder()
 				.success(false)
 				.data(null)
 				.error(new ExceptionDto(e.getResponseCode()))
@@ -39,7 +39,7 @@ public class CommonResponse<T> {
 	// JWT, 인가 관련 ExceptionDto
 	public static ResponseEntity<Object> toException(ApiAuthException e) {
 		return ResponseEntity.status(e.getResponseCode().getHttpStatus())
-			.body(CommonResponse.builder()
+			.body(ResponseDto.builder()
 				.success(false)
 				.data(null)
 				.error(new ExceptionDto(e.getResponseCode()))
@@ -49,7 +49,7 @@ public class CommonResponse<T> {
 	// JWT, 인가 관련 ExceptionDto
 	public static ResponseEntity<Object> toException(AuthenticationException e) {
 		return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-			.body(CommonResponse.builder()
+			.body(ResponseDto.builder()
 				.success(false)
 				.data(null)
 				.error(new ExceptionDto(ResponseCode.INVALID_TOKEN)).build());
@@ -57,7 +57,7 @@ public class CommonResponse<T> {
 
 	public static ResponseEntity<Object> toException(Exception e) {
 		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-			.body(CommonResponse.builder()
+			.body(ResponseDto.builder()
 				.success(false)
 				.data(null)
 				.error(new ExceptionDto(ResponseCode.SERVER_ERROR))

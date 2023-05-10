@@ -17,7 +17,7 @@ class UserTokenUnitTest {
 	@Test
 	@DisplayName("Password Validation Test")
 	void validatePasswordTest() {
-		UserAuthDto.Signup registerDto = new UserAuthDto.Signup("user", "password", LocalDateTime.now(),
+		UserAuthDto.Signup registerDto = new UserAuthDto.Signup("user", "user", "password", LocalDateTime.now(),
 			"email@addr.com", "010-1234-5678", null);
 		PasswordEncoder passwordEncoder = new Pbkdf2PasswordEncoder();
 		String origin = "password";
