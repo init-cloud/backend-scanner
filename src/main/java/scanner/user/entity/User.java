@@ -1,19 +1,5 @@
 package scanner.user.entity;
 
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
-
-import scanner.checklist.entity.UsedRule;
-import scanner.common.entity.BaseEntity;
-import scanner.user.dto.UserAuthDto;
-import scanner.user.enums.OAuthProvider;
-import scanner.user.enums.RoleType;
-import scanner.user.enums.UserAuthority;
-import scanner.user.enums.UserState;
-
-import javax.validation.constraints.Size;
-
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -23,19 +9,30 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import javax.validation.constraints.Size;
+
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import scanner.checklist.entity.UsedRule;
+import scanner.common.entity.BaseEntity;
+import scanner.oauth.dto.OAuthDto;
+import scanner.user.dto.UserAuthDto;
+import scanner.user.enums.OAuthProvider;
+import scanner.user.enums.RoleType;
+import scanner.user.enums.UserAuthority;
+import scanner.user.enums.UserState;
 
 @Getter
 @Entity
@@ -55,20 +52,21 @@ public class User extends BaseEntity implements UserDetails {
 	@Enumerated(EnumType.STRING)
 	private OAuthProvider oAuthProvider;
 
-	@OneToOne(fetch = FetchType.LAZY, mappedBy = "user")
-	private UserOAuthToken oAuthToken;
-
 	@Column(name = "LAST_LOGIN")
-	@Setter
 	private LocalDateTime lastLogin;
 
-	@Column(name = "USERNAME")
-	@Size(max = 32)
+	@Column(name = "NICKNAME", length = 255)
+	private String nickname;
+
+	@Column(name = "USERNAME", length = 255)
 	private String username;
 
 	@Column(name = "PASSWORD")
 	@Setter
 	private String password;
+
+	@Column(name = "PROFILE_IMAGE_URL")
+	private String profileImageUrl;
 
 	@Column(name = "AUTHORITIES")
 	@Setter
@@ -96,7 +94,10 @@ public class User extends BaseEntity implements UserDetails {
 	@OneToMany(mappedBy = "user")
 	private List<UsedRule> usedRules = new ArrayList<>();
 
-	@Builder
+	/**
+	 * Constructor for Modifying Methods.
+	 */
+	@Builder(builderClassName = "userModifyBuilder", builderMethodName = "userModifyBuilder")
 	public User(User user, LocalDateTime lastLogin, String password, String authorities, RoleType roleType,
 		UserState userState, String email, String contact) {
 		super(user.getCreatedAt(), user.getModifiedAt());
@@ -105,6 +106,7 @@ public class User extends BaseEntity implements UserDetails {
 		this.isOAuthed = user.getIsOAuthed();
 		this.oAuthProvider = user.getOAuthProvider();
 		this.lastLogin = user.getLastLogin();
+		this.nickname = user.getNickname();
 		this.username = user.getUsername();
 		this.password = password;
 		this.authorities = authorities;
@@ -114,24 +116,33 @@ public class User extends BaseEntity implements UserDetails {
 		this.contact = contact;
 	}
 
-	public static User toEntityByModifying(User user, LocalDateTime lastLogin, String password, String authorities,
-		RoleType roleType, UserState userState, String email, String contact) {
-		return User.builder()
-			.user(user)
-			.lastLogin(lastLogin)
-			.password(password)
-			.roleType(roleType)
-			.authorities(authorities)
-			.userState(userState)
-			.email(email)
-			.contact(contact)
-			.build();
+	/**
+	 * Constructor for Individual social User
+	 */
+	public User(String username, String nickname, OAuthProvider oAuthProvider, String authorities, RoleType roleType,
+		UserState userState) {
+		super(LocalDateTime.now(), LocalDateTime.now());
+		this.lastLogin = LocalDateTime.now();
+		this.isOAuthed = 'y';
+		this.oAuthProvider = oAuthProvider;
+		this.nickname = nickname;
+		this.username = username;
+		this.password = "";
+		this.authorities = authorities;
+		this.roleType = roleType;
+		this.userState = userState;
+		this.email = "";
+		this.contact = "";
 	}
 
-	public User(String username, String password, Character isOAuthed, OAuthProvider oAuthProvider, RoleType roleType,
-		String authorities, UserState userState, String email, String contact) {
+	/**
+	 * Constructor for User who has team.
+	 */
+	public User(String username, String nickname, String password, Character isOAuthed, OAuthProvider oAuthProvider,
+		RoleType roleType, String authorities, UserState userState, String email, String contact) {
 		this.isOAuthed = isOAuthed;
 		this.oAuthProvider = oAuthProvider;
+		this.nickname = nickname;
 		this.username = username;
 		this.password = password;
 		this.roleType = roleType;
@@ -141,11 +152,36 @@ public class User extends BaseEntity implements UserDetails {
 		this.contact = contact;
 	}
 
+	/**
+	 * Add Social User with Github, has no team.
+	 * @return User
+	 */
+	public static User addIndividualSocialUser(OAuthDto.GithubUserDetail detail) {
+		return new User(detail.getLogin(), detail.getName(), OAuthProvider.GITHUB, UserAuthority.ADMIN.toString(),
+			RoleType.ADMIN, UserState.ACTIVATE);
+	}
+
+	/**
+	 * Add User, has no team.
+	 * @return User
+	 */
+	public static User addIndividualUser(UserAuthDto.Signup dto, String password) {
+		return new User(dto.getUsername(), dto.getNickname(), password, 'n', OAuthProvider.NONE, RoleType.ADMIN,
+			UserAuthority.ADMIN.toString(), UserState.ACTIVATE, dto.getEmail(), dto.getContact());
+	}
+
+	/**
+	 * Add User, has team.
+	 * @return User
+	 */
 	public static User addUser(UserAuthDto.Signup dto, String password) {
-		return new User(dto.getUsername(), password, 'n', OAuthProvider.NONE, RoleType.GUEST,
+		return new User(dto.getUsername(), dto.getNickname(), password, 'n', OAuthProvider.NONE, RoleType.GUEST,
 			UserAuthority.GUEST.toString(), UserState.ACTIVATE, dto.getEmail(), dto.getContact());
 	}
 
+	/**
+	 * @return String authorities
+	 */
 	public static String getAuthorities(Collection<? extends GrantedAuthority> authorities) {
 		StringBuilder sb = new StringBuilder();
 
@@ -155,6 +191,9 @@ public class User extends BaseEntity implements UserDetails {
 		return sb.toString();
 	}
 
+	/**
+	 * @return Collection authoritiees
+	 */
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
 		Collection<GrantedAuthority> authorityList = new ArrayList<>();
@@ -163,6 +202,20 @@ public class User extends BaseEntity implements UserDetails {
 			authorityList.add(new SimpleGrantedAuthority(authority));
 
 		return authorityList;
+	}
+
+	/**
+	 * Update User Login time to now.
+	 */
+	public void modifyUserLastLoginNow() {
+		this.lastLogin = LocalDateTime.now();
+	}
+
+	/**
+	 * Modify password self.
+	 */
+	public void modifyUserPassword(String password) {
+		this.password = password;
 	}
 
 	public String getAuthoritiesToString() {

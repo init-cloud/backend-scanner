@@ -14,8 +14,9 @@ public class UserAuthDto {
 	@NoArgsConstructor
 	public static class Authentication extends UserBaseDto {
 		private String password;
-		public Authentication(String username, String password, LocalDateTime lastLogin) {
-			super(username, lastLogin);
+
+		public Authentication(String username, String password) {
+			super(username, LocalDateTime.now());
 			this.password = password;
 		}
 	}
@@ -23,14 +24,16 @@ public class UserAuthDto {
 	@Getter
 	@NoArgsConstructor
 	public static class Signup extends UserBaseDto {
+		private String nickname;
 		private String password;
 		private String email;
 		private String contact;
 		private RoleType role;
 
-		public Signup(String username, String password, LocalDateTime lastLogin, String email, String contact,
-			RoleType role) {
+		public Signup(String username, String nickname, String password, LocalDateTime lastLogin, String email,
+			String contact, RoleType role) {
 			super(username, lastLogin);
+			this.nickname = nickname;
 			this.email = email;
 			this.contact = contact;
 			this.role = role;

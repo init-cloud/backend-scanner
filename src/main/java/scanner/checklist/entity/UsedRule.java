@@ -67,6 +67,19 @@ public class UsedRule extends BaseEntity {
 		this.customDetail = customDetail;
 	}
 
+	/**
+	 * Constructor for Add
+	 */
+	public UsedRule(CustomRule originRule, User user) {
+		super(LocalDateTime.now(), LocalDateTime.now());
+		this.user = user;
+		this.originRule = originRule;
+		this.ruleName = originRule.getDefaultRuleName();
+		this.isModified = 'n';
+		this.isOn = 'y';
+		this.customDetail = originRule.getCustomDefault();
+	}
+
 	/* For Test code */
 	public UsedRule(Long id, User user, CustomRule originRule, String ruleName, Character isModified, Character isOn, String customDetail) {
 		this.id = id;
