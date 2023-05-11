@@ -1,9 +1,11 @@
 package scanner.oauth.service;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.constraints.NotNull;
 
 import org.springframework.stereotype.Service;
@@ -13,6 +15,8 @@ import scanner.checklist.entity.CustomRule;
 import scanner.checklist.entity.UsedRule;
 import scanner.checklist.repository.CheckListRepository;
 import scanner.checklist.repository.UsedCheckListRepository;
+import scanner.common.enums.ResponseCode;
+import scanner.common.exception.ApiAuthException;
 import scanner.oauth.dto.OAuthDto;
 import scanner.oauth.middleware.OAuthRequestFacade;
 import scanner.security.dto.Token;
@@ -69,5 +73,17 @@ public class AuthService {
 			usedRules.add(new UsedRule(originRule, user));
 
 		usedCheckListRepository.saveAll(usedRules);
+	}
+
+	/**
+	 * Redirect to Github login page
+	 */
+	public void redirectGithub(HttpServletResponse response, String redirectUri) {
+		try {
+			String url = oauthRequestFacade.getRedirectAuthUrl(redirectUri);
+			response.sendRedirect(url);
+		} catch (IOException e) {
+			throw new ApiAuthException(ResponseCode.INVALID_CREDENTIALS);
+		}
 	}
 }

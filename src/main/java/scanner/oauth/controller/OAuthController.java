@@ -1,5 +1,7 @@
 package scanner.oauth.controller;
 
+import javax.servlet.http.HttpServletResponse;
+
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -16,6 +18,11 @@ import scanner.security.dto.Token;
 public class OAuthController {
 
 	private final AuthService authService;
+
+	@GetMapping("/github")
+	public void githubAuthRedirect(HttpServletResponse response, @RequestParam("redirectUri") String redirect) {
+		authService.redirectGithub(response, redirect);
+	}
 
 	@GetMapping("/callback")
 	public ResponseDto<Token> githubAuth(@RequestParam("code") String authCode) {

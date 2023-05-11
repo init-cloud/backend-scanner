@@ -21,6 +21,8 @@ public class OAuthRequestFacade {
 	private final JwtTokenProvider jwtTokenProvider;
 	private final Properties properties;
 
+	private static final String GITHUB_AUTH_URL = "https://github.com/login/oauth/authorize?";
+
 	/**
 	 * Request Github Access Token by auth code.
 	 * @return access token in String
@@ -31,8 +33,8 @@ public class OAuthRequestFacade {
 
 		String[] arr = resultString.split("&");
 
-		for(String s : arr) {
-			if(s.startsWith("access_token"))
+		for (String s : arr) {
+			if (s.startsWith("access_token"))
 				return s;
 		}
 
@@ -53,5 +55,9 @@ public class OAuthRequestFacade {
 	 */
 	public Token createSocialUserToken(String username) {
 		return jwtTokenProvider.createPersonalSocialUser(username, properties.getSecret());
+	}
+
+	public String getRedirectAuthUrl(String redirectUri) {
+		return GITHUB_AUTH_URL + "client_id=" + properties.getGithubClientId() + "&redirect_uri=" + redirectUri;
 	}
 }

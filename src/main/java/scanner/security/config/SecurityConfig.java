@@ -39,8 +39,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 		http.httpBasic()
 			.disable()
-			.sessionManagement()
-			.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+			.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
 			.and()
 			.authorizeRequests()
 			.antMatchers("/v2/api-docs/**").permitAll()
@@ -49,7 +48,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 			.and()
 			.authorizeRequests()
 			.antMatchers("/api/v1").permitAll()
-			.antMatchers("/api/v1/auth/callback").permitAll()
+			.antMatchers("/api/v1/auth/**").permitAll()
 			.antMatchers("/api/v1/user/signin").permitAll()
 			.antMatchers("/api/v1/user/signup").permitAll()
 			.and()
