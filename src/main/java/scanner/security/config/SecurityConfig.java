@@ -14,7 +14,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import scanner.security.filter.JwtAuthenticationFilter;
-import scanner.security.filter.JwtExceptionFilter;
 import scanner.security.filter.JwtGlobalEntryPoint;
 import scanner.security.provider.JwtTokenProvider;
 
@@ -24,7 +23,6 @@ import scanner.security.provider.JwtTokenProvider;
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 	private final JwtGlobalEntryPoint jwtGlobalEntryPoint;
-	private final JwtExceptionFilter jwtExceptionFilter;
 	private final JwtTokenProvider jwtTokenProvider;
 	private final Properties properties;
 
@@ -51,6 +49,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 			.and()
 			.authorizeRequests()
 			.antMatchers("/api/v1").permitAll()
+			.antMatchers("/api/v1/auth/callback").permitAll()
 			.antMatchers("/api/v1/user/signin").permitAll()
 			.antMatchers("/api/v1/user/signup").permitAll()
 			.and()
@@ -62,8 +61,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 			.exceptionHandling().authenticationEntryPoint(jwtGlobalEntryPoint)
 			.and()
 			.addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider, properties),
-				UsernamePasswordAuthenticationFilter.class)
-			.addFilterBefore(jwtExceptionFilter, JwtAuthenticationFilter.class);
+				UsernamePasswordAuthenticationFilter.class);
 	}
 
 	@Bean
