@@ -1,8 +1,10 @@
 name: InitCloud-Demo-CICD CI/CD
 
 on:
-  pull_request:
-    branches: ['web-demo', 'demo/**']
+    pull_request:
+      branches:
+      - web-demo
+      - 'demo/**'
 
 jobs:
   build:
