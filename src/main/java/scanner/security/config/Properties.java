@@ -25,11 +25,15 @@ public class Properties {
 	@Getter
 	private String githubClientSecret;
 
+	@Getter
+	private String githubRedirectUri;
+
 	@PostConstruct
 	public void jwtInit() {
 		this.secret = environment.getProperty("JWT_SECRET");
 		this.githubClientId = environment.getProperty("GITHUB_CLIENT_ID");
 		this.githubClientSecret = environment.getProperty("GITHUB_CLIENT_SECRET");
+		this.githubRedirectUri = environment.getProperty("GITHUB_CALLBACK");
 		log.info("JWT_SECRET is " + this.secret);
 	}
 }

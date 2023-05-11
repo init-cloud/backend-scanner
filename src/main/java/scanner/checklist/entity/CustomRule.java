@@ -52,23 +52,11 @@ public class CustomRule extends BaseEntity {
 	@NotNull
 	private Character isModifiable;
 
-	@Column(name = "DESCRIPTION")
-	private String description;
-
-	@Column(name = "EXPLANATION")
-	private String explanation;
-
-	@Column(name = "POSSIBLE_IMPACT")
-	private String possibleImpact;
-
 	@Column(name = "INSECURE_EXAMPLE")
 	private String insecureExample;
 
 	@Column(name = "SECURE_EXAMPLE")
 	private String secureExample;
-
-	@Column(name = "SOLUTION")
-	private String sol;
 
 	@Column(name = "CODE")
 	private String code;
@@ -98,21 +86,15 @@ public class CustomRule extends BaseEntity {
 	}
 
 	@Builder(builderClassName = "customRuleAddBuilder", builderMethodName = "customRuleAddBuilder")
-	public CustomRule(String defaultRuleName, Provider provider, String ruleType,
-		String level, Character isModifiable, String description, String explanation,
-		String possibleImpact, String insecureExample, String secureExample, String sol, String code,
-		String customDefault) {
+	public CustomRule(String defaultRuleName, Provider provider, String ruleType, String level, Character isModifiable,
+		String insecureExample, String secureExample, String code, String customDefault) {
 
 		this.defaultRuleName = defaultRuleName;
 		this.provider = provider;
 		this.ruleType = ruleType;
 		this.level = level;
-		this.description = description;
-		this.explanation = explanation;
-		this.possibleImpact = possibleImpact;
 		this.insecureExample = insecureExample;
 		this.secureExample = secureExample;
-		this.sol = sol;
 		this.code = code;
 		this.isModifiable = isModifiable;
 		this.customDefault = customDefault;
@@ -131,9 +113,11 @@ public class CustomRule extends BaseEntity {
 	public void addComplianceKorsForTest(List<ComplianceKor> kors) {
 		this.complianceKors = kors;
 	}
+
 	public void addComplianceEngsForTest(List<ComplianceEng> engs) {
 		this.complianceEngs = engs;
 	}
+
 	public void addHistoryDetailsForTest(List<ScanHistoryDetail> details) {
 		this.historyDetails = details;
 	}

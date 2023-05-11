@@ -34,9 +34,8 @@ public class AuthService {
 	 * @return user Token
 	 */
 	public Token getUserAccessToken(@NotNull String code) {
-		OAuthDto.GithubTokenResponse tokenResponse = oauthRequestFacade.requestGithubOAuthToken(code);
-		OAuthDto.GithubUserDetail userDetail = oauthRequestFacade.requestGithubUserDetail(
-			tokenResponse.getAccessToken());
+		String tokenResponse = oauthRequestFacade.requestGithubOAuthToken(code);
+		OAuthDto.GithubUserDetail userDetail = oauthRequestFacade.requestGithubUserDetail(tokenResponse);
 
 		User user = getUserIfExist(userDetail);
 

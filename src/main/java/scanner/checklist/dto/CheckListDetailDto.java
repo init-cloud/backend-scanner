@@ -8,6 +8,7 @@ import scanner.checklist.entity.CustomRule;
 import scanner.checklist.entity.CustomRuleDetails;
 import scanner.checklist.entity.UsedRule;
 import scanner.checklist.enums.SecurityType;
+import scanner.common.enums.Language;
 
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class CheckListDetailDto {
@@ -51,6 +52,11 @@ public class CheckListDetailDto {
 
 		public Detail(UsedRule usedRule) {
 			CustomRule rule = usedRule.getOriginRule();
+			CustomRuleDetails details = rule.getRuleDetails()
+				.stream()
+				.filter(d -> d.getLanguage().equals(Language.ENGLISH))
+				.findAny()
+				.orElse(rule.getRuleDetails().get(0));
 
 			this.ruleName = usedRule.getRuleName();
 			this.state = usedRule.getIsOn().toString();
@@ -60,12 +66,12 @@ public class CheckListDetailDto {
 			this.tags = rule.getTagDto();
 			this.type = null;
 			this.level = rule.getLevel();
-			this.description = rule.getDescription();
-			this.explanation = rule.getExplanation();
-			this.possibleImpact = rule.getPossibleImpact();
+			this.description = details.getDescription();
+			this.explanation = details.getExplanation();
+			this.possibleImpact = details.getPossibleImpact();
 			this.insecureExample = rule.getInsecureExample();
 			this.secureExample = rule.getSecureExample();
-			this.solution = new Solution(rule.getSol(), rule.getCode());
+			this.solution = new Solution(details.getSol(), rule.getCode());
 			this.isModifiable = rule.getIsModifiable();
 		}
 	}
@@ -94,27 +100,6 @@ public class CheckListDetailDto {
 			.insecureExample(rule.getInsecureExample())
 			.secureExample(rule.getSecureExample())
 			.solution(new Solution(details.getSol(), rule.getCode()))
-			.isModifiable(rule.getIsModifiable())
-			.build();
-	}
-
-	public static Detail toDto(final UsedRule usedRule) {
-		CustomRule rule = usedRule.getOriginRule();
-		return Detail.checklistDetailsBuilder()
-
-			.ruleName(usedRule.getRuleName())
-			.state(usedRule.getIsOn().toString())
-			.isModified(usedRule.getIsModified())
-			.customDetail(usedRule.getCustomDetail())
-
-			.tags(rule.getTagDto())
-			.level(rule.getLevel())
-			.description(rule.getDescription())
-			.explanation(rule.getExplanation())
-			.possibleImpact(rule.getPossibleImpact())
-			.insecureExample(rule.getInsecureExample())
-			.secureExample(rule.getSecureExample())
-			.solution(new Solution(rule.getSol(), rule.getCode()))
 			.isModifiable(rule.getIsModifiable())
 			.build();
 	}

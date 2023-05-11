@@ -10,5 +10,5 @@ import scanner.oauth.dto.OAuthDto;
 public interface OAuthFeignClient {
 
 	@PostMapping(value = "/login/oauth/access_token")
-	OAuthDto.GithubTokenResponse requestGithubAccessToken(@RequestBody OAuthDto.GithubTokenRequest tokenRequest);
+	String requestGithubAccessToken(@RequestBody OAuthDto.GithubTokenRequest tokenRequest);
 }

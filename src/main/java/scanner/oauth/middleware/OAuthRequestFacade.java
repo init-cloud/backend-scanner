@@ -5,6 +5,8 @@ import org.springframework.stereotype.Component;
 import lombok.RequiredArgsConstructor;
 import scanner.common.client.OAuthFeignClient;
 import scanner.common.client.OAuthInfoFeignClient;
+import scanner.common.enums.ResponseCode;
+import scanner.common.exception.ApiAuthException;
 import scanner.oauth.dto.OAuthDto;
 import scanner.security.config.Properties;
 import scanner.security.dto.Token;
@@ -21,11 +23,20 @@ public class OAuthRequestFacade {
 
 	/**
 	 * Request Github Access Token by auth code.
-	 * @return access token in OAuthDto.GithubTokenResponse
+	 * @return access token in String
 	 */
-	public OAuthDto.GithubTokenResponse requestGithubOAuthToken(String code) {
-		OAuthDto.GithubTokenRequest tokenRequest = new OAuthDto.GithubTokenRequest(properties.getGithubClientSecret(), code);
-		return oauthFeignClient.requestGithubAccessToken(tokenRequest);
+	public String requestGithubOAuthToken(String code) {
+		OAuthDto.GithubTokenRequest tokenRequest = new OAuthDto.GithubTokenRequest(properties, code);
+		String resultString = oauthFeignClient.requestGithubAccessToken(tokenRequest);
+
+		String[] arr = resultString.split("&");
+
+		for(String s : arr) {
+			if(s.startsWith("access_token"))
+				return s;
+		}
+
+		throw new ApiAuthException(ResponseCode.INVALID_TOKEN);
 	}
 
 	/**
@@ -33,7 +44,7 @@ public class OAuthRequestFacade {
 	 * @return user detail in OAuthDto.GithubUserDetail
 	 */
 	public OAuthDto.GithubUserDetail requestGithubUserDetail(String accessToken) {
-		return infoFeignClient.requestGithubUserDetail("Bearer " + accessToken);
+		return infoFeignClient.requestGithubUserDetail("Bearer " + accessToken.split("=")[1]);
 	}
 
 	/**

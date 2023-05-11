@@ -7,6 +7,7 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import scanner.security.config.Properties;
 
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class OAuthDto {
@@ -25,12 +26,20 @@ public class OAuthDto {
 	}
 
 	@Getter
-	@AllArgsConstructor
 	@NoArgsConstructor(access = AccessLevel.PROTECTED)
 	@JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 	public static class GithubTokenRequest {
+		private String clientId;
 		private String clientSecret;
 		private String code;
+		private String redirectUri;
+
+		public GithubTokenRequest(Properties properties, String code) {
+			this.clientId = properties.getGithubClientId();
+			this.clientSecret = properties.getGithubClientSecret();
+			this.redirectUri = properties.getGithubRedirectUri();
+			this.code = code;
+		}
 	}
 
 	@Getter
