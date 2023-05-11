@@ -45,7 +45,7 @@ jobs:
           key: ${{ secrets.API_SERVER_SSH }}
           port: ${{ secrets.API_SERVER_PORT }}
           script: |
-            docker pull -t ${{ secrets.REGISTRY_002 }}/scanner_api_v2:demo 
+            docker pull ${{ secrets.REGISTRY_002 }}/scanner_api_v2:demo 
             docker stop initcloud_scanner
             docker rm initcloud_scanner
             docker compose -f ./rocket-demo/docker-compose-demo.yml up -d initcloud_scanner
