@@ -16,7 +16,6 @@ import scanner.common.exception.ApiException;
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public abstract class UserBaseDto {
-
 	private String username;
 	private LocalDateTime lastLogin;
 

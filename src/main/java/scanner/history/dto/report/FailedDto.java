@@ -56,7 +56,7 @@ public class FailedDto {
 			return compliance;
 
 		details.stream().forEach(detail -> {
-			List<ComplianceEng> complianceEngs = detail.getRuleSeq().getComplianceEngs();
+			List<ComplianceEng> complianceEngs = detail.getRule().getOriginRule().getComplianceEngs();
 
 			for (int i = 0; i < complianceEngs.size(); i++) {
 				String key = complianceEngs.get(i).getComplianceNumber();
@@ -80,7 +80,7 @@ public class FailedDto {
 			return tag;
 
 		details.stream().forEach(detail -> {
-			List<Tag> tags = detail.getRuleSeq().getTags();
+			List<Tag> tags = detail.getRule().getOriginRule().getTags();
 
 			for (int i = 0; i < tags.size(); i++) {
 				String key = tags.get(i).getTagName();

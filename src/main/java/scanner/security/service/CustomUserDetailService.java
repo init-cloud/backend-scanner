@@ -7,6 +7,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import scanner.user.builder.UserBuilder;
 import scanner.user.dto.UserDetailsDto;
 import scanner.common.exception.ApiException;
 import scanner.user.entity.User;
@@ -40,7 +41,7 @@ public class CustomUserDetailService implements UserDetailsService {
 		User user = userRepository.findByUsername(dto.getUsername())
 			.orElseThrow(() -> new ApiException(ResponseCode.INVALID_USER));
 
-		User modifiedUser = User.toEntityByModifying(user, user.getLastLogin(), user.getPassword(),
+		User modifiedUser = UserBuilder.toEntityByModifying(user, user.getLastLogin(), user.getPassword(),
 			user.getAuthoritiesToString(), dto.getRole(), user.getUserState(), user.getEmail(), user.getContact());
 
 		userRepository.save(modifiedUser);
@@ -55,7 +56,7 @@ public class CustomUserDetailService implements UserDetailsService {
 		User user = userRepository.findByUsername(dto.getUsername())
 			.orElseThrow(() -> new ApiException(ResponseCode.INVALID_USER));
 
-		User modifiedUser = User.toEntityByModifying(user, user.getLastLogin(), user.getPassword(),
+		User modifiedUser = UserBuilder.toEntityByModifying(user, user.getLastLogin(), user.getPassword(),
 			User.getAuthorities(dto.getAuthorities()), user.getRoleType(), user.getUserState(), user.getEmail(),
 			user.getContact());
 
@@ -75,7 +76,7 @@ public class CustomUserDetailService implements UserDetailsService {
 			User user = userRepository.findByUsername(dto.getUsername())
 				.orElseThrow(() -> new ApiException(ResponseCode.INVALID_USER));
 
-			User modifiedUser = User.toEntityByModifying(user, user.getLastLogin(), user.getPassword(),
+			User modifiedUser = UserBuilder.toEntityByModifying(user, user.getLastLogin(), user.getPassword(),
 				User.getAuthorities(dto.getAuthorities()), dto.getRole(), user.getUserState(), user.getEmail(),
 				user.getContact());
 

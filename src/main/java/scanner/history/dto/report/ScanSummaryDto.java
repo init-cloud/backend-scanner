@@ -15,7 +15,7 @@ public class ScanSummaryDto {
 
 	@Builder
 	public static class Content {
-		private Long historySeq;
+		private Long historyId;
 		private String date;
 		private String csp;
 		private String scanTarget;
@@ -55,7 +55,7 @@ public class ScanSummaryDto {
 	private static ScanSummaryDto.Content toDtoWithFailedInfo(ScanHistory entity, Map<String, Integer> resource,
 		Map<String, Map<String, Integer>> compliance, Map<String, Integer> threat) {
 		return Content.builder()
-			.historySeq(entity.getHistorySeq())
+			.historyId(entity.getId())
 			.date(entity.getCreatedAt().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")))
 			.csp(entity.getCsp())
 			.scanTarget(entity.getFileName())

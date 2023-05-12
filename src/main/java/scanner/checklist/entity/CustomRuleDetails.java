@@ -30,8 +30,8 @@ public class CustomRuleDetails extends BaseEntity {
 	private Long ruleDetailsId;
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "RULE_SEQ")
-	private CustomRule ruleSeq;
+	@JoinColumn(name = "RULE_ID")
+	private CustomRule rule;
 
 	@Enumerated(value = EnumType.STRING)
 	@Column(name = "LANGUAGE")

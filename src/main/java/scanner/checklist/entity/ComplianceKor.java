@@ -37,8 +37,8 @@ public class ComplianceKor extends BaseEntity {
 	private Long compId;
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "rule_seq", updatable = false)
-	private CustomRule ruleSeq;
+	@JoinColumn(name = "rule_id", updatable = false)
+	private CustomRule rule;
 
 	@Column(name = "COMPLIANCE_NAME")
 	@NotNull
@@ -67,9 +67,9 @@ public class ComplianceKor extends BaseEntity {
 	private String detail;
 
 	@Builder(builderClassName = "complianceKoreanBuilder", builderMethodName = "complianceKoreanBuilder")
-	public ComplianceKor(CustomRule ruleSeq, String complianceName, String complianceNumber, String category,
+	public ComplianceKor(CustomRule rule, String complianceName, String complianceNumber, String category,
 		String article, String description, String detail) {
-		this.ruleSeq = ruleSeq;
+		this.rule = rule;
 		this.complianceName = complianceName;
 		this.complianceNumber = complianceNumber;
 		this.category = category;

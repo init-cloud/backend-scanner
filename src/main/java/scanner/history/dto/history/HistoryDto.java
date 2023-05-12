@@ -17,7 +17,7 @@ public class HistoryDto {
 	private Double score;
 
 	public HistoryDto(ScanHistory entity) {
-		this.id = entity.getHistorySeq();
+		this.id = entity.getId();
 		this.fileName = entity.getFileName();
 		this.fileHash = entity.getFileHash();
 		this.scanDateTime = entity.getCreatedAt();
