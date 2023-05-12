@@ -78,9 +78,9 @@ public class AuthService {
 	/**
 	 * Redirect to Github login page
 	 */
-	public void redirectGithub(HttpServletResponse response, String redirectUri) {
+	public void redirectGithub(HttpServletResponse response) {
 		try {
-			String url = oauthRequestFacade.getRedirectAuthUrl(redirectUri);
+			String url = oauthRequestFacade.getRedirectAuthUrl();
 			response.sendRedirect(url);
 		} catch (IOException e) {
 			throw new ApiAuthException(ResponseCode.INVALID_CREDENTIALS);

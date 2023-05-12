@@ -57,7 +57,7 @@ public class OAuthRequestFacade {
 		return jwtTokenProvider.createPersonalSocialUser(username, properties.getSecret());
 	}
 
-	public String getRedirectAuthUrl(String redirectUri) {
-		return GITHUB_AUTH_URL + "client_id=" + properties.getGithubClientId() + "&redirect_uri=" + redirectUri;
+	public String getRedirectAuthUrl() {
+		return GITHUB_AUTH_URL + "client_id=" + properties.getGithubClientId() + "&redirect_uri=" + properties.getRedirectUri();
 	}
 }
