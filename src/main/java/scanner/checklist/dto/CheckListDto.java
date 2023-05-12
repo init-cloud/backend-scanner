@@ -1,7 +1,7 @@
 package scanner.checklist.dto;
 
 import lombok.*;
-import scanner.checklist.entity.CustomRule;
+import scanner.checklist.entity.UsedRule;
 import scanner.common.enums.ResponseCode;
 import scanner.common.exception.ApiException;
 
@@ -27,15 +27,15 @@ public class CheckListDto {
 	@Getter
 	@NoArgsConstructor(access = AccessLevel.PROTECTED)
 	public static class Summary {
-		private String ruleId;
+		private String ruleName;
 		private String ruleOnOff;
 		private String level;
 		private String custom;
 
-		public Summary(final CustomRule rule) {
-			this.ruleId = rule.getRuleId();
-			this.ruleOnOff = rule.getRuleOnOff();
-			this.level = rule.getLevel();
+		public Summary(final UsedRule rule) {
+			this.ruleName = rule.getRuleName();
+			this.ruleOnOff = rule.getIsOn().toString();
+			this.level = rule.getOriginRule().getLevel();
 			this.custom = rule.getCustomDetail();
 		}
 	}
@@ -47,7 +47,7 @@ public class CheckListDto {
 	@AllArgsConstructor
 	@NoArgsConstructor(access = AccessLevel.PROTECTED)
 	public static class Modifying {
-		private String rule_id;
+		private String ruleName;
 		private List<CheckListDto.Modifying.Details> custom;
 
 		public static String toJsonString(List<CheckListDto.Modifying.Details> dto) {
@@ -72,7 +72,7 @@ public class CheckListDto {
 	@AllArgsConstructor
 	@NoArgsConstructor(access = AccessLevel.PROTECTED)
 	public static class RuleState {
-		private String rule_id;
+		private String ruleName;
 		private String ruleOnOff;
 	}
 }

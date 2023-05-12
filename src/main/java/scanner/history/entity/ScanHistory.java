@@ -5,9 +5,12 @@ import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
@@ -17,6 +20,8 @@ import lombok.*;
 
 import scanner.common.enums.Env;
 import scanner.common.entity.BaseEntity;
+import scanner.scan.service.ScanService;
+import scanner.user.entity.User;
 
 @Getter
 @Entity
@@ -25,12 +30,9 @@ import scanner.common.entity.BaseEntity;
 public class ScanHistory extends BaseEntity {
 
 	@Id
-	@Column(name = "HISTORY_SEQ")
+	@Column(name = "HISTORY_ID")
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long historySeq;
-
-	@OneToMany(mappedBy = "historySeq")
-	private List<ScanHistoryDetail> details = new ArrayList<>();
+	private Long id;
 
 	@Column(name = "FILE_NAME")
 	@NotNull
@@ -39,6 +41,10 @@ public class ScanHistory extends BaseEntity {
 	@Column(name = "FILE_HASH", updatable = false)
 	@NotNull
 	private String fileHash;
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "USER_ID")
+	private User user;
 
 	@Column(name = "CSP")
 	@NotNull
@@ -81,10 +87,14 @@ public class ScanHistory extends BaseEntity {
 	@NotNull
 	private String visual;
 
-	@Builder
-	public ScanHistory(Long historySeq, String fileName, String fileHash, String csp, Integer passed, Integer skipped,
+	@OneToMany(mappedBy = "history")
+	private List<ScanHistoryDetail> details = new ArrayList<>();
+
+	@Builder(builderClassName = "addScanHistoryBuilder", builderMethodName = "addScanHistoryBuilder")
+	public ScanHistory(Long historyId, User user, String fileName, String fileHash, String csp, Integer passed, Integer skipped,
 		Integer failed, Integer high, Integer medium, Integer low, Integer unknown, Double score, String visual) {
-		this.historySeq = historySeq;
+		this.id = historyId;
+		this.user = user;
 		this.fileName = fileName;
 		this.fileHash = fileHash;
 		this.csp = csp;
@@ -99,19 +109,20 @@ public class ScanHistory extends BaseEntity {
 		this.visual = visual;
 	}
 
-	public static ScanHistory toEntity(String[] args, Integer passed, Integer skipped, Integer failed, double[] total,
+	public static ScanHistory toEntity(String[] args, User user, Integer passed, Integer skipped, Integer failed, ScanService.Score total,
 		String provider, String visual) {
-		return ScanHistory.builder()
+		return ScanHistory.addScanHistoryBuilder()
+			.user(user)
 			.passed(passed)
 			.skipped(skipped)
 			.failed(failed)
 			.fileName(args[2])
 			.fileHash(args[0])
-			.score(total[0])
-			.high((int)total[1])
-			.medium((int)total[2])
-			.low((int)total[3])
-			.unknown((int)total[4])
+			.score(total.getScore())
+			.high(total.getHigh())
+			.medium(total.getMedium())
+			.low(total.getLow())
+			.unknown(total.getUnknown())
 			.csp(Env.getCSP(provider))
 			.visual(visual)
 			.build();

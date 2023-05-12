@@ -49,23 +49,24 @@ public class FailedComplianceDto {
 	/* ComplianceEng */
 	public static Map<String, Map<String, Integer>> toEnglishDto(List<ScanHistoryDetail> details) {
 		Map<String, Map<String, Integer>> total = new LinkedHashMap<>();
-		details.stream().forEach(detail -> {
-			for (ComplianceEng cmp : detail.getRuleSeq().getComplianceEngs()) {
-				Map<String, Integer> compliance;
+		details.stream().forEach(
+			detail -> {
+				for (ComplianceEng cmp : detail.getRule().getOriginRule().getComplianceEngs()) {
+					Map<String, Integer> compliance;
 
-				if (total.containsKey(cmp.getComplianceName()))
-					compliance = total.get(cmp.getComplianceName());
-				else
-					compliance = new LinkedHashMap<>();
+					if (total.containsKey(cmp.getComplianceName()))
+						compliance = total.get(cmp.getComplianceName());
+					else
+						compliance = new LinkedHashMap<>();
 
-				String key = cmp.getComplianceNumber();
-				if (compliance.containsKey(key))
-					compliance.put(key, compliance.get(key) + 1);
-				else
-					compliance.put(key, 1);
+					String key = cmp.getComplianceNumber();
+					if (compliance.containsKey(key))
+						compliance.put(key, compliance.get(key) + 1);
+					else
+						compliance.put(key, 1);
 
-				total.put(cmp.getComplianceName(), compliance);
-			}
+					total.put(cmp.getComplianceName(), compliance);
+				}
 		});
 
 		return total;
@@ -73,23 +74,24 @@ public class FailedComplianceDto {
 
 	public static Map<String, Map<String, Integer>> toKoreanDto(List<ScanHistoryDetail> details) {
 		Map<String, Map<String, Integer>> total = new LinkedHashMap<>();
-		details.stream().forEach(detail -> {
-			for (ComplianceKor cmp : detail.getRuleSeq().getComplianceKors()) {
-				Map<String, Integer> compliance;
+		details.stream().forEach(
+			detail -> {
+				for (ComplianceKor cmp : detail.getRule().getOriginRule().getComplianceKors()) {
+					Map<String, Integer> compliance;
 
-				if (total.containsKey(cmp.getComplianceName()))
-					compliance = total.get(cmp.getComplianceName());
-				else
-					compliance = new LinkedHashMap<>();
+					if (total.containsKey(cmp.getComplianceName()))
+						compliance = total.get(cmp.getComplianceName());
+					else
+						compliance = new LinkedHashMap<>();
 
-				String key = cmp.getComplianceNumber();
-				if (compliance.containsKey(key))
-					compliance.put(key, compliance.get(key) + 1);
-				else
-					compliance.put(key, 1);
+					String key = cmp.getComplianceNumber();
+					if (compliance.containsKey(key))
+						compliance.put(key, compliance.get(key) + 1);
+					else
+						compliance.put(key, 1);
 
-				total.put(cmp.getComplianceName(), compliance);
-			}
+					total.put(cmp.getComplianceName(), compliance);
+				}
 		});
 
 		return total;

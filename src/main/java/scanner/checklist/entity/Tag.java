@@ -26,8 +26,8 @@ public class Tag extends BaseEntity {
 	private Long id;
 
 	@ManyToOne
-	@JoinColumn(name = "rule_seq")
-	private CustomRule ruleSeq;
+	@JoinColumn(name = "rule_id")
+	private CustomRule rule;
 
 	@Column(name = "TAG")
 	@NotNull
@@ -35,8 +35,8 @@ public class Tag extends BaseEntity {
 	private String tagName;
 
 	@Builder(builderClassName = "tagFromRuleBuilder", builderMethodName = "tagFromRuleBuilder")
-	public Tag(CustomRule ruleSeq, String tagName) {
-		this.ruleSeq = ruleSeq;
+	public Tag(CustomRule rule, String tagName) {
+		this.rule = rule;
 		this.tagName = tagName;
 	}
 }

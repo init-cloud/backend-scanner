@@ -33,8 +33,8 @@ public class ComplianceEng extends BaseEntity {
 	private Long compId;
 
 	@ManyToOne
-	@JoinColumn(name = "rule_seq", updatable = false)
-	private CustomRule ruleSeq;
+	@JoinColumn(name = "rule_id", updatable = false)
+	private CustomRule rule;
 
 	@Column(name = "COMPLIANCE_NAME")
 	@NotNull
@@ -63,9 +63,9 @@ public class ComplianceEng extends BaseEntity {
 	private String detail;
 
 	@Builder(builderClassName = "complianceEnglishBuilder", builderMethodName = "complianceEnglishBuilder")
-	public ComplianceEng(CustomRule ruleSeq, String complianceName, String complianceNumber, String category,
+	public ComplianceEng(CustomRule rule, String complianceName, String complianceNumber, String category,
 		String article, String description, String detail) {
-		this.ruleSeq = ruleSeq;
+		this.rule = rule;
 		this.complianceName = complianceName;
 		this.complianceNumber = complianceNumber;
 		this.category = category;

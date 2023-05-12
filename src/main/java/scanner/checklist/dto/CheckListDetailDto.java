@@ -6,14 +6,16 @@ import lombok.*;
 
 import scanner.checklist.entity.CustomRule;
 import scanner.checklist.entity.CustomRuleDetails;
+import scanner.checklist.entity.UsedRule;
 import scanner.checklist.enums.SecurityType;
+import scanner.common.enums.Language;
 
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class CheckListDetailDto {
 
 	@Getter
 	public static class Detail {
-		private String ruleId;
+		private String ruleName;
 		private List<TagDto> tags;
 		private List<SecurityType> type;
 		private String level;
@@ -29,10 +31,10 @@ public class CheckListDetailDto {
 		private Character isModified;
 
 		@Builder(builderClassName = "checklistDetailsBuilder", builderMethodName = "checklistDetailsBuilder")
-		public Detail(String ruleId, List<TagDto> tags, List<SecurityType> type, String level, String description,
+		public Detail(String ruleName, List<TagDto> tags, List<SecurityType> type, String level, String description,
 			String explanation, String possibleImpact, String insecureExample, String secureExample, Solution solution,
 			String state, String customDetail, Character isModifiable, Character isModified) {
-			this.ruleId = ruleId;
+			this.ruleName = ruleName;
 			this.tags = tags;
 			this.type = type;
 			this.level = level;
@@ -48,21 +50,29 @@ public class CheckListDetailDto {
 			this.isModified = isModified;
 		}
 
-		public Detail(CustomRule rule) {
-			this.ruleId = rule.getRuleId();
+		public Detail(UsedRule usedRule) {
+			CustomRule rule = usedRule.getOriginRule();
+			CustomRuleDetails details = rule.getRuleDetails()
+				.stream()
+				.filter(d -> d.getLanguage().equals(Language.ENGLISH))
+				.findAny()
+				.orElse(rule.getRuleDetails().get(0));
+
+			this.ruleName = usedRule.getRuleName();
+			this.state = usedRule.getIsOn().toString();
+			this.isModified = usedRule.getIsModified();
+			this.customDetail = usedRule.getCustomDetail();
+
 			this.tags = rule.getTagDto();
 			this.type = null;
 			this.level = rule.getLevel();
-			this.description = rule.getDescription();
-			this.explanation = rule.getExplanation();
-			this.possibleImpact = rule.getPossibleImpact();
+			this.description = details.getDescription();
+			this.explanation = details.getExplanation();
+			this.possibleImpact = details.getPossibleImpact();
 			this.insecureExample = rule.getInsecureExample();
 			this.secureExample = rule.getSecureExample();
-			this.solution = new Solution(rule.getSol(), rule.getCode());
-			this.state = rule.getRuleOnOff();
+			this.solution = new Solution(details.getSol(), rule.getCode());
 			this.isModifiable = rule.getIsModifiable();
-			this.isModified = rule.getIsModified();
-			this.customDetail = rule.getCustomDetail();
 		}
 	}
 
@@ -73,9 +83,15 @@ public class CheckListDetailDto {
 		private String code;
 	}
 
-	public static Detail toDetailsDto(final CustomRule rule, final CustomRuleDetails details) {
+	public static Detail toDetailsDto(final UsedRule usedRule, final CustomRuleDetails details) {
+		CustomRule rule = usedRule.getOriginRule();
 		return Detail.checklistDetailsBuilder()
-			.ruleId(rule.getRuleId())
+
+			.ruleName(usedRule.getRuleName())
+			.state(usedRule.getIsOn().toString())
+			.isModified(usedRule.getIsModified())
+			.customDetail(usedRule.getCustomDetail())
+
 			.tags(rule.getTagDto())
 			.level(rule.getLevel())
 			.description(details.getDescription())
@@ -84,37 +100,7 @@ public class CheckListDetailDto {
 			.insecureExample(rule.getInsecureExample())
 			.secureExample(rule.getSecureExample())
 			.solution(new Solution(details.getSol(), rule.getCode()))
-			.state(rule.getRuleOnOff())
 			.isModifiable(rule.getIsModifiable())
-			.isModified(rule.getIsModified())
-			.customDetail(rule.getCustomDetail())
-			.build();
-	}
-
-	public static Detail toDto(final CustomRule rule) {
-		return Detail.checklistDetailsBuilder()
-			.ruleId(rule.getRuleId())
-			.tags(rule.getTagDto())
-			.level(rule.getLevel())
-			.description(rule.getDescription())
-			.explanation(rule.getExplanation())
-			.possibleImpact(rule.getPossibleImpact())
-			.insecureExample(rule.getInsecureExample())
-			.secureExample(rule.getSecureExample())
-			.solution(new Solution(rule.getSol(), rule.getCode()))
-			.state(rule.getRuleOnOff())
-			.isModifiable(rule.getIsModifiable())
-			.isModified(rule.getIsModified())
-			.customDetail(rule.getCustomDetail())
-			.build();
-	}
-
-	public static CustomRule toNewEntity(final Detail dto) {
-		return CustomRule.customRuleAddBuilder()
-			.ruleId(dto.getRuleId())
-			.ruleOnOff(dto.getState())
-			.isModified('y')
-			.customDetail(dto.getCustomDetail())
 			.build();
 	}
 }

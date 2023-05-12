@@ -12,6 +12,6 @@ import scanner.history.entity.ScanHistoryDetail;
 @Repository
 public interface ScanHistoryDetailsRepository extends JpaRepository<ScanHistoryDetail, Long> {
 
-	@Query(value = "SELECT * FROM scan_history_detail WHERE history_seq= :history_seq", nativeQuery = true)
-	List<ScanHistoryDetail> findByHistorySeq(@Param("history_seq") Long history_seq);
+	@Query(value = "SELECT * FROM scan_history_detail WHERE history_id= :history_id", nativeQuery = true)
+	List<ScanHistoryDetail> findByHistory(@Param("history_id") Long historyId);
 }

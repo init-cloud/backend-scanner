@@ -1,7 +1,5 @@
 package scanner.user.service;
 
-import java.time.LocalDateTime;
-
 import javax.transaction.Transactional;
 
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -65,7 +63,7 @@ public class UsernameService implements UserService {
 		User user = userRepository.findByUsername(dto.getUsername())
 			.orElseThrow(() -> new ApiException(ResponseCode.INVALID_USER));
 
-		user.setLastLogin(LocalDateTime.now());
+		user.modifyUserLastLoginNow();
 
 		userRepository.save(user);
 	}
@@ -99,7 +97,7 @@ public class UsernameService implements UserService {
 			User user = userRepository.findByUsername(dto.getUsername())
 				.orElseThrow(() -> new ApiException(ResponseCode.INVALID_USER));
 
-			user.setPassword(dto.setHash(passwordEncoder, dto.getPassword()));
+			user.modifyUserPassword(dto.setHash(passwordEncoder, dto.getPassword()));
 
 			userRepository.save(user);
 

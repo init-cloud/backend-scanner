@@ -20,9 +20,9 @@ import lombok.*;
 import scanner.checklist.entity.ComplianceEng;
 import scanner.checklist.entity.ComplianceKor;
 import scanner.checklist.entity.Tag;
+import scanner.checklist.entity.UsedRule;
 import scanner.scan.dto.ScanDto;
 import scanner.common.entity.BaseEntity;
-import scanner.checklist.entity.CustomRule;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -31,32 +31,32 @@ import scanner.checklist.entity.CustomRule;
 public class ScanHistoryDetail extends BaseEntity {
 
 	@Id
-	@Column(name = "ID", updatable = false)
+	@Column(name = "HISTORY_DETAIL_ID", updatable = false)
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
 	@Setter
-	@OneToMany(mappedBy = "ruleSeq")
+	@OneToMany(mappedBy = "rule")
 	private List<Tag> tags = new ArrayList<>();
 
 	@Setter
-	@OneToMany(mappedBy = "ruleSeq")
+	@OneToMany(mappedBy = "rule")
 	private List<ComplianceEng> complianceEngs = new ArrayList<>();
 
 	@Setter
-	@OneToMany(mappedBy = "ruleSeq")
+	@OneToMany(mappedBy = "rule")
 	private List<ComplianceKor> complianceKors = new ArrayList<>();
 
 	@Setter
-	@OneToMany(mappedBy = "ruleSeq")
+	@OneToMany(mappedBy = "rule")
 	private List<ScanHistoryDetail> historyDetails = new ArrayList<>();
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "rule_seq", updatable = false)
-	private CustomRule ruleSeq;
+	@JoinColumn(name = "rule_id", updatable = false)
+	private UsedRule rule;
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "history_seq", updatable = false)
-	private ScanHistory historySeq;
+	@JoinColumn(name = "history_id", updatable = false)
+	private ScanHistory history;
 
 	@Column(name = "RESOURCE")
 	@NotNull
@@ -85,10 +85,10 @@ public class ScanHistoryDetail extends BaseEntity {
 	private String code;
 
 	@Builder
-	public ScanHistoryDetail(CustomRule ruleSeq, ScanHistory historySeq, String resource, String resourceName,
+	public ScanHistoryDetail(UsedRule rule, ScanHistory history, String resource, String resourceName,
 		String scanResult, String targetFile, String line, String code) {
-		this.ruleSeq = ruleSeq;
-		this.historySeq = historySeq;
+		this.rule = rule;
+		this.history = history;
 		this.resource = resource;
 		this.resourceName = resourceName;
 		this.scanResult = scanResult;
@@ -97,10 +97,10 @@ public class ScanHistoryDetail extends BaseEntity {
 		this.code = code;
 	}
 
-	public static ScanHistoryDetail toEntity(final ScanDto.Result dto, CustomRule rule, ScanHistory history) {
+	public static ScanHistoryDetail toEntity(final ScanDto.Result dto, UsedRule rule, ScanHistory history) {
 		return ScanHistoryDetail.builder()
-			.ruleSeq(rule)
-			.historySeq(history)
+			.rule(rule)
+			.history(history)
 			.resource(dto.getTargetResource())
 			.resourceName(dto.getTargetResource())
 			.scanResult(dto.getStatus())
