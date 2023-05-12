@@ -1,6 +1,6 @@
 
 <div align="center">  
- <img src="https://github.com/init-cloud/backend-scanner/tree/main/docs/logo.png" width="100">
+ <img src="https://raw.githubusercontent.com/init-cloud/backend-scanner/main/docs/logo.png" width="500">
 
 # Init Cloud IaC 정적 스캔 및 시각화 도구
 </div>
@@ -21,6 +21,7 @@
 * Terraform : 코드형 인프라의 최대 점유율을 가집니다.
 
 ## 산출물
+
 ### 시연 영상
 [유튜브](https://www.youtube.com/watch?v=xpXQ8eqIszg) 
 
@@ -82,3 +83,4 @@
 [Swagger 필수 속성이 없을 때의 NPE 처리](https://floodnut.tistory.com/95)  
 [DB 인덱스 적용을 통한 성능 향상](https://floodnut.tistory.com/97)  
 [리팩터링 과정에서의 DTO 수정](https://floodnut.tistory.com/103)  
+
