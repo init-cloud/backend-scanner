@@ -11,6 +11,7 @@ import javax.validation.constraints.NotNull;
 import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import scanner.checklist.entity.CustomRule;
 import scanner.checklist.entity.UsedRule;
 import scanner.checklist.repository.CheckListRepository;
@@ -78,9 +79,9 @@ public class AuthService {
 	/**
 	 * Redirect to Github login page
 	 */
-	public void redirectGithub(HttpServletResponse response) {
+	public void redirectGithub(HttpServletResponse response, String redirect) {
 		try {
-			String url = oauthRequestFacade.getRedirectAuthUrl();
+			String url = oauthRequestFacade.getRedirectAuthUrl(redirect);
 			response.sendRedirect(url);
 		} catch (IOException e) {
 			throw new ApiAuthException(ResponseCode.INVALID_CREDENTIALS);
