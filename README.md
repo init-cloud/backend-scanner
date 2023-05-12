@@ -26,13 +26,19 @@
 [유튜브](https://www.youtube.com/watch?v=xpXQ8eqIszg) 
 
 ### 대시보드 예시
- <img src="https://github.com/init-cloud/backend-scanner/tree/main/docs/board.png" width="300">
-
+<div align="center"> 
+ <img src="https://github.com/init-cloud/backend-scanner/blob/main/docs/board.png?raw=true">
+  </div>
+ 
 ### 시각화 예시 
- <img src="https://github.com/init-cloud/backend-scanner/tree/main/docs/infra_aws.png" width="300">
-
+ <div align="center"> 
+ <img src="https://github.com/init-cloud/backend-scanner/blob/main/docs/infra_aws.png">
+  </div>
+ 
 ### 보고서 예시
- <img src="https://github.com/init-cloud/backend-scanner/tree/main/docs/report.png" width="300">
+  <div align="center"> 
+ <img src="https://github.com/init-cloud/backend-scanner/blob/main/docs/report.png">
+  </div>
 
 ## 사용한 Git 브랜치 전략
 * Main : 공식 릴리즈를 위한 브랜치
@@ -46,7 +52,7 @@
 [English Install Guide](https://github.com/init-cloud/backend-scanner/blob/main/docs/Install_English.md)
 
 ## 레이어드 아키텍처 기반 Rest API
-<img src="https://github.com/init-cloud/backend-scanner/tree/main/docs/architecture.png" width="100">
+<img src="https://github.com/init-cloud/backend-scanner/blob/main/docs/architecture.png?raw=true">
 
 - 앱 서버에서 상태를 관리하지 않도록 클라이언트의 요청과 DB 기반으로 데이터를 가공하도록 했습니다.
 - JWT를 이용한 토큰 기반 인증으로 앱 서버의 상태와 상관없이 인증을 수행하도록 했습니다.
