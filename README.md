@@ -34,11 +34,7 @@
  <div align="center"> 
  <img src="https://github.com/init-cloud/backend-scanner/blob/main/docs/infra_aws.png">
   </div>
- 
-### 보고서 예시
-  <div align="center"> 
- <img src="https://github.com/init-cloud/backend-scanner/blob/main/docs/report.png">
-  </div>
+
 
 ## 사용한 Git 브랜치 전략
 * Main : 공식 릴리즈를 위한 브랜치
