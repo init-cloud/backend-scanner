@@ -37,8 +37,10 @@ public class OAuthRequestFacade {
 
 		for (String s : arr) {
 			log.info(s);
-			if (s.startsWith("access_token"))
+			if (s.startsWith("access_token")) {
+				log.info(s);
 				return s;
+			}
 		}
 
 		throw new ApiAuthException(ResponseCode.INVALID_TOKEN);
