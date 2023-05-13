@@ -36,7 +36,7 @@ public class OAuthController {
 
 	@ApiOperation(value = "Redirect to Github Login page.", notes = "RRedirect to Github Login page to get an auth code.")
 	@ApiImplicitParams({
-		@ApiImplicitParam(name = "code", paramType = "param", value = "Authorization Code from github", required = true, dataTypeClass = String.class)})
+		@ApiImplicitParam(name = "code", paramType = "query", value = "Authorization Code from github", required = true, dataTypeClass = String.class)})
 	@PostMapping("/callback")
 	public ResponseDto<Token> githubAuth(@RequestBody OAuthDto.AuthCodeRequest authCode) {
 		Token response = authService.getUserAccessToken(authCode);
