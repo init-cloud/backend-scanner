@@ -36,7 +36,6 @@ public class OAuthRequestFacade {
 		String[] arr = resultString.split("&");
 
 		for (String s : arr) {
-			log.info(s);
 			if (s.startsWith("access_token")) {
 				log.info(s);
 				return s;

@@ -28,7 +28,7 @@ public class OAuthController {
 
 	@ApiOperation(value = "Redirect to Github Login page.", notes = "Redirect to Github Login page to get an auth code.")
 	@ApiImplicitParams({
-		@ApiImplicitParam(name = "redirect", paramType = "param", value = "Redirect Url for FE", required = true, dataTypeClass = String.class)})
+		@ApiImplicitParam(name = "redirect", paramType = "query", value = "Redirect Url for FE", required = true, dataTypeClass = String.class)})
 	@GetMapping("/github")
 	public void githubAuthRedirect(HttpServletResponse response, @RequestParam("redirect") String redirect) {
 		authService.redirectGithub(response, redirect);
