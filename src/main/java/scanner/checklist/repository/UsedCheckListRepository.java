@@ -31,15 +31,15 @@ public interface UsedCheckListRepository extends JpaRepository<UsedRule, Long> {
 	Integer resetRule(@Param("user_id") Long userId, @Param("rule_name") String ruleName);
 
 	// on 또는 off 된 룰만 검색
-	List<UsedRule> findByUserAndIsOn(User user, String string);
+	List<UsedRule> findByUserAndIsOn(User user, Character string);
 
 	// 특정 id 룰만 검색
 	List<UsedRule> findByUserAndRuleNameIn(User user, List<String> ruleId);
 
 	// 문자열이 포함된 id 룰 검색
-	List<UsedRule> findByUserAndRuleNameContains(User user, String ruleId);
+	List<UsedRule> findByUserAndRuleNameContains(User user, String ruleName);
 
-	Optional<UsedRule> findByUserAndRuleName(User user, String ruleId);
+	Optional<UsedRule> findByUserAndRuleName(User user, String ruleName);
 
 	Optional<UsedRule> findByUserAndId(User user, Long id);
 }
