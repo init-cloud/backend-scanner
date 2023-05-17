@@ -1,6 +1,7 @@
 package scanner.history.dto.report;
 
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -14,6 +15,9 @@ import scanner.history.entity.ScanHistoryDetail;
 public class ScanSummaryDto {
 
 	@Builder
+	@Getter
+	@NoArgsConstructor(access = AccessLevel.PROTECTED)
+	@AllArgsConstructor
 	public static class Content {
 		private Long historyId;
 		private String date;
@@ -29,9 +33,9 @@ public class ScanSummaryDto {
 		private Integer low;
 		private Integer unknown;
 		private Double score;
-		private List<FailedDto> failedResource;
-		private List<FailedComplianceDto> failedCompliance;
-		private List<FailedDto> failedSecurityThreat;
+		private List<FailedDto> failedResource = new ArrayList<>();
+		private List<FailedComplianceDto> failedCompliance = new ArrayList<>();
+		private List<FailedDto> failedSecurityThreat = new ArrayList<>();
 	}
 
 	public static ScanSummaryDto.Content mapDtoByLanguage(ScanHistory entity, Language lang) {

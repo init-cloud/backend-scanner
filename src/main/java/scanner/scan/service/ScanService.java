@@ -223,7 +223,7 @@ public class ScanService {
 
 	public List<UsedRule> getOffedCheckList() {
 		User currentUser = getCurrentUser();
-		return usedCheckListRepository.findByUserAndIsOn(currentUser, "n");
+		return usedCheckListRepository.findByUserAndIsOn(currentUser, 'n');
 	}
 
 	public List<CheckListDetailDto.Detail> getCheckListDetailsList() {

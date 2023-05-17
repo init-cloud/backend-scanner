@@ -15,12 +15,14 @@ public class CommonExceptionHandler {
 
 	@ExceptionHandler(value = ApiException.class)
 	public ResponseEntity<Object> handleApi(ApiException exception) {
+		exception.printStackTrace();
 		log.error("ApiException: {}", exception.getEx().getMessage());
 		return ResponseDto.toException(exception);
 	}
 
 	@ExceptionHandler(value = Exception.class)
 	public ResponseEntity<Object> handle(Exception exception) {
+		exception.printStackTrace();
 		log.error("Exception: {}", exception.getMessage());
 		return ResponseDto.toException(exception);
 	}

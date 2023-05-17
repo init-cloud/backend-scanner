@@ -2,22 +2,31 @@ services:
   initcloud_nginx:
     image: nginx:1.21.5-alpine
     ports:
-      - 80:80
+      - 8888:80
     volumes:
       - ./volume/nginx.conf:/etc/nginx/nginx.conf
     container_name: initcloud_nginx
     depends_on:
-      - initcloud_scanner
+      - initcloudscanner
+    restart: always
+  initcloud_board:
+    image: 5thofnovmbr/initcloud_frontend_grandprix:demo
+    container_name: initcloud_board
+    env_file:
+      - .env
+    ports:
+      - ${BOARD_PORT}:5555
+    depends_on:
+      - initcloudscanner
     restart: always
   initcloud_db:
-    image: floodnut/initcloud_db
+    image: floodnut/initcloud_db:demo
     container_name: initcloud_db
     volumes:
       - ./volume/db/data:/var/lib/mariadb:rw
     env_file:
-     - .env
+      - .env
     environment:
-      TZ: Asia/Seoul
       MARIADB_DATABASE: ${MARIADB_DATABASE}
       MARIADB_USER: ${MARIADB_USER}
       MARIADB_PASSWORD: ${MARIADB_PASSWORD}
@@ -27,28 +36,30 @@ services:
       - ${DB_PORT}:3306
     restart: always
   initcloud_parser:
+    image: floodnut/parser_api:arm-latest
     container_name: initcloud_parser
-    image: floodnut/parser_api
     volumes:
       - ./volume/uploads:/app/uploads
     ports:
       - ${PARSER_PORT}:8000
     env_file:
-     - .env
-  initcloud_scanner:
-    container_name: initcloud_scanner
-    image: floodnut/scanner_api_v2
+      - .env
+  initcloudscanner:
+    container_name: initcloudscanner
+    image: floodnut/scanner_api_v2:demo
     volumes:
       - ./volume/uploads:/app/uploads
     ports:
       - ${SCANNER_PORT}:8080
     env_file:
-     - .env
+      - .env
     environment:
+      TZ: Asia/Seoul
+      DATE: $(date "+%y.%m.%d")
       SPRING_DATASOURCE_URL: jdbc:mariadb://initcloud_db:3306/initcloud
-      SPRING_DATASOURCE_USERNAME: ${MARIADB_USER}
-      SPRING_DATASOURCE_PASSWORD: ${MARIADB_PASSWORD}
+      SPRING_DATASOURCE_USERNAME: ${MARIADB_ROOT}
+      SPRING_DATASOURCE_PASSWORD: ${MARIADB_ROOT_PASSWORD}
     restart: always
-    depends_on:     
-     - initcloud_db
-     - initcloud_parser
+    depends_on:
+      - initcloud_db
+      - initcloud_parser

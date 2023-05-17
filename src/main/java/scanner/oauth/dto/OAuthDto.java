@@ -37,7 +37,17 @@ public class OAuthDto {
 		public GithubTokenRequest(Properties properties, String code) {
 			this.clientId = properties.getGithubClientId();
 			this.clientSecret = properties.getGithubClientSecret();
-			this.redirectUri = properties.getGithubRedirectUri();
+			this.redirectUri = properties.getRedirectUri();
+			this.code = code;
+		}
+	}
+
+	@Getter
+	@NoArgsConstructor(access = AccessLevel.PROTECTED)
+	public static class AuthCodeRequest {
+		private String code;
+
+		public AuthCodeRequest(String code) {
 			this.code = code;
 		}
 	}

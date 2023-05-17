@@ -3,6 +3,7 @@ package scanner.oauth.middleware;
 import org.springframework.stereotype.Component;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import scanner.common.client.OAuthFeignClient;
 import scanner.common.client.OAuthInfoFeignClient;
 import scanner.common.enums.ResponseCode;
@@ -12,6 +13,7 @@ import scanner.security.config.Properties;
 import scanner.security.dto.Token;
 import scanner.security.provider.JwtTokenProvider;
 
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class OAuthRequestFacade {
@@ -30,12 +32,14 @@ public class OAuthRequestFacade {
 	public String requestGithubOAuthToken(String code) {
 		OAuthDto.GithubTokenRequest tokenRequest = new OAuthDto.GithubTokenRequest(properties, code);
 		String resultString = oauthFeignClient.requestGithubAccessToken(tokenRequest);
-
+		log.info(resultString);
 		String[] arr = resultString.split("&");
 
 		for (String s : arr) {
-			if (s.startsWith("access_token"))
+			if (s.startsWith("access_token")) {
+				log.info(s);
 				return s;
+			}
 		}
 
 		throw new ApiAuthException(ResponseCode.INVALID_TOKEN);
